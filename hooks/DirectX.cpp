@@ -202,6 +202,9 @@ bool ImGuiInitialization(IDXGISwapChain* pSwapChain) {
             MAX_RENDER_THREAD_COUNT,              // initial count
             MAX_RENDER_THREAD_COUNT,              // maximum count
             NULL);                                // unnamed semaphore);
+        //汉化版改动:下一帧强制更改DPI来刷新字体
+        State.dpiChanged = true;
+
         return true;
     }
     
@@ -218,7 +221,8 @@ static void RebuildFont() {
         ::GetUserDefaultLocaleName(locale, LOCALE_NAME_MAX_LENGTH);
         if (!_wcsnicmp(locale, L"zh-", 3)) {
             // China
-            glyph_ranges = io.Fonts->GetGlyphRangesChineseSimplifiedCommon();
+            //汉化版改动:Common->Full抓取全中文字符而非2500常用字
+            glyph_ranges = io.Fonts->GetGlyphRangesChineseFull();
         }
         else if (!_wcsnicmp(locale, L"ja-", 3)) {
             // Japan
