@@ -61,11 +61,11 @@ namespace DoorsTab {
 			ImGui::BeginChild("doors#options", ImVec2(300, 0) * State.dpiScale, false, ImGuiWindowFlags_NoBackground);
 
 			if (IsHost() && State.DisableSabotages) {
-				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Sabotages have been disabled.");
-				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Nothing can be sabotaged.");
+				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "破坏已被禁用。");
+				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "无法进行任何破坏。");
 			}
 
-			if (AnimatedButton("Close All Doors"))
+			if (AnimatedButton("关闭所有门"))
 			{
 				for (auto door : State.mapDoors)
 				{
@@ -73,13 +73,13 @@ namespace DoorsTab {
 				}
 			}
 
-			if (AnimatedButton("Close Room Door"))
+			if (AnimatedButton("关闭当前房间门"))
 			{
 				State.rpcQueue.push(new RpcCloseDoorsOfType(GetSystemTypes(GetTrueAdjustedPosition(*Game::pLocalPlayer)), false));
 			}
 
 			if (State.mapType == Settings::MapType::Pb || State.mapType == Settings::MapType::Airship || State.mapType == Settings::MapType::Fungle) {
-				if (AnimatedButton("Open All Doors"))
+				if (AnimatedButton("打开所有门"))
 				{
 					for (auto door : State.mapDoors)
 					{
@@ -87,13 +87,13 @@ namespace DoorsTab {
 					}
 				}
 
-				if (AnimatedButton("Open Room Door"))
+				if (AnimatedButton("打开当前房间门"))
 				{
 					State.rpcQueue.push(new RpcOpenDoorsOfType(GetSystemTypes(GetTrueAdjustedPosition(*Game::pLocalPlayer))));
 				}
 			}
 
-			if (AnimatedButton("Pin All Doors"))
+			if (AnimatedButton("锁定所有门"))
 			{
 				for (auto door : State.mapDoors)
 				{
@@ -104,7 +104,7 @@ namespace DoorsTab {
 					}
 				}
 			}
-			if (AnimatedButton("Unpin All Doors"))
+			if (AnimatedButton("解锁所有门"))
 			{
 				State.pinnedDoors.clear();
 			}
@@ -113,17 +113,17 @@ namespace DoorsTab {
 			if (State.selectedDoor != SystemTypes__Enum::Hallway) {
 				auto plainDoor = GetPlainDoorByRoom(State.selectedDoor);
 
-				if (AnimatedButton("Close Door")) {
+				if (AnimatedButton("关闭选中门")) {
 					State.rpcQueue.push(new RpcCloseDoorsOfType(State.selectedDoor, false));
 				}
 
 				if (std::find(State.pinnedDoors.begin(), State.pinnedDoors.end(), State.selectedDoor) == State.pinnedDoors.end()) {
-					if (AnimatedButton("Pin Door")) {
+					if (AnimatedButton("锁定选中门")) {
 						State.rpcQueue.push(new RpcCloseDoorsOfType(State.selectedDoor, true));
 					}
 				}
 				else {
-					if (AnimatedButton("Unpin Door")) {
+					if (AnimatedButton("解锁选中门")) {
 						State.pinnedDoors.erase(std::remove(State.pinnedDoors.begin(), State.pinnedDoors.end(), State.selectedDoor), State.pinnedDoors.end());
 					}
 				}
@@ -136,9 +136,9 @@ namespace DoorsTab {
 			if (State.mapType == Settings::MapType::Pb || State.mapType == Settings::MapType::Airship || State.mapType == Settings::MapType::Fungle)
 			{
 				ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
-				if (ToggleButton("Auto Open Doors on Use", &State.AutoOpenDoors)) State.Save();
+				if (ToggleButton("在交互时自动打开门", &State.AutoOpenDoors)) State.Save();
 
-				if (ToggleButton("Spam Open/Close Doors", &State.SpamDoors)) State.Save();
+				if (ToggleButton("混乱开关门", &State.SpamDoors)) State.Save();
 			}
 			ImGui::EndChild();
 		}
