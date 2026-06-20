@@ -11,23 +11,23 @@ namespace EspTab {
 		bool changed = false;
 		ImGui::SameLine(100 * State.dpiScale);
 		ImGui::BeginChild("###ESP", ImVec2(500 * State.dpiScale, 0), true, ImGuiWindowFlags_NoBackground);
-		changed |= ToggleButton("Enable", &State.ShowEsp);
+		changed |= ToggleButton("总开关", &State.ShowEsp);
 
-		changed |= ToggleButton("Show Ghosts", &State.ShowEsp_Ghosts);
+		changed |= ToggleButton("显示幽灵", &State.ShowEsp_Ghosts);
 		//dead bodies for v3.1
-		changed |= ToggleButton("Hide During Meetings", &State.HideEsp_During_Meetings);
+		changed |= ToggleButton("在开会期间隐藏", &State.HideEsp_During_Meetings);
 
-		changed |= ToggleButton("Show Boxes", &State.ShowEsp_Box);
-		changed |= ToggleButton("Show Tracers", &State.ShowEsp_Tracers);
-		changed |= ToggleButton("Show Distances", &State.ShowEsp_Distance);
+		changed |= ToggleButton("显示方框", &State.ShowEsp_Box);
+		changed |= ToggleButton("显示射线", &State.ShowEsp_Tracers);
+		changed |= ToggleButton("显示距离", &State.ShowEsp_Distance);
 		//better esp (from noobuild) coming v3.1
-		changed |= ToggleButton("Role-based", &State.ShowEsp_RoleBased);
+		changed |= ToggleButton("根据身份上色", &State.ShowEsp_RoleBased);
 
 		if (State.ShowEsp_RoleBased) {
 			ImGui::SameLine();
-			changed |= ToggleButton("Crewmates", &State.ShowEsp_Crew);
+			changed |= ToggleButton("船员", &State.ShowEsp_Crew);
 			ImGui::SameLine();
-			changed |= ToggleButton("Impostors", &State.ShowEsp_Imp);
+			changed |= ToggleButton("伪装者", &State.ShowEsp_Imp);
 		}
 
 		ImGui::EndChild();
