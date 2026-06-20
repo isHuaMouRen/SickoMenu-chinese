@@ -514,7 +514,7 @@ namespace GameTab {
             }
             if (IsHost() || !State.SafeMode) {
                 if (CustomListBoxInt("文本轰炸", &State.ChatSpamMode,
-                    { State.SafeMode ? "仅带文本(仅自己轰炸)" : "带文本", "空白聊天", State.SafeMode ? "自身文本 + 空白聊天" : "文本 + 空白聊天" })) State.Save();
+                    { State.SafeMode ? "文本(仅自己轰炸)" : "文本", "空白文本", State.SafeMode ? "文本 + 空白文本" : "文本 + 空白文本" })) State.Save();
             }
 
             if (std::find(State.ChatPresets.begin(), State.ChatPresets.end(), State.chatMessage) == State.ChatPresets.end() && AnimatedButton("添加消息到预设")) {
