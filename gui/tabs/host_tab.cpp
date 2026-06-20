@@ -61,18 +61,18 @@ namespace HostTab {
         if (IsHost()) {
             ImGui::SameLine(100 * State.dpiScale);
             ImGui::BeginChild("###Host", ImVec2(500 * State.dpiScale, 0), true, ImGuiWindowFlags_NoBackground);
-            if (TabGroup("Utils", openUtils)) {
+            if (TabGroup("工具", openUtils)) {
                 CloseOtherGroups(Groups::Utils);
             }
             if (GameOptions().HasOptions()) {
                 ImGui::SameLine();
-                if (TabGroup("Settings", openSettings)) {
+                if (TabGroup("设置", openSettings)) {
                     CloseOtherGroups(Groups::Settings);
                 }
             }
             if (State.TournamentMode) {
                 ImGui::SameLine();
-                if (TabGroup("Tournaments", openTournaments)) {
+                if (TabGroup("比赛", openTournaments)) {
                     CloseOtherGroups(Groups::Tournaments);
                 }
             }
@@ -81,7 +81,7 @@ namespace HostTab {
                 if (IsInLobby()) {
                     ImGui::BeginChild("host#list", ImVec2(200, 0) * State.dpiScale, true, ImGuiWindowFlags_NoBackground);
                     if (!State.DisableRoleManager && (!hideRolesList || !State.TournamentMode)) {
-                        bool shouldEndListBox = ImGui::ListBoxHeader("Choose Roles", ImVec2(200, 290) * State.dpiScale);
+                        bool shouldEndListBox = ImGui::ListBoxHeader("选择身份", ImVec2(200, 290) * State.dpiScale);
                         auto allPlayers = GetAllPlayerData();
                         auto playerAmount = allPlayers.size();
                         auto maxImpostorAmount = GetMaxImpostorAmount((int)playerAmount);
@@ -177,11 +177,11 @@ namespace HostTab {
                             ImGui::ListBoxFooter();
                     }
                     if (!State.DisableRoleManager) ImGui::NewLine();
-                    ToggleButton("Disable Role Selection", &State.DisableRoleManager);
+                    ToggleButton("禁用身份选择", &State.DisableRoleManager);
 
                     if (State.TournamentMode) {
                         if (!State.DisableRoleManager || !hideRolesList) ImGui::NewLine();
-                        if (AnimatedButton("Randomize Roles")) {
+                        if (AnimatedButton("随机分配身份")) {
                             std::vector<Game::PlayerId> playerIds = {};
                             std::vector<Game::PlayerId> impostorIds = {};
                             for (auto p : GetAllPlayerControl()) {
@@ -198,7 +198,7 @@ namespace HostTab {
                             for (auto i : playerIds)
                                 State.assignedRoles[i] = RoleType::Crewmate;
                         }
-                        ToggleButton("Hide Roles List", &hideRolesList);
+                        ToggleButton("隐藏身份列表", &hideRolesList);
                     }
                     ImGui::EndChild();
                 }
@@ -206,13 +206,13 @@ namespace HostTab {
                 ImGui::BeginChild("host#actions", ImVec2(300, 0) * State.dpiScale, true, ImGuiWindowFlags_NoBackground);
 
                 if (!State.DisableRoleManager && IsInLobby()) {
-                    if (ToggleButton("Custom Impostor Amount", &State.CustomImpostorAmount))
+                    if (ToggleButton("自定义伪装者数量", &State.CustomImpostorAmount))
                         State.Save();
                     State.ImpostorCount = std::clamp(State.ImpostorCount, 0, int(Game::MAX_PLAYERS));
-                    if (State.CustomImpostorAmount && ImGui::InputInt("Impostor Count", &State.ImpostorCount))
+                    if (State.CustomImpostorAmount && ImGui::InputInt("伪装者数量", &State.ImpostorCount))
                         State.Save();
 
-                    if (ToggleButton("Always", &State.AutoHostRole)) {
+                    if (ToggleButton("总是", &State.AutoHostRole)) {
                         State.Save();
 
                         if (!State.AutoHostRole) {
@@ -258,7 +258,7 @@ namespace HostTab {
                 const int32_t minPlayers = 4, maxAllowedPlayers = static_cast<int32_t>(Game::MAX_PLAYERS);
                 int32_t newMaxPlayers = std::clamp(currentMaxPlayers, minPlayers, maxAllowedPlayers);
 #define LocalInLobby (((*Game::pAmongUsClient)->fields._.NetworkMode == NetworkModes__Enum::LocalGame) && ((*Game::pAmongUsClient)->fields._.GameState == InnerNetClient_GameStates__Enum::Joined))
-                if ((LocalInLobby || !State.SafeMode) && IsInLobby() && ImGui::InputInt("Max Players", &newMaxPlayers)) {
+                if ((LocalInLobby || !State.SafeMode) && IsInLobby() && ImGui::InputInt("最多玩家", &newMaxPlayers)) {
                     newMaxPlayers = std::clamp(newMaxPlayers, minPlayers, maxAllowedPlayers);
                     GameOptions().SetInt(app::Int32OptionNames__Enum::MaxPlayers, newMaxPlayers);
                     SyncAllSettings();
@@ -268,39 +268,39 @@ namespace HostTab {
                 /*if (IsInLobby() && ToggleButton("Flip Skeld", &State.FlipSkeld))
                     State.Save();*/ //to be fixed later
                 if (IsInLobby()) ImGui::Dummy(ImVec2(7, 7) * State.dpiScale);
-                if (IsInLobby() && AnimatedButton("Force Start of Game")) {
+                if (IsInLobby() && AnimatedButton("强制开始游戏")) {
                     app::AmongUsClient_KickNotJoinedPlayers(*Game::pAmongUsClient, NULL);
                     app::InnerNetClient_SendStartGame((InnerNetClient*)(*Game::pAmongUsClient), NULL);
                 }
                 if (IsInLobby() && State.IsStartCountdownActive &&
-                    ColoredButton(ImVec4(1.f, 0.f, 0.f, 1.f), "Cancel Start of Game")) {
+                    ColoredButton(ImVec4(1.f, 0.f, 0.f, 1.f), "取消开始游戏")) {
                     State.CancelingStartGame = true;
                 }
 
-                if (ToggleButton("Always Allow Start Button", &State.AlwaysAllowStart))
+                if (ToggleButton("总是允许开始按钮", &State.AlwaysAllowStart))
                     State.Save();
 
-                if (ToggleButton("Modify Start Countdown", &State.ModifyStartCountdown))
+                if (ToggleButton("修改开始倒计时", &State.ModifyStartCountdown))
                     State.Save();
 
-                if (State.ModifyStartCountdown && ImGui::InputInt("Countdown Time", &State.StartCountdown)) {
+                if (State.ModifyStartCountdown && ImGui::InputInt("倒计时", &State.StartCountdown)) {
                     State.StartCountdown = std::clamp(State.StartCountdown, 1, !State.SafeMode ? 127 : 5);
                     State.Save();
                 }
 
-                if (ToggleButton("Disable Meetings", &State.DisableMeetings))
+                if (ToggleButton("禁用开会", &State.DisableMeetings))
                     State.Save();
 
-                if (ToggleButton("Disable Sabotages", &State.DisableSabotages))
+                if (ToggleButton("禁用破坏", &State.DisableSabotages))
                     State.Save();
 
-                if (ToggleButton("Disable All Votekicks", &State.DisableAllVotekicks))
+                if (ToggleButton("禁用所有投票踢人", &State.DisableAllVotekicks))
                     State.Save();
 
                 std::vector<const char*> GAMEMODES = { "Default", "Task Speedrun" };
                 if (State.DisableHostAnticheat) GAMEMODES = { "Default", "Task Speedrun", "Battle Royale" };
                 State.GameMode = std::clamp(State.GameMode, 0, State.DisableHostAnticheat ? 2 : 1);
-                if (IsInLobby() && CustomListBoxInt("Game Mode", &State.GameMode, GAMEMODES, 100 * State.dpiScale)) {
+                if (IsInLobby() && CustomListBoxInt("游戏模式", &State.GameMode, GAMEMODES, 100 * State.dpiScale)) {
                     if (State.GameMode == 1) {
                         State.TaskSpeedrun = true;
                         State.BattleRoyale = false;
@@ -315,20 +315,22 @@ namespace HostTab {
                     }
                 }
 
-                if (ToggleButton("Spectator Mode", &State.SpectatorMode))
+                if (ToggleButton("旁观者模式", &State.SpectatorMode))
                     State.Save();
 
-                if (ToggleButton("Show Lobby Timer", &State.ShowLobbyTimer))
+                if (ToggleButton("显示大厅计时器", &State.ShowLobbyTimer))
                     State.Save();
 
-                if (ToggleButton("Auto Start Game", &State.AutoStartGame))
+                if (ToggleButton("自动开始游戏", &State.AutoStartGame))
                     State.Save();
 
                 if (State.AutoStartGame) {
-                    ImGui::Text("Start After");
+                    ImGui::Text("在");
                     ImGui::SameLine();
-                    if (ImGui::InputInt("sec", &State.AutoStartTimer))
+                    if (ImGui::InputInt("秒", &State.AutoStartTimer))
                         State.Save();
+                    ImGui::SameLine();
+                    ImGui::Text("后开始");
                 }
 
                 /*if (ToggleButton("Auto Start Game (By Player Count)", &State.AutoStartGamePlayers))
@@ -358,33 +360,33 @@ namespace HostTab {
                     State.Save();
                 }*/
 
-                if ((State.mapType == Settings::MapType::Airship) && IsInGame() && AnimatedButton("Switch Moving Platform Side"))
+                if ((State.mapType == Settings::MapType::Airship) && IsInGame() && AnimatedButton("切换移动平台位置"))
                 {
                     State.rpcQueue.push(new RpcUsePlatform());
                 }
 
                 if ((State.mapType == Settings::MapType::Airship) && IsInGame()) {
-                    if (ToggleButton("Spam Moving Platform", &State.SpamMovingPlatform)) {
+                    if (ToggleButton("混乱移动平台", &State.SpamMovingPlatform)) {
                         State.Save();
                     }
                 }
 
-                if (State.InMeeting && AnimatedButton("End Meeting")) {
+                if (State.InMeeting && AnimatedButton("结束会议")) {
                     State.rpcQueue.push(new RpcEndMeeting());
                     State.InMeeting = false;
                 }
 
-                if (State.CurrentScene.compare("Tutorial") || IsInLobby()) { //lobby isn't possible in freeplay
-                    if (ToggleButton("Disable Game Ending", &State.NoGameEnd)) {
+                if (State.CurrentScene.compare("教程") || IsInLobby()) { //lobby isn't possible in freeplay
+                    if (ToggleButton("禁用游戏结束", &State.NoGameEnd)) {
                         State.Save();
                     }
 
                     if (IsInGame()) {
-                        CustomListBoxInt("Reason", &State.SelectedGameEndReasonId, GAMEENDREASON, 120.0f * State.dpiScale);
+                        CustomListBoxInt("原因", &State.SelectedGameEndReasonId, GAMEENDREASON, 120.0f * State.dpiScale);
 
                         ImGui::SameLine();
 
-                        if (AnimatedButton("End Game")) {
+                        if (AnimatedButton("结束游戏")) {
                             State.rpcQueue.push(new RpcEndGame(GameOverReason__Enum(std::clamp(State.SelectedGameEndReasonId, 0, 8))));
                         }
                     }
@@ -392,15 +394,15 @@ namespace HostTab {
 
                 CustomListBoxInt(" ­", &State.HostSelectedColorId, HOSTCOLORS, 85.0f * State.dpiScale);
 
-                if (ToggleButton("Force Color for Everyone", &State.ForceColorForEveryone)) {
+                if (ToggleButton("强制给所有人上色", &State.ForceColorForEveryone)) {
                     State.Save();
                 }
 
                 if (!State.SafeMode) {
-                    if (ToggleButton("Force Name for Everyone", &State.ForceNameForEveryone)) {
+                    if (ToggleButton("强制给所有人设置名称", &State.ForceNameForEveryone)) {
                         State.Save();
                     }
-                    if (InputString("Username", &State.hostUserName)) {
+                    if (InputString("用户名", &State.hostUserName)) {
                         State.Save();
                     }
                 }
@@ -417,15 +419,15 @@ namespace HostTab {
                     }
                 }*/
 
-                if (ToggleButton("Unlock Kill Button", &State.UnlockKillButton)) {
+                if (ToggleButton("解锁击杀按钮", &State.UnlockKillButton)) {
                     State.Save();
                 }
 
-                if (ToggleButton("Kill While Vanished", &State.KillInVanish)) {
+                if (ToggleButton("隐身时击杀", &State.KillInVanish)) {
                     State.Save();
                 }
 
-                if (ToggleButton("Disable Medbay Scan", &State.DisableMedbayScan)) {
+                if (ToggleButton("禁用 Medbay 扫描", &State.DisableMedbayScan)) {
                     State.Save();
                 }
 
@@ -445,7 +447,7 @@ namespace HostTab {
                 int mapId = options.GetByte(app::ByteOptionNames__Enum::MapId);
                 if (mapId == 3) mapId = 0; // Dleks is the map with ID 3, and we are disabling it for now
                 State.mapHostChoice = mapId > 3 ? (mapId - 1) : mapId;
-                if (IsInLobby() && CustomListBoxInt("Map", &State.mapHostChoice, MAP_NAMES, 75 * State.dpiScale)) {
+                if (IsInLobby() && CustomListBoxInt("地图", &State.mapHostChoice, MAP_NAMES, 75 * State.dpiScale)) {
                     //if (!IsInGame()) {
                         // disable flip
                     /*if (State.mapHostChoice == 3) {
@@ -499,15 +501,15 @@ namespace HostTab {
                     static bool ejects = false, anonVotes = false, visualTasks = false;
 
 #pragma region General
-                    MakeBool("Confirm Ejects", ejects, BoolOptionNames__Enum::ConfirmImpostor);
-                    MakeInt("# Emergency Meetings", emergencyMeetings, Int32OptionNames__Enum::NumEmergencyMeetings);
-                    MakeBool("Anonymous Votes", anonVotes, BoolOptionNames__Enum::AnonymousVotes);
-                    MakeInt("Emergency Cooldown", emergencyCooldown, Int32OptionNames__Enum::EmergencyCooldown);
-                    MakeInt("Discussion Time", discussionTime, Int32OptionNames__Enum::DiscussionTime);
-                    MakeInt("Voting Time", votingTime, Int32OptionNames__Enum::VotingTime);
+                    MakeBool("驱逐确认", ejects, BoolOptionNames__Enum::ConfirmImpostor);
+                    MakeInt("# 紧急会议", emergencyMeetings, Int32OptionNames__Enum::NumEmergencyMeetings);
+                    MakeBool("匿名投票", anonVotes, BoolOptionNames__Enum::AnonymousVotes);
+                    MakeInt("紧急会议冷却", emergencyCooldown, Int32OptionNames__Enum::EmergencyCooldown);
+                    MakeInt("讨论时间", discussionTime, Int32OptionNames__Enum::DiscussionTime);
+                    MakeInt("投票时间", votingTime, Int32OptionNames__Enum::VotingTime);
                     // MakeFloat("Player Speed", playerSpeed, FloatOptionNames__Enum::PlayerSpeedMod);
                     // player speed can be between 0 (not included) and 3 (included) in classic mode due to the anticheat, so we separate this float input
-                    if (ImGui::InputFloat("Player Speed", &playerSpeed)) {
+                    if (ImGui::InputFloat("玩家速度", &playerSpeed)) {
                         if (State.SafeMode) {
                             if (playerSpeed <= 0.f) playerSpeed = 0.000001f;
                             if (playerSpeed > 3.f) playerSpeed = 3.f;
@@ -521,23 +523,23 @@ namespace HostTab {
                     if (taskBarMode >= 0 && taskBarMode <= 2) {
                         switch (taskBarMode) {
                         case 0:
-                            taskBarInfo = " (Always)";
+                            taskBarInfo = " (实时)";
                             break;
                         case 1:
-                            taskBarInfo = " (Meetings)";
+                            taskBarInfo = " (会议)";
                             break;
                         case 2:
-                            taskBarInfo = " (Never)";
+                            taskBarInfo = " (从不)";
                             break;
                         }
                     }
-                    MakeInt(("Task Bar Updates" + taskBarInfo).c_str(), taskBarMode, Int32OptionNames__Enum::TaskBarMode);
-                    MakeBool("Visual Tasks", visualTasks, BoolOptionNames__Enum::VisualTasks);
-                    MakeFloat("Crewmate Vision", crewVision, FloatOptionNames__Enum::CrewLightMod);
-                    MakeFloat("Impostor Vision", impVision, FloatOptionNames__Enum::ImpostorLightMod);
+                    MakeInt(("任务进度条更新" + taskBarInfo).c_str(), taskBarMode, Int32OptionNames__Enum::TaskBarMode);
+                    MakeBool("任务可视", visualTasks, BoolOptionNames__Enum::VisualTasks);
+                    MakeFloat("船员视野", crewVision, FloatOptionNames__Enum::CrewLightMod);
+                    MakeFloat("伪装者视野", impVision, FloatOptionNames__Enum::ImpostorLightMod);
                     // MakeFloat("Kill Cooldown", killCooldown, FloatOptionNames__Enum::KillCooldown);
                     // 0 or lesser kill cooldown leads to the impostors not being able to kill
-                    if (ImGui::InputFloat("Kill Cooldown", &killCooldown)) {
+                    if (ImGui::InputFloat("击杀冷却", &killCooldown)) {
                         if (killCooldown <= 0.f) killCooldown = 0.000001f;
                         options.SetFloat(FloatOptionNames__Enum::KillCooldown, killCooldown);
                         SyncAllSettings();
@@ -547,18 +549,18 @@ namespace HostTab {
                     if (killDistance >= 0 && killDistance <= 2) {
                         switch (killDistance) {
                         case 0:
-                            killDistInfo = " (Short)";
+                            killDistInfo = " (近)";
                             break;
                         case 1:
-                            killDistInfo = " (Medium)";
+                            killDistInfo = " (中)";
                             break;
                         case 2:
-                            killDistInfo = " (Long)";
+                            killDistInfo = " (远)";
                             break;
                         }
                     }
 
-                    if (ImGui::InputInt(("Kill Distance" + killDistInfo).c_str(), &killDistance)) {
+                    if (ImGui::InputInt(("击杀距离" + killDistInfo).c_str(), &killDistance)) {
                         if (State.SafeMode) killDistance = std::clamp(killDistance, 0, 2);
                         options.SetInt(Int32OptionNames__Enum::KillDistance, killDistance);
                         SyncAllSettings();
@@ -566,9 +568,9 @@ namespace HostTab {
                     else killDistance = options.GetInt(Int32OptionNames__Enum::KillDistance);
 
                     // MakeInt(("Kill Distance" + killDistInfo).c_str(), killDistance, Int32OptionNames__Enum::KillDistance);
-                    MakeInt("# Short Tasks", shortTasks, Int32OptionNames__Enum::NumShortTasks);
-                    MakeInt("# Common Tasks", commonTasks, Int32OptionNames__Enum::NumCommonTasks);
-                    MakeInt("# Long Tasks", longTasks, Int32OptionNames__Enum::NumLongTasks);
+                    MakeInt("# 短任务", shortTasks, Int32OptionNames__Enum::NumShortTasks);
+                    MakeInt("# 常规任务", commonTasks, Int32OptionNames__Enum::NumCommonTasks);
+                    MakeInt("# 长任务", longTasks, Int32OptionNames__Enum::NumLongTasks);
 #pragma endregion
 #pragma region Scientist
                     ImGui::Text("Scientist");
@@ -646,47 +648,47 @@ namespace HostTab {
 
                     static bool flashlight = false, seekMap = false, hidePings = false, showNames = false;
 
-                    MakeFloat("Hider Vision", crewVision, FloatOptionNames__Enum::CrewLightMod);
-                    MakeFloat("Seeker Vision", impVision, FloatOptionNames__Enum::ImpostorLightMod);
-                    MakeFloat("Kill Cooldown", killCooldown, FloatOptionNames__Enum::KillCooldown);
+                    MakeFloat("船员视野", crewVision, FloatOptionNames__Enum::CrewLightMod);
+                    MakeFloat("伪装者视野", impVision, FloatOptionNames__Enum::ImpostorLightMod);
+                    MakeFloat("击杀冷却", killCooldown, FloatOptionNames__Enum::KillCooldown);
 
                     std::string killDistInfo = "";
                     if (killDistance >= 0 && killDistance <= 2) {
                         switch (killDistance) {
                         case 0:
-                            killDistInfo = " (Short)";
+                            killDistInfo = " (近)";
                             break;
                         case 1:
-                            killDistInfo = " (Medium)";
+                            killDistInfo = " (中)";
                             break;
                         case 2:
-                            killDistInfo = " (Long)";
+                            killDistInfo = " (远)";
                             break;
                         }
                     }
 
-                    MakeInt(("Kill Distance" + killDistInfo).c_str(), killDistance, Int32OptionNames__Enum::KillDistance);
-                    MakeInt("# Short Tasks", shortTasks, Int32OptionNames__Enum::NumShortTasks);
-                    MakeInt("# Common Tasks", commonTasks, Int32OptionNames__Enum::NumCommonTasks);
-                    MakeInt("# Long Tasks", longTasks, Int32OptionNames__Enum::NumLongTasks);
-                    MakeFloat("Player Speed", playerSpeed, FloatOptionNames__Enum::PlayerSpeedMod);
-                    MakeFloat("Hiding Time", hidingTime, FloatOptionNames__Enum::EscapeTime);
-                    MakeFloat("Final Hide Time", finalHideTime, FloatOptionNames__Enum::FinalEscapeTime);
-                    MakeInt("Max Vent Uses", maxVents, Int32OptionNames__Enum::CrewmateVentUses);
-                    MakeFloat("Max Time In Vent", ventTime, FloatOptionNames__Enum::CrewmateTimeInVent);
-                    MakeBool("Flashlight Mode", flashlight, BoolOptionNames__Enum::UseFlashlight);
-                    MakeFloat("Hider Flashlight Size", crewLight, FloatOptionNames__Enum::CrewmateFlashlightSize);
-                    MakeFloat("Seeker Flashlight Size", impLight, FloatOptionNames__Enum::ImpostorFlashlightSize);
-                    MakeFloat("Final Hide Seeker Speed", finalImpSpeed, FloatOptionNames__Enum::SeekerFinalSpeed);
-                    MakeBool("Final Hide Seeker Map", seekMap, BoolOptionNames__Enum::SeekerFinalMap);
-                    MakeBool("Final Hide Pings", hidePings, BoolOptionNames__Enum::SeekerPings);
-                    MakeFloat("Ping Interval", pingInterval, FloatOptionNames__Enum::MaxPingTime);
-                    MakeBool("Show Names", showNames, BoolOptionNames__Enum::ShowCrewmateNames);
+                    MakeInt(("击杀距离" + killDistInfo).c_str(), killDistance, Int32OptionNames__Enum::KillDistance);
+                    MakeInt("# 短任务", shortTasks, Int32OptionNames__Enum::NumShortTasks);
+                    MakeInt("# 常规任务", commonTasks, Int32OptionNames__Enum::NumCommonTasks);
+                    MakeInt("# 长任务", longTasks, Int32OptionNames__Enum::NumLongTasks);
+                    MakeFloat("玩家速度", playerSpeed, FloatOptionNames__Enum::PlayerSpeedMod);
+                    MakeFloat("躲藏时间", hidingTime, FloatOptionNames__Enum::EscapeTime);
+                    MakeFloat("终局躲藏时间", finalHideTime, FloatOptionNames__Enum::FinalEscapeTime);
+                    MakeInt("通风管道使用数量", maxVents, Int32OptionNames__Enum::CrewmateVentUses);
+                    MakeFloat("通风管道使用时间", ventTime, FloatOptionNames__Enum::CrewmateTimeInVent);
+                    MakeBool("手电筒模式", flashlight, BoolOptionNames__Enum::UseFlashlight);
+                    MakeFloat("船员手电筒大小", crewLight, FloatOptionNames__Enum::CrewmateFlashlightSize);
+                    MakeFloat("伪装者手电筒大小", impLight, FloatOptionNames__Enum::ImpostorFlashlightSize);
+                    MakeFloat("终局伪装者速度", finalImpSpeed, FloatOptionNames__Enum::SeekerFinalSpeed);
+                    MakeBool("终局伪装者地图", seekMap, BoolOptionNames__Enum::SeekerFinalMap);
+                    MakeBool("终局位置提示", hidePings, BoolOptionNames__Enum::SeekerPings);
+                    MakeFloat("提示间隔", pingInterval, FloatOptionNames__Enum::MaxPingTime);
+                    MakeBool("显示名称", showNames, BoolOptionNames__Enum::ShowCrewmateNames);
                 }
 #pragma endregion
             }
             if (openTournaments && State.TournamentMode) {
-                if (AnimatedButton("Copy All Data") && State.tournamentFriendCodes.size() != 0) {
+                if (AnimatedButton("复制所有数据") && State.tournamentFriendCodes.size() != 0) {
                     std::string data = "";
                     for (auto i : State.tournamentFriendCodes) {
                         float points = State.tournamentPoints[i], win = State.tournamentWinPoints[i],
@@ -698,7 +700,7 @@ namespace HostTab {
                     ClipboardHelper_PutClipboardString(convert_to_string(data.substr(1)), NULL);
                 }
                 ImGui::SameLine();
-                if (ColoredButton(ImVec4(1.f, 0.f, 0.f, 1.f), "Clear All Data")) {
+                if (ColoredButton(ImVec4(1.f, 0.f, 0.f, 1.f), "清理所有数据")) {
                     State.tournamentPoints.clear();
                     State.tournamentKillCaps.clear();
                     State.tournamentWinPoints.clear();
