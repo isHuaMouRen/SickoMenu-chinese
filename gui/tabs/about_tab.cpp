@@ -34,7 +34,7 @@ namespace AboutTab {
 
     void Render() {
         ImGui::SameLine(100 * State.dpiScale);
-        ImGui::BeginChild("###About", ImVec2(500 * State.dpiScale, 0), true, ImGuiWindowFlags_NoBackground);
+        ImGui::BeginChild("###关于", ImVec2(500 * State.dpiScale, 0), true, ImGuiWindowFlags_NoBackground);
         if (TabGroup("欢迎", openWelcome)) {
             CloseOtherGroups(Groups::Welcome);
         }
@@ -64,7 +64,7 @@ namespace AboutTab {
             ImGui::SameLine(0.0f, 0.0f);
             ImGui::Text(" 是一款适用于《Among Us》的强大实用工具。");
             ImGui::Text("旨在提升所有玩家的游戏体验！");
-            ImGui::Text("使用\"检查更新\"按钮下载最新版本！");
+            ImGui::Text("点击 \"检查更新\" 下载最新版本！");
             if (ColoredButton(DevCol, "GitHub")) {
                 OpenLink("https://github.com/g0aty/SickoMenu");
             }
@@ -203,7 +203,7 @@ namespace AboutTab {
             ImGui::SameLine();
             ImGui::Text("(协助更新至Fungle版本)");
 
-            ImGui::Text("鸣谢");
+            ImGui::Text("感谢");
             ImGui::SameLine(0.0f, 0.0f);
             ImGui::TextColored(AumCol, " v0idp");
             ImGui::SameLine(0.0f, 0.0f);
