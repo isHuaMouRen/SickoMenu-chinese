@@ -232,70 +232,70 @@ namespace SelfTab {
     void Render() {
         ImGui::SameLine(100 * State.dpiScale);
         ImGui::BeginChild("###Self", ImVec2(500 * State.dpiScale, 0), true, ImGuiWindowFlags_NoBackground);
-        if (TabGroup("Visuals", openVisuals)) {
+        if (TabGroup("视觉", openVisuals)) {
             CloseOtherGroups(Groups::Visuals);
         }
         ImGui::SameLine();
-        if (TabGroup("Utils", openUtils)) {
+        if (TabGroup("工具", openUtils)) {
             CloseOtherGroups(Groups::Utils);
         }
         ImGui::SameLine();
-        if (TabGroup("Randomizers", openRandomizers)) {
+        if (TabGroup("随机器", openRandomizers)) {
             CloseOtherGroups(Groups::Randomizers);
         }
         ImGui::SameLine();
-        if (TabGroup("Text Editor", openTextEditor)) {
+        if (TabGroup("文本编辑器", openTextEditor)) {
             CloseOtherGroups(Groups::TextEditor);
         }
 
         if (openVisuals) {
             ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
-            if (ToggleButton("Max Vision", &State.MaxVision)) {
+            if (ToggleButton("最大视野", &State.MaxVision)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Wallhack", &State.Wallhack)) {
+            if (ToggleButton("穿墙透视", &State.Wallhack)) {
                 State.Save();
             }
             ImGui::SameLine();
-            ToggleButton("Disable HUD", &State.DisableHud);
+            ToggleButton("禁用HUD", &State.DisableHud);
 
-            if (ToggleButton("Freecam", &State.FreeCam)) {
+            if (ToggleButton("自由视角", &State.FreeCam)) {
                 State.playerToFollow = {};
                 State.Save();
             }
 
             ImGui::SameLine(130.f * State.dpiScale);
-            SteppedSliderFloat("Speed", &State.FreeCamSpeed, 0.f, 10.f, 0.1f, "%.2fx", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput);
+            SteppedSliderFloat("速度", &State.FreeCamSpeed, 0.f, 10.f, 0.1f, "%.2fx", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput);
 
-            if (ToggleButton("Zoom", &State.EnableZoom)) {
+            if (ToggleButton("变焦", &State.EnableZoom)) {
                 State.Save();
                 if (!State.EnableZoom) RefreshChat();
             }
 
             ImGui::SameLine(130.f * State.dpiScale);
-            SteppedSliderFloat("Scale", &State.CameraHeight, 0.5f, 10.0f, 0.5f, "%.2fx", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput);
+            SteppedSliderFloat("缩放", &State.CameraHeight, 0.5f, 10.0f, 0.5f, "%.2fx", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput);
 
             ImGui::Dummy(ImVec2(7, 7) * State.dpiScale);
             ImGui::Separator();
             ImGui::Dummy(ImVec2(7, 7) * State.dpiScale);
 
-            if (ToggleButton("Always show Chat Button", &State.ChatAlwaysActive)) {
+            if (ToggleButton("总是显示聊天按钮", &State.ChatAlwaysActive)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Allow Ctrl+(C/V) in Chat", &State.ChatPaste)) { //add copying later
+            if (ToggleButton("聊天框允许剪贴板", &State.ChatPaste)) { //add copying later
                 State.Save();
             }
 
-            if (ToggleButton("Read Messages by Ghosts", &State.ReadGhostMessages)) {
+            if (ToggleButton("幽灵信息可见", &State.ReadGhostMessages)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Read and Send SickoChat", &State.ReadAndSendSickoChat)) {
+            if (ToggleButton("阅读或发送 SickoChat", &State.ReadAndSendSickoChat)) {
                 State.Save();
             }
-            if (State.ReadAndSendSickoChat) ImGui::Text("Send SickoChat messages in regular chat by typing \"/sc [message]\"!");
+            if (State.ReadAndSendSickoChat) ImGui::Text("发送 SickoChat 请使用 \"/sc [message]\"!");
             /*static int framesPassed = 0;
             if (AnimatedButton("Refresh Chat Button")) {
                 State.RefreshChatButton = true;
@@ -306,37 +306,37 @@ namespace SelfTab {
             else framesPassed--;*/
 
             if (/*!IsHost() && */State.SafeMode) {
-                ImGui::Text("Custom names are purely CLIENT-SIDED!");
+                ImGui::Text("自定义名称仅客户端可见!");
             }
-            if (ToggleButton("Custom Name", &State.CustomName)) {
+            if (ToggleButton("自定义名称", &State.CustomName)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Custom Name for Everyone", &State.CustomNameForEveryone)) {
+            if (ToggleButton("自定义所有人的名称", &State.CustomNameForEveryone)) {
                 State.Save();
             }
 
             if (/*IsHost() || */!State.SafeMode) {
-                if (ToggleButton("Server-sided Custom Name", &State.ServerSideCustomName)) {
+                if (ToggleButton("服务端自定义名称", &State.ServerSideCustomName)) {
                     State.Save();
                 }
             }
 
-            if (State.CustomName && ImGui::CollapsingHeader("Custom Name Options"))
+            if (State.CustomName && ImGui::CollapsingHeader("自定义名称选项"))
             {
-                if (ToggleButton("Italics", &State.ItalicName)) {
+                if (ToggleButton("斜体", &State.ItalicName)) {
                     State.Save();
                 }
                 ImGui::SameLine();
-                if (ToggleButton("Underline", &State.UnderlineName)) {
+                if (ToggleButton("下划线", &State.UnderlineName)) {
                     State.Save();
                 }
                 ImGui::SameLine();
-                if (ToggleButton("Strikethrough", &State.StrikethroughName)) {
+                if (ToggleButton("删除线", &State.StrikethroughName)) {
                     State.Save();
                 }
                 ImGui::SameLine();
-                if (ToggleButton("Bold", &State.BoldName)) {
+                if (ToggleButton("粗体", &State.BoldName)) {
                     State.Save();
                 }
                 ImGui::SameLine();
@@ -344,15 +344,15 @@ namespace SelfTab {
                     State.Save();
                 }
 
-                if (ImGui::ColorEdit4("Starting Gradient Color", (float*)&State.NameColor1, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview)) {
+                if (ImGui::ColorEdit4("起始渐变颜色", (float*)&State.NameColor1, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview)) {
                     State.Save();
                 }
                 ImGui::SameLine();
-                if (ImGui::ColorEdit4("Ending Gradient Color", (float*)&State.NameColor2, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview)) {
+                if (ImGui::ColorEdit4("结束渐变颜色", (float*)&State.NameColor2, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview)) {
                     State.Save();
                 }
                 ImGui::SameLine();
-                if (ToggleButton("Colored", &State.ColoredName)) {
+                if (ToggleButton("颜色", &State.ColoredName)) {
                     State.Save();
                 }
 
@@ -360,21 +360,21 @@ namespace SelfTab {
                     State.Save();
                 }
 
-                if (CustomListBoxInt("Gradient Method", &State.ColorMethod, { "Static", "Left-to-Right" }, 80.f * State.dpiScale))
+                if (CustomListBoxInt("梯度渐变", &State.ColorMethod, { "Static", "Left-to-Right" }, 80.f * State.dpiScale))
                     State.Save();
                 ImGui::SameLine();
-                if (CustomListBoxInt("RGB Method", &State.RgbMethod, { "All-at-Once", "Left-to-Right" }, 80.f * State.dpiScale))
+                if (CustomListBoxInt("RGB 渐变", &State.RgbMethod, { "All-at-Once", "Left-to-Right" }, 80.f * State.dpiScale))
                     State.Save();
 
-                if (ToggleButton("Enable Prefix and Suffix", &State.UsePrefixAndSuffix)) State.Save();
-                if (ToggleButton("New Lines for Prefix and Suffix", &State.PrefixAndSuffixNewLines)) State.Save();
+                if (ToggleButton("启用前缀和后缀", &State.UsePrefixAndSuffix)) State.Save();
+                if (ToggleButton("为前缀或后缀新起一行", &State.PrefixAndSuffixNewLines)) State.Save();
 
-                if (InputString("Name Prefix", &State.NamePrefix)) State.Save();
-                if (InputString("Name Suffix", &State.NameSuffix)) State.Save();
-                if (State.UsePrefixAndSuffix) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("Note: Prefix and/or suffix will be cleared from the ends of the name if it contains them."));
-                if (State.UsePrefixAndSuffix) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("This is done to prevent name overflowing."));
+                if (InputString("名称前缀", &State.NamePrefix)) State.Save();
+                if (InputString("名称后缀", &State.NameSuffix)) State.Save();
+                if (State.UsePrefixAndSuffix) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("注意：如果名称包含前缀和/或后缀，这些部分将从名称的两端移除。"));
+                if (State.UsePrefixAndSuffix) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("这是为了防止名称溢出。"));
 
-                if (ToggleButton("Font", &State.Font)) {
+                if (ToggleButton("字体", &State.Font)) {
                     State.Save();
                 }
                 if (State.Font) {
@@ -383,7 +383,7 @@ namespace SelfTab {
                         State.Save();
                     }
                 }
-                if (State.Font) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("Note: The white nickname will not be visible in the chat"));
+                if (State.Font) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("注意：白色昵称在聊天中将不可见"));
 
                 /*if (ToggleButton("Material", &State.Material)) {
                     State.Save();
@@ -393,21 +393,21 @@ namespace SelfTab {
                     State.Save();
                 }*/
 
-                if (ToggleButton("Size", &State.ResizeName)) {
+                if (ToggleButton("尺寸", &State.ResizeName)) {
                     State.Save();
                 }
 
                 ImGui::SameLine();
-                if (ImGui::InputFloat("Name Size", &State.NameSize)) {
+                if (ImGui::InputFloat("名称大小", &State.NameSize)) {
                     State.Save();
                 }
 
-                if (ToggleButton("Indent", &State.IndentName)) {
+                if (ToggleButton("缩进", &State.IndentName)) {
                     State.Save();
                 }
 
                 ImGui::SameLine();
-                if (ImGui::InputFloat("Name Indent", &State.NameIndent)) {
+                if (ImGui::InputFloat("名称缩进", &State.NameIndent)) {
                     State.Save();
                 }
 
@@ -429,115 +429,115 @@ namespace SelfTab {
                     State.Save();
                 }
 
-                if (ToggleButton("Voffset", &State.VoffsetName)) {
+                if (ToggleButton("垂直偏移", &State.VoffsetName)) {
                     State.Save();
                 }
 
                 ImGui::SameLine();
-                if (ImGui::InputFloat("Name Voffset", &State.NameVoffset)) {
+                if (ImGui::InputFloat("名称垂直偏移", &State.NameVoffset)) {
                     State.Save();
                 }
-                if (ToggleButton("Rotate", &State.RotateName)) {
+                if (ToggleButton("旋转", &State.RotateName)) {
                     State.Save();
                 }
 
                 ImGui::SameLine();
-                if (ImGui::InputFloat("Rotation Angle", &State.NameRotate)) {
+                if (ImGui::InputFloat("旋转角度", &State.NameRotate)) {
                     State.Save();
                 }
                 ImGui::Dummy(ImVec2(5, 5) * State.dpiScale);
             }
 
-            if (ToggleButton("Reveal Roles", &State.RevealRoles)) {
+            if (ToggleButton("揭露身份", &State.RevealRoles)) {
                 State.Save();
             }
             ImGui::SameLine(120.0f * State.dpiScale);
-            if (ToggleButton("Abbrv. Role", &State.AbbreviatedRoleNames))
+            if (ToggleButton("身份简写", &State.AbbreviatedRoleNames))
             {
                 State.Save();
             }
             ImGui::SameLine(240.0f * State.dpiScale);
-            if (ToggleButton("Player Colored Dots Next To Names", &State.PlayerColoredDots))
+            if (ToggleButton("名字旁带颜色点状标记", &State.PlayerColoredDots))
             {
                 State.Save();
             }
 
-            if (ToggleButton("Show Player Info in Lobby", &State.ShowPlayerInfo))
+            if (ToggleButton("在大厅显示玩家信息", &State.ShowPlayerInfo))
             {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Show Lobby Info", &State.ShowLobbyInfo))
+            if (ToggleButton("显示大厅信息", &State.ShowLobbyInfo))
             {
                 State.Save();
             }
 
-            if (ToggleButton("Hide Whitelisted Players' Info", &State.HideWhitelistedPlayerInfo))
+            if (ToggleButton("隐藏白名单玩家的信息", &State.HideWhitelistedPlayerInfo))
             {
                 State.Save();
             }
 
-            if (ToggleButton("Reveal Votes", &State.RevealVotes)) {
+            if (ToggleButton("揭露投票", &State.RevealVotes)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Reveal Anonymous Votes", &State.RevealAnonymousVotes)) {
+            if (ToggleButton("揭露匿名投票", &State.RevealAnonymousVotes)) {
                 State.Save();
                 RevealAnonymousVotes();
             }
 
-            if (ToggleButton("See Ghosts", &State.ShowGhosts)) {
+            if (ToggleButton("幽灵可见", &State.ShowGhosts)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("See Phantoms", &State.ShowPhantoms)) {
+            if (ToggleButton("幻象师可见", &State.ShowPhantoms)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("See Players In Vents", &State.ShowPlayersInVents)) {
+            if (ToggleButton("管道内的玩家可见", &State.ShowPlayersInVents)) {
                 State.Save();
             }
 
-            if (ToggleButton("See Protections", &State.ShowProtections))
+            if (ToggleButton("保护可见", &State.ShowProtections))
             {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("See Kill Cooldown", &State.ShowKillCD)) {
+            if (ToggleButton("击杀冷却可见", &State.ShowKillCD)) {
                 State.Save();
             }
 
-            if (ToggleButton("Disable Kill Animation", &State.DisableKillAnimation)) {
+            if (ToggleButton("禁用击杀动画", &State.DisableKillAnimation)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Disable Lobby Music", &State.DisableLobbyMusic)) {
+            if (ToggleButton("禁用大厅音乐", &State.DisableLobbyMusic)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Old Ping Text", &State.OldStylePingText)) State.Save();
+            if (ToggleButton("旧延迟文本", &State.OldStylePingText)) State.Save();
 
-            if (ToggleButton("Show Host", &State.ShowHost)) {
+            if (ToggleButton("显示主持人", &State.ShowHost)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Show Vote Kicks", &State.ShowVoteKicks)) {
+            if (ToggleButton("显示投票踢出", &State.ShowVoteKicks)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Show FPS", &State.ShowFps)) {
-                State.Save();
-            }
-
-            if (ToggleButton("Show Chat Cooldown", &State.ShowChatTimer)) {
-                State.Save();
-            }
-            ImGui::SameLine();
-            if (ToggleButton("Extend Chat Character Limit", &State.ExtendChatLimit)) {
+            if (ToggleButton("显示FPS", &State.ShowFps)) {
                 State.Save();
             }
 
-            if (ToggleButton("Extend Chat History", &State.ExtendChatHistory)) {
+            if (ToggleButton("显示聊天冷却", &State.ShowChatTimer)) {
+                State.Save();
+            }
+            ImGui::SameLine();
+            if (ToggleButton("扩展聊天字符限制", &State.ExtendChatLimit)) {
+                State.Save();
+            }
+
+            if (ToggleButton("扩展聊天历史记录", &State.ExtendChatHistory)) {
                 State.Save();
             }
 
@@ -550,7 +550,7 @@ namespace SelfTab {
                     State.Save();
             }*/
 
-            if (State.InMeeting && AnimatedButton("Move in Meeting"))
+            if (State.InMeeting && AnimatedButton("会议中移动"))
             {
                 if (IsHost()) State.rpcQueue.push(new RpcEndMeeting());
                 else State.rpcQueue.push(new EndMeeting());
@@ -559,11 +559,11 @@ namespace SelfTab {
         }
 
         if (openUtils) {
-            if (ToggleButton("Unlock Vents", &State.UnlockVents)) {
+            if (ToggleButton("解锁通风管道", &State.UnlockVents)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Move While in Vent & Shapeshifting", &State.MoveInVentAndShapeshift)) {
+            if (ToggleButton("在管道内或变形时允许移动", &State.MoveInVentAndShapeshift)) {
                 if (*Game::pLocalPlayer == NULL) State.Save();
                 else if (!State.MoveInVentAndShapeshift && (State.InMeeting || (*Game::pLocalPlayer)->fields.inVent)) {
                     (*Game::pLocalPlayer)->fields.moveable = false;
@@ -571,41 +571,41 @@ namespace SelfTab {
                 }
             }
             ImGui::SameLine();
-            if (ToggleButton("Always Move", &State.AlwaysMove)) {
+            if (ToggleButton("总是移动", &State.AlwaysMove)) {
                 State.Save();
             }
 
-            if (ToggleButton("No Shapeshift Animation", &State.AnimationlessShapeshift)) {
+            if (ToggleButton("无变身动画", &State.AnimationlessShapeshift)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Copy Lobby Code on Disconnect", &State.AutoCopyLobbyCode)) {
+            if (ToggleButton("断开连接时复制大厅代码", &State.AutoCopyLobbyCode)) {
                 State.Save();
             }
 
-            if (ToggleButton("NoClip", &State.NoClip)) {
+            if (ToggleButton("穿墙", &State.NoClip)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("No Seeker Animation", &State.NoSeekerAnim)) State.Save();
+            if (ToggleButton("无搜索者动画", &State.NoSeekerAnim)) State.Save();
 
-            if (ToggleButton("Kill Other Impostors", &State.KillImpostors)) {
+            if (ToggleButton("杀死其他伪装者", &State.KillImpostors)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Infinite Kill Range", &State.InfiniteKillRange)) {
+            if (ToggleButton("无限击杀距离", &State.InfiniteKillRange)) {
                 State.Save();
             }
 
-            if (ToggleButton("Better Chat Notifications", &State.BetterChatNotifications)) {
+            if (ToggleButton("更好的聊天消息", &State.BetterChatNotifications)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Better Lobby Code Input", &State.BetterLobbyCodeInput)) {
+            if (ToggleButton("更好的大厅代码输入", &State.BetterLobbyCodeInput)) {
                 State.Save();
             }
             
-            if (ToggleButton("Better Message Sounds", &State.BetterMessageSounds)) {
+            if (ToggleButton("更好的信息音效", &State.BetterMessageSounds)) {
                 State.Save();
             }
 
@@ -613,20 +613,20 @@ namespace SelfTab {
                 State.Save();
             }
             ImGui::SameLine();*/
-            if (ToggleButton("Autokill", &State.AutoKill)) {
+            if (ToggleButton("自动击杀", &State.AutoKill)) {
                 State.Save();
             }
 
-            if (ToggleButton("Do Tasks as Impostor", &State.DoTasksAsImpostor)) {
+            if (ToggleButton("伪装者允许做任务", &State.DoTasksAsImpostor)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Report Body on Murder", &State.ReportOnMurder)) {
+            if (ToggleButton("谋杀时报告尸体", &State.ReportOnMurder)) {
                 State.Save();
             }
             if (State.ReportOnMurder) {
                 ImGui::SameLine();
-                if (ToggleButton("Prevent Self-Report", &State.PreventSelfReport)) {
+                if (ToggleButton("预防自报告", &State.PreventSelfReport)) {
                     State.Save();
                 }
             }
@@ -635,45 +635,45 @@ namespace SelfTab {
                 State.Save();
             }*/
 
-            if (ToggleButton("Fake Alive", &State.FakeAlive)) {
+            if (ToggleButton("假存活", &State.FakeAlive)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (((IsHost() && IsInGame()) || !State.SafeMode) && ToggleButton(IsHost() ? "God Mode" : "Visual Protection", &State.GodMode))
+            if (((IsHost() && IsInGame()) || !State.SafeMode) && ToggleButton(IsHost() ? "上帝模式" : "视觉保护", &State.GodMode))
                 State.Save();
 
-            if (ToggleButton("(Shift/Ctrl + Right Click) to Teleport", &State.ShiftRightClickTP)) {
+            if (ToggleButton("(Shift/Ctrl + 右键点击) 传送", &State.ShiftRightClickTP)) {
                 State.Save();
             }
             if (!State.SafeMode) ImGui::SameLine();
-            if (!State.SafeMode && ToggleButton("Hold ALT to Teleport Everyone", &State.TeleportEveryone)) {
+            if (!State.SafeMode && ToggleButton("按住 ALT 传送所有人", &State.TeleportEveryone)) {
                 State.Save();
             }
-            if (ToggleButton((State.SafeMode ? "Rotate Everyone (Client-sided ONLY)" : "Rotate Everyone"), &State.RotateEveryone)) {
+            if (ToggleButton((State.SafeMode ? "旋转所有人 (仅客户端)" : "旋转所有人"), &State.RotateEveryone)) {
                 State.Save();
             }
             if (!State.SafeMode) ImGui::SameLine();
-            if (!State.SafeMode && State.RotateEveryone && ToggleButton("Server-sided Rotation", &State.RotateServerSide)) {
+            if (!State.SafeMode && State.RotateEveryone && ToggleButton("服务端旋转", &State.RotateServerSide)) {
                 State.Save();
             }
-            if (ImGui::InputFloat("Rotation Radius", &State.RotateRadius, 0.0f, 0.0f, "%.2f m")) {
-                State.Save();
-            }
-
-            if (ImGui::InputFloat("X Coordinate", &State.xCoordinate, 0.0f, 0.0f, "%.4f X")) {
+            if (ImGui::InputFloat("旋转半径", &State.RotateRadius, 0.0f, 0.0f, "%.2f m")) {
                 State.Save();
             }
 
-            if (ImGui::InputFloat("Y Coordinate", &State.yCoordinate, 0.0f, 0.0f, "%.4f Y")) {
+            if (ImGui::InputFloat("X坐标", &State.xCoordinate, 0.0f, 0.0f, "%.4f X")) {
                 State.Save();
             }
 
-            if (ToggleButton("Relative Teleport", &State.RelativeTeleport)) {
+            if (ImGui::InputFloat("Y坐标", &State.yCoordinate, 0.0f, 0.0f, "%.4f Y")) {
+                State.Save();
+            }
+
+            if (ToggleButton("相对量子传送", &State.RelativeTeleport)) {
                 State.Save();
             }
             if (IsInGame() || IsInLobby())
                 ImGui::SameLine();
-            if ((IsInGame() || IsInLobby()) && AnimatedButton("Get Current Position"))
+            if ((IsInGame() || IsInLobby()) && AnimatedButton("获得当前坐标"))
             {
                 Vector2 position = GetTrueAdjustedPosition(*Game::pLocalPlayer);
                 State.xCoordinate = position.x;
@@ -682,7 +682,7 @@ namespace SelfTab {
             if (IsInGame() || IsInLobby())
                 ImGui::SameLine();
 
-            if ((IsInGame() || IsInLobby()) && AnimatedButton("Teleport To"))
+            if ((IsInGame() || IsInLobby()) && AnimatedButton("传送至"))
             {
                 Vector2 position = GetTrueAdjustedPosition(*Game::pLocalPlayer);
                 Vector2 target = { (State.RelativeTeleport ? position.x : 0.f) + State.xCoordinate, (State.RelativeTeleport ? position.y : 0.f) + State.yCoordinate };
@@ -695,7 +695,7 @@ namespace SelfTab {
             }
             if (!State.SafeMode && (IsInGame() || IsInLobby())) {
                 ImGui::SameLine();
-                if (AnimatedButton("Teleport Everyone To"))
+                if (AnimatedButton("传送所有人至"))
                 {
                     Vector2 position = GetTrueAdjustedPosition(*Game::pLocalPlayer);
                     Vector2 target = { (State.RelativeTeleport ? position.x : 0.f) + State.xCoordinate, (State.RelativeTeleport ? position.y : 0.f) + State.yCoordinate };
@@ -710,7 +710,7 @@ namespace SelfTab {
                 }
             }
 
-            if (CustomListBoxInt("Select Role", &State.FakeRole, FAKEROLES, 100.0f * State.dpiScale)) {
+            if (CustomListBoxInt("选择身份", &State.FakeRole, FAKEROLES, 100.0f * State.dpiScale)) {
                 // for some reason, detective is 12 (0x0c) instead of 11, and viper is 18 (0x12) instead of 12
                 if (State.FakeRole == 12) State.FakeRoleId = State.FakeRole + 6;
                 else if (State.FakeRole == 11) State.FakeRoleId = State.FakeRole + 1;
@@ -718,7 +718,7 @@ namespace SelfTab {
                 State.Save();
             }
             ImGui::SameLine();
-            if ((IsHost() || !State.SafeMode) && (IsInGame() || IsInLobby()) && AnimatedButton("Set Role")) {
+            if ((IsHost() || !State.SafeMode) && (IsInGame() || IsInLobby()) && AnimatedButton("设置身份")) {
                 // State.FakeRole = std::clamp(State.FakeRole, 0, 10);
                 if (IsInGame())
                     State.rpcQueue.push(new RpcSetRole(*Game::pLocalPlayer, RoleTypes__Enum(State.FakeRoleId)));
@@ -726,7 +726,7 @@ namespace SelfTab {
                     State.lobbyRpcQueue.push(new RpcSetRole(*Game::pLocalPlayer, RoleTypes__Enum(State.FakeRoleId)));
             }
             if (IsHost() || !State.SafeMode) ImGui::SameLine();
-            if ((IsHost() || !State.SafeMode) && (IsInGame() || IsInLobby()) && AnimatedButton("Set for Everyone")) {
+            if ((IsHost() || !State.SafeMode) && (IsInGame() || IsInLobby()) && AnimatedButton("设置所有人的身份")) {
                 // State.FakeRole = std::clamp(State.FakeRole, 0, 10);
                 if (IsInGame()) {
                     for (auto player : GetAllPlayerControl())
@@ -789,7 +789,7 @@ namespace SelfTab {
                     State.lobbyRpcQueue.push(new SetRole(RoleTypes__Enum(State.FakeRoleId)));
             }
             ImGui::SameLine();
-            if (ToggleButton("Automatically Set Fake Role", &State.AutoFakeRole)) {
+            if (ToggleButton("自动设置假身份", &State.AutoFakeRole)) {
                 State.Save();
             }
             /*if (IsInLobby() || IsInGame()) {
@@ -799,11 +799,11 @@ namespace SelfTab {
             }*/
 
             if (!State.SafeMode) {
-                if (ToggleButton("Unlock Kill Button", &State.UnlockKillButton)) {
+                if (ToggleButton("解锁击杀按钮", &State.UnlockKillButton)) {
                     State.Save();
                 }
                 ImGui::SameLine();
-                if (ToggleButton("Kill While Vanished", &State.KillInVanish)) {
+                if (ToggleButton("隐身时击杀", &State.KillInVanish)) {
                     State.Save();
                 }
                 /*if (ToggleButton("Bypass Guardian Angel Protections", &State.BypassAngelProt)) {
@@ -813,85 +813,85 @@ namespace SelfTab {
         }
 
         if (openRandomizers) {
-            if (ToggleButton("Cycler", &State.Cycler)) {
+            if (ToggleButton("轮换器", &State.Cycler)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Cycle in Meeting", &State.CycleInMeeting)) {
+            if (ToggleButton("在开会时轮换", &State.CycleInMeeting)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton(State.SafeMode ? "Cycle Between Players' Outfits" : "Cycle Between Players", &State.CycleBetweenPlayers)) {
+            if (ToggleButton(State.SafeMode ? "玩家服装轮换" : "玩家轮换", &State.CycleBetweenPlayers)) {
                 State.Save();
             }
 
-            if (SteppedSliderFloat("Cycle Timer", &State.CycleTimer, 0.2f, 1.f, 0.02f, "%.2fs", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
+            if (SteppedSliderFloat("轮换计时器", &State.CycleTimer, 0.2f, 1.f, 0.02f, "%.2fs", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
                 State.PrevCycleTimer = State.CycleTimer;
                 State.CycleDuration = State.CycleTimer * 50;
             }
 
             ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
-            if (ImGui::CollapsingHeader("Cycler Options")) {
+            if (ImGui::CollapsingHeader("轮换器设置")) {
                 if (!State.SafeMode) {
-                    if (ToggleButton("Cycle Name", &State.CycleName)) {
+                    if (ToggleButton("轮换名称", &State.CycleName)) {
                         State.Save();
                     }
 
                     ImGui::SameLine(120.0f * State.dpiScale);
                 }
-                if (ToggleButton("Cycle Color", &State.RandomColor)) {
+                if (ToggleButton("轮换颜色", &State.RandomColor)) {
                     State.Save();
                 }
 
                 ImGui::SameLine(!State.SafeMode ? (240.0f * State.dpiScale) : (120.0f * State.dpiScale));
-                if (ToggleButton("Cycle Hat", &State.RandomHat)) {
+                if (ToggleButton("轮换帽子", &State.RandomHat)) {
                     State.Save();
                 }
 
-                if (ToggleButton("Cycle Visor", &State.RandomVisor)) {
+                if (ToggleButton("轮换面罩", &State.RandomVisor)) {
                     State.Save();
                 }
 
                 ImGui::SameLine(120.0f * State.dpiScale);
-                if (ToggleButton("Cycle Skin", &State.RandomSkin)) {
+                if (ToggleButton("轮换皮肤", &State.RandomSkin)) {
                     State.Save();
                 }
 
                 ImGui::SameLine(240.0f * State.dpiScale);
-                if (ToggleButton("Cycle Pet", &State.RandomPet)) {
+                if (ToggleButton("轮换宠物", &State.RandomPet)) {
                     State.Save();
                 }
 
-                if (ToggleButton("Cycle Nameplate", &State.RandomNamePlate)) {
+                if (ToggleButton("轮换铭牌", &State.RandomNamePlate)) {
                     State.Save();
                 }
 
                 if (IsHost() || !State.SafeMode) {
                     ImGui::SameLine();
-                    if (ToggleButton(IsHost() ? "Cycle for Everyone (Color ONLY)" : "Cycle for Everyone", &State.CycleForEveryone)) {
+                    if (ToggleButton(IsHost() ? "轮换所有人(仅颜色)" : "轮换所有人", &State.CycleForEveryone)) {
                         State.Save();
                     }
                 }
             }
 
 
-            if (!State.SafeMode && ImGui::CollapsingHeader("Cycler Name Options")) {
-                if (CustomListBoxInt("Cycler Name Generation", &State.cyclerNameGeneration, NAMEGENERATION, 75 * State.dpiScale)) {
+            if (!State.SafeMode && ImGui::CollapsingHeader("轮换名称选项")) {
+                if (CustomListBoxInt("轮换名称生成", &State.cyclerNameGeneration, NAMEGENERATION, 75 * State.dpiScale)) {
                     State.Save();
                 }
                 if (State.cyclerNameGeneration == 2) {
                     if (State.cyclerUserNames.empty())
-                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Username generation will fall back to word combo as you have no names in the cycler.");
+                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "由于循环器中没有姓名，用户名生成将回退到词组合方式。.");
                     static std::string newName = "";
-                    InputString("New Name", &newName, ImGuiInputTextFlags_EnterReturnsTrue);
+                    InputString("新名称", &newName, ImGuiInputTextFlags_EnterReturnsTrue);
                     ImGui::SameLine();
-                    if (AnimatedButton("Add Name")) {
+                    if (AnimatedButton("添加名称")) {
                         State.cyclerUserNames.push_back(newName);
                         State.Save();
                         newName = "";
                     }
                     if (!(IsHost() || !State.SafeMode) && !IsNameValid(newName)) {
-                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Username will be detected by anticheat. This name will be ignored.");
+                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "用户名将被反作弊系统检测到。此名称将被忽略.");
                     }
                     if (!State.cyclerUserNames.empty()) {
                         static int selectedNameIndex = 0;
@@ -900,27 +900,27 @@ namespace SelfTab {
                         for (size_t i = 0; i < State.cyclerUserNames.size(); i++) {
                             nameVector[i] = State.cyclerUserNames[i].c_str();
                         }
-                        CustomListBoxInt("Cycler Name to Delete", &selectedNameIndex, nameVector);
+                        CustomListBoxInt("要删除的轮换名称", &selectedNameIndex, nameVector);
                         ImGui::SameLine();
-                        if (AnimatedButton("Delete"))
+                        if (AnimatedButton("删除"))
                             State.cyclerUserNames.erase(State.cyclerUserNames.begin() + selectedNameIndex);
                     }
                 }
             }
 
-            if (ToggleButton("Confuser (Randomize Appearance at Will)", &State.confuser)) {
+            if (ToggleButton("混淆者（随心所欲地随机化外观）", &State.confuser)) {
                 State.Save();
             }
 
-            if (ImGui::CollapsingHeader("Confuser Options")) {
-                if ((IsInGame() || IsInLobby()) && AnimatedButton("Confuse Now")) {
+            if (ImGui::CollapsingHeader("混淆选项")) {
+                if ((IsInGame() || IsInLobby()) && AnimatedButton("立即混淆")) {
                     ControlAppearance(true);
                 }
                 if (IsInGame() || IsInLobby()) {
                     if (IsHost() || !State.SafeMode)
                         ImGui::SameLine();
                 }
-                if ((IsInGame() || IsInLobby()) && !State.SafeMode && AnimatedButton("Randomize Everyone")) {
+                if ((IsInGame() || IsInLobby()) && !State.SafeMode && AnimatedButton("随机所有人")) {
                     std::queue<RPCInterface*>* queue = nullptr;
                     if (IsInGame())
                         queue = &State.rpcQueue;
@@ -954,44 +954,44 @@ namespace SelfTab {
                     }
                 }
 
-                ImGui::Text("Confuse when:");
-                if (ToggleButton("Joining Lobby", &State.confuseOnJoin)) {
+                ImGui::Text("在...时混淆:");
+                if (ToggleButton("加入大厅", &State.confuseOnJoin)) {
                     State.Save();
                 }
                 ImGui::SameLine();
-                if (ToggleButton("Game Starts", &State.confuseOnStart)) {
+                if (ToggleButton("游戏开始", &State.confuseOnStart)) {
                     State.Save();
                 }
                 ImGui::SameLine();
-                if (ToggleButton("Killing", &State.confuseOnKill)) {
+                if (ToggleButton("击杀", &State.confuseOnKill)) {
                     State.Save();
                 }
                 ImGui::SameLine();
-                if (ToggleButton("Venting", &State.confuseOnVent)) {
+                if (ToggleButton("使用通风管道", &State.confuseOnVent)) {
                     State.Save();
                 }
                 ImGui::SameLine();
-                if (ToggleButton("Meeting", &State.confuseOnMeeting)) {
+                if (ToggleButton("开会", &State.confuseOnMeeting)) {
                     State.Save();
                 }
             }
-            if (!State.SafeMode && ImGui::CollapsingHeader("Confuser Name Options")) {
-                if (CustomListBoxInt("Confuser Name Generation", &State.confuserNameGeneration, NAMEGENERATION, 75 * State.dpiScale)) {
+            if (!State.SafeMode && ImGui::CollapsingHeader("混淆名称选项")) {
+                if (CustomListBoxInt("混响名称生成", &State.confuserNameGeneration, NAMEGENERATION, 75 * State.dpiScale)) {
                     State.Save();
                 }
                 if (State.confuserNameGeneration == 2) {
                     if (State.cyclerUserNames.empty())
-                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Username generation will fall back to word combo as you have no names in the cycler.");
+                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "由于循环器中没有姓名，用户名生成将回退到词组合方式。.");
                     static std::string newName = "";
-                    InputString("New Name ", &newName, ImGuiInputTextFlags_EnterReturnsTrue);
+                    InputString("新名称 ", &newName, ImGuiInputTextFlags_EnterReturnsTrue);
                     ImGui::SameLine();
-                    if (AnimatedButton("Add Name ")) {
+                    if (AnimatedButton("添加名称 ")) {
                         State.cyclerUserNames.push_back(newName);
                         State.Save();
                         newName = "";
                     }
                     if (!(IsHost() || !State.SafeMode) && !IsNameValid(newName)) {
-                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Username will be detected by anticheat. This name will be ignored.");
+                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "用户名将被反作弊系统检测到。此名称将被忽略.");
                     }
                     if (!State.cyclerUserNames.empty()) {
                         static int selectedNameIndex = 0;
@@ -1000,34 +1000,34 @@ namespace SelfTab {
                         for (size_t i = 0; i < State.cyclerUserNames.size(); i++) {
                             nameVector[i] = State.cyclerUserNames[i].c_str();
                         }
-                        CustomListBoxInt("Confuser Name to Delete", &selectedNameIndex, nameVector);
+                        CustomListBoxInt("要删除的混淆名称", &selectedNameIndex, nameVector);
                         ImGui::SameLine();
-                        if (AnimatedButton("Delete "))
+                        if (AnimatedButton("删除 "))
                             State.cyclerUserNames.erase(State.cyclerUserNames.begin() + selectedNameIndex);
                     }
                 }
             }
         }
         if (openTextEditor) {
-            InputString("Input", &originalText);
+            InputString("输入", &originalText);
             editedText = GetTextEditorName(originalText);
-            InputString("Output", &editedText);
+            InputString("输出", &editedText);
             ImGui::SameLine();
-            if (AnimatedButton("Copy")) ClipboardHelper_PutClipboardString(convert_to_string(editedText), NULL);
+            if (AnimatedButton("复制")) ClipboardHelper_PutClipboardString(convert_to_string(editedText), NULL);
 
-            if (ToggleButton("Italics", &italicName)) {
+            if (ToggleButton("斜体", &italicName)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Underline", &underlineName)) {
+            if (ToggleButton("下划线", &underlineName)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Strikethrough", &strikethroughName)) {
+            if (ToggleButton("删除线", &strikethroughName)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Bold", &boldName)) {
+            if (ToggleButton("粗体", &boldName)) {
                 State.Save();
             }
             ImGui::SameLine();
@@ -1035,21 +1035,21 @@ namespace SelfTab {
                 State.Save();
             }
 
-            if (ImGui::ColorEdit4("Starting Gradient Color", (float*)&nameColor1, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview)) {
+            if (ImGui::ColorEdit4("起始渐变色", (float*)&nameColor1, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ImGui::ColorEdit4("Ending Gradient Color", (float*)&nameColor2, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview)) {
+            if (ImGui::ColorEdit4("结束渐变色", (float*)&nameColor2, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Colored", &coloredName)) {
+            if (ToggleButton("颜色", &coloredName)) {
                 State.Save();
             }
 
             ImGui::Dummy(ImVec2(2, 2) * State.dpiScale);
 
-            if (ToggleButton("Font", &font)) {
+            if (ToggleButton("字体", &font)) {
                 State.Save();
             }
             ImGui::SameLine();
@@ -1057,7 +1057,7 @@ namespace SelfTab {
                 State.Save();
             }
             ImGui::Dummy(ImVec2(-5, -5) * State.dpiScale);
-            if (State.Font) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("Note: The white nickname will not be visible in the chat"));
+            if (State.Font) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("注意：白色昵称在聊天中将不可见"));
 
             ImGui::Dummy(ImVec2(2, 2) * State.dpiScale);
 
@@ -1070,22 +1070,22 @@ namespace SelfTab {
             }*/
 
             ImGui::Dummy(ImVec2(10, 10) * State.dpiScale);
-            if (ToggleButton("Size", &resizeName)) {
+            if (ToggleButton("尺寸", &resizeName)) {
                 State.Save();
             }
 
             ImGui::SameLine();
-            if (ImGui::InputFloat("Name Size", &nameSize)) {
+            if (ImGui::InputFloat("名称尺寸", &nameSize)) {
                 State.Save();
             }
 
             ImGui::Dummy(ImVec2(5, 5) * State.dpiScale);
-            if (ToggleButton("Indent", &indentName)) {
+            if (ToggleButton("缩进", &indentName)) {
                 State.Save();
             }
 
             ImGui::SameLine();
-            if (ImGui::InputFloat("Name Indent", &indentLevel)) {
+            if (ImGui::InputFloat("名称缩进", &indentLevel)) {
                 State.Save();
             }
 
@@ -1110,22 +1110,22 @@ namespace SelfTab {
             }
 
             ImGui::Dummy(ImVec2(5, 5) * State.dpiScale);
-            if (ToggleButton("Voffset", &voffsetName)) {
+            if (ToggleButton("垂直偏移", &voffsetName)) {
                 State.Save();
             }
 
             ImGui::SameLine();
-            if (ImGui::InputFloat("Name Voffset", &voffsetLevel)) {
+            if (ImGui::InputFloat("名称垂直偏移", &voffsetLevel)) {
                 State.Save();
             }
 
             ImGui::Dummy(ImVec2(5, 5) * State.dpiScale);
-            if (ToggleButton("Rotate", &rotateName)) {
+            if (ToggleButton("旋转", &rotateName)) {
                 State.Save();
             }
 
             ImGui::SameLine();
-            if (ImGui::InputFloat("Rotation Angle", &rotateAngle)) {
+            if (ImGui::InputFloat("旋转角度", &rotateAngle)) {
                 State.Save();
             }
         }
