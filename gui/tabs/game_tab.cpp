@@ -150,29 +150,29 @@ namespace GameTab {
     void Render() {
         ImGui::SameLine(100 * State.dpiScale);
         ImGui::BeginChild("###Game", ImVec2(500 * State.dpiScale, 0), true, ImGuiWindowFlags_NoBackground);
-        if (TabGroup("General", openGeneral)) {
+        if (TabGroup("通用", openGeneral)) {
             CloseOtherGroups(Groups::General);
         }
         ImGui::SameLine();
-        if (TabGroup("Chat", openChat)) {
+        if (TabGroup("聊天", openChat)) {
             CloseOtherGroups(Groups::Chat);
         }
         ImGui::SameLine();
-        if (TabGroup("Anticheat", openAnticheat)) {
+        if (TabGroup("反作弊", openAnticheat)) {
             CloseOtherGroups(Groups::Anticheat);
         }
         ImGui::SameLine();
-        if (TabGroup("Utils", openUtils)) {
+        if (TabGroup("工具", openUtils)) {
             CloseOtherGroups(Groups::Utils);
         }
         ImGui::SameLine();
-        if (TabGroup("History", openHistory)) {
+        if (TabGroup("历史", openHistory)) {
             CloseOtherGroups(Groups::History);
         }
 
         if (GameOptions().HasOptions() && (IsInGame() || IsInLobby())) {
             ImGui::SameLine();
-            if (TabGroup("Options", openOptions)) {
+            if (TabGroup("选项", openOptions)) {
                 CloseOtherGroups(Groups::Options);
             }
         }
@@ -191,25 +191,25 @@ namespace GameTab {
 
         if (openGeneral) {
             ImGui::Dummy(ImVec2(2, 2) * State.dpiScale);
-            if (SteppedSliderFloat("Player Speed Multiplier", &State.PlayerSpeed, 0.f, 10.f, 0.05f, "%.2fx", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
+            if (SteppedSliderFloat("玩家速度倍增", &State.PlayerSpeed, 0.f, 10.f, 0.05f, "%.2fx", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
                 State.PrevPlayerSpeed = State.PlayerSpeed;
             }
-            if (SteppedSliderFloat("Kill Distance", &State.KillDistance, 0.f, 20.f, 0.1f, "%.1f m", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
+            if (SteppedSliderFloat("击杀距离", &State.KillDistance, 0.f, 20.f, 0.1f, "%.1f m", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
                 State.PrevKillDistance = State.KillDistance;
             }
             /*if (GameOptions().GetGameMode() == GameModes__Enum::Normal) {
                 if (CustomListBoxInt("Task Bar Updates", &State.TaskBarUpdates, TASKBARUPDATES, 225 * State.dpiScale))
                     State.PrevTaskBarUpdates = State.TaskBarUpdates;
             }*/
-            if (ToggleButton("No Ability Cooldown", &State.NoAbilityCD)) {
+            if (ToggleButton("无技能冷却", &State.NoAbilityCD)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Multiply Speed", &State.MultiplySpeed)) {
+            if (ToggleButton("应用速度倍增", &State.MultiplySpeed)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Modify Kill Distance", &State.ModifyKillDistance)) {
+            if (ToggleButton("应用击杀距离", &State.ModifyKillDistance)) {
                 State.Save();
             }
 
@@ -225,14 +225,14 @@ namespace GameTab {
                 CustomListBoxInt(" ", &State.SelectedColorId, COLORS, 85.0f * State.dpiScale);
             }
             ImGui::SameLine();
-            if (AnimatedButton("Random Color"))
+            if (AnimatedButton("随机颜色"))
             {
                 State.SelectedColorId = GetRandomColorId();
             }
 
             if (IsInGame() || IsInLobby()) {
                 ImGui::SameLine();
-                if (AnimatedButton("Set Color"))
+                if (AnimatedButton("设置颜色"))
                 {
                     if (IsHost() || !State.SafeMode) {
                         if (IsInGame())
@@ -249,11 +249,11 @@ namespace GameTab {
                 }
             }
             ImGui::SameLine();
-            if (ToggleButton("Snipe Color", &State.SnipeColor)) {
+            if (ToggleButton("追踪颜色", &State.SnipeColor)) {
                 State.Save();
             }
 
-            if (ToggleButton("Console", &State.ShowConsole)) {
+            if (ToggleButton("控制台", &State.ShowConsole)) {
                 State.Save();
             }
 
@@ -270,13 +270,13 @@ namespace GameTab {
             }*/
 
             if (IsInGame() || IsInLobby()) ImGui::SameLine();
-            if ((IsInGame() || IsInLobby()) && AnimatedButton("Reset Appearance"))
+            if ((IsInGame() || IsInLobby()) && AnimatedButton("重置外观"))
             {
                 ControlAppearance(false);
             }
 
 
-            if (IsInGame() && (IsHost() || !State.SafeMode) && AnimatedButton("Kill Everyone")) {
+            if (IsInGame() && (IsHost() || !State.SafeMode) && AnimatedButton("杀死所有人")) {
                 for (auto player : GetAllPlayerControl()) {
                     if (IsInGame() && (IsHost() || !State.SafeMode)) {
                         if (IsInGame())
@@ -293,12 +293,12 @@ namespace GameTab {
                 }
             }
             if (IsInLobby() && !State.SafeMode) ImGui::SameLine();
-            if (IsInLobby() && !State.SafeMode && AnimatedButton("Allow Everyone to NoClip")) {
+            if (IsInLobby() && !State.SafeMode && AnimatedButton("允许所有人穿墙")) {
                 for (auto p : GetAllPlayerControl()) {
                     if (p != *Game::pLocalPlayer) State.lobbyRpcQueue.push(new RpcMurderLoop(*Game::pLocalPlayer, p, 1, true));
                 }
                 State.NoClip = true;
-                ShowHudNotification("Allowed everyone to NoClip!");
+                ShowHudNotification("以允许所有人穿墙！");
             }
             /*if (IsHost() && (IsInGame() || IsInLobby()) && AnimatedButton("Spawn Dummy")) {
                 auto outfit = GetPlayerOutfit(GetPlayerData(*Game::pLocalPlayer));
@@ -307,7 +307,7 @@ namespace GameTab {
             }*/
             if ((IsInGame() || IsInLobby()) && ((IsHost() && IsInGame()) || !State.SafeMode)) {
                 ImGui::SameLine();
-                if (AnimatedButton(IsHost() ? "Protect Everyone" : "Visual Protect Everyone")) {
+                if (AnimatedButton(IsHost() ? "保护所有人" : "视觉保护所有人")) {
                     for (auto player : GetAllPlayerControl()) {
                         uint8_t colorId = GetPlayerOutfit(GetPlayerData(player))->fields.ColorId;
                         if (IsInGame())
@@ -318,16 +318,16 @@ namespace GameTab {
                 }
             }
 
-            if (IsInGame() && ToggleButton("Disable Venting", &State.DisableVents)) {
+            if (IsInGame() && ToggleButton("禁用通风管道", &State.DisableVents)) {
                 State.Save();
             }
             if (IsInGame() && (IsHost() || !State.SafeMode)) ImGui::SameLine();
-            if (IsInGame() && (IsHost() || !State.SafeMode) && ToggleButton("Spam Report", &State.SpamReport)) {
+            if (IsInGame() && (IsHost() || !State.SafeMode) && ToggleButton("混乱报告", &State.SpamReport)) {
                 State.Save();
             }
 
             if ((IsInGame() || (IsInLobby() && State.KillInLobbies)) && (IsHost() || !State.SafeMode)) {
-                if (AnimatedButton("Kill All Crewmates")) {
+                if (AnimatedButton("杀死所有船员")) {
                     for (auto player : GetAllPlayerControl()) {
                         if (!PlayerIsImpostor(GetPlayerData(player))) {
                             if (IsInGame())
@@ -338,7 +338,7 @@ namespace GameTab {
                     }
                 }
                 ImGui::SameLine();
-                if (AnimatedButton("Kill All Impostors")) {
+                if (AnimatedButton("杀死所有伪装者")) {
                     for (auto player : GetAllPlayerControl()) {
                         if (PlayerIsImpostor(GetPlayerData(player))) {
                             if (IsInGame())
@@ -352,7 +352,7 @@ namespace GameTab {
                 }
                 if (!State.SafeMode) {
                     ImGui::SameLine();
-                    if (AnimatedButton("Suicide Crewmates")) {
+                    if (AnimatedButton("船员自杀")) {
                         for (auto player : GetAllPlayerControl()) {
                             if (!PlayerIsImpostor(GetPlayerData(player))) {
                                 if (IsInGame())
@@ -365,7 +365,7 @@ namespace GameTab {
                         }
                     }
                     ImGui::SameLine();
-                    if (AnimatedButton("Suicide Impostors")) {
+                    if (AnimatedButton("伪装者自杀")) {
                         for (auto player : GetAllPlayerControl()) {
                             if (PlayerIsImpostor(GetPlayerData(player))) {
                                 if (IsInGame())
@@ -402,9 +402,9 @@ namespace GameTab {
                     ventId = std::clamp(ventId, 0, (int)allVents.size() - 1);
 
                     ImGui::SetNextItemWidth(100 * State.dpiScale);
-                    CustomListBoxInt("Vent", &ventId, allVents);
+                    CustomListBoxInt("通风管道", &ventId, allVents);
                     ImGui::SameLine();
-                    if (AnimatedButton("Teleport All to Vent")) {
+                    if (AnimatedButton("传送所有人至通风管道")) {
                         for (auto p : GetAllPlayerControl()) {
                             State.rpcQueue.push(new RpcBootFromVent(p, (State.mapType == Settings::MapType::Hq) ? ventId + 1 : ventId)); //MiraHQ vents start from 1 instead of 0
                         }
@@ -414,53 +414,53 @@ namespace GameTab {
 
             if (IsInGame() || IsInLobby()) {
                 bool visuals = GameOptions().GetBool(BoolOptionNames__Enum::VisualTasks);
-                if (!State.SafeMode && visuals && AnimatedButton("Scan Everyone")) {
+                if (!State.SafeMode && visuals && AnimatedButton("扫描所有人")) {
                     for (auto p : GetAllPlayerControl()) {
                         if (IsInGame()) State.rpcQueue.push(new RpcForceScanner(p, true));
                         else State.lobbyRpcQueue.push(new RpcForceScanner(p, true));
                     }
                 }
                 if (!State.SafeMode && visuals) ImGui::SameLine();
-                if (!State.SafeMode && visuals && AnimatedButton("Stop Scanning Everyone")) {
+                if (!State.SafeMode && visuals && AnimatedButton("停止扫描所有人")) {
                     for (auto p : GetAllPlayerControl()) {
                         if (IsInGame()) State.rpcQueue.push(new RpcForceScanner(p, false));
                         else State.lobbyRpcQueue.push(new RpcForceScanner(p, false));
                     }
                 }
                 if (IsInGame() && !State.InMeeting && !State.SafeMode && visuals) ImGui::SameLine();
-                if (IsInGame() && !State.InMeeting && AnimatedButton("Kick Everyone From Vents")) {
+                if (IsInGame() && !State.InMeeting && AnimatedButton("踢出管道内的所有人")) {
                     State.rpcQueue.push(new RpcBootAllVents());
                 }
                 if ((IsHost() || !State.SafeMode) && State.InMeeting) ImGui::SameLine();
-                if ((IsHost() || !State.SafeMode) && State.InMeeting && AnimatedButton("End Meeting")) {
+                if ((IsHost() || !State.SafeMode) && State.InMeeting && AnimatedButton("结束会议")) {
                     State.rpcQueue.push(new RpcEndMeeting());
                     State.InMeeting = false;
                 }
 
                 if (!State.SafeMode && !IsHost()) {
-                    if (AnimatedButton("Set Name for Everyone")) {
+                    if (AnimatedButton("设置所有人的名字")) {
                         for (auto p : GetAllPlayerControl()) {
                             if (IsInGame()) State.rpcQueue.push(new RpcForceName(p, std::format("{}<size=0><{}></size>", State.hostUserName, p->fields.PlayerId)));
                             if (IsInLobby()) State.lobbyRpcQueue.push(new RpcForceName(p, std::format("{}<size=0><{}></size>", State.hostUserName, p->fields.PlayerId)));
                         }
                     }
                     ImGui::SameLine();
-                    if (ToggleButton("Force Name for Everyone", &State.ForceNameForEveryone)) {
+                    if (ToggleButton("强制设置所有人的名字", &State.ForceNameForEveryone)) {
                         State.Save();
                     }
 
-                    if (InputString("Username", &State.hostUserName)) {
+                    if (InputString("用户名", &State.hostUserName)) {
                         State.Save();
                     }
 
-                    if (AnimatedButton("Set Color for Everyone")) {
+                    if (AnimatedButton("设置所有人的颜色")) {
                         for (auto p : GetAllPlayerControl()) {
                             if (IsInGame()) State.rpcQueue.push(new RpcForceColor(p, State.HostSelectedColorId));
                             if (IsInLobby()) State.lobbyRpcQueue.push(new RpcForceColor(p, State.HostSelectedColorId));
                         }
                     }
                     ImGui::SameLine();
-                    if (ToggleButton("Force Color for Everyone", &State.ForceColorForEveryone)) {
+                    if (ToggleButton("强制设置所有人的颜色", &State.ForceColorForEveryone)) {
                         State.Save();
                     }
 
@@ -473,13 +473,13 @@ namespace GameTab {
             bool msgAllowed = IsChatValid(State.chatMessage);
             if (!msgAllowed) {
                 ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.5f, 0.f, 0.f, State.MenuThemeColor.w));
-                if (InputStringMultiline("\n\n\n\n\nChat Message", &State.chatMessage)) State.Save();
+                if (InputStringMultiline("\n\n\n\n\n聊天内容", &State.chatMessage)) State.Save();
                 ImGui::PopStyleColor();
             }
-            else if (InputStringMultiline("\n\n\n\n\nChat Message", &State.chatMessage)) State.Save();
+            else if (InputStringMultiline("\n\n\n\n\n聊天内容", &State.chatMessage)) State.Save();
             if ((IsInGame() || IsInLobby()) && State.ChatCooldown >= 3.f && IsChatValid(State.chatMessage)) {
                 ImGui::SameLine();
-                if (AnimatedButton("Send"))
+                if (AnimatedButton("发送"))
                 {
                     auto player = (!State.SafeMode && State.playerToChatAs.has_value()) ?
                         State.playerToChatAs.validate().get_PlayerControl() : *Game::pLocalPlayer;
@@ -489,7 +489,7 @@ namespace GameTab {
                 }
             }
             if ((IsInGame() || IsInLobby()) && State.ReadAndSendSickoChat) ImGui::SameLine();
-            if (State.ReadAndSendSickoChat && (IsInGame() || IsInLobby()) && AnimatedButton("Send SickoChat"))
+            if (State.ReadAndSendSickoChat && (IsInGame() || IsInLobby()) && AnimatedButton("发送 SickoChat"))
             {
                 auto player = (!State.SafeMode && State.playerToChatAs.has_value()) ?
                     State.playerToChatAs.validate().get_PlayerControl() : *Game::pLocalPlayer;
@@ -501,28 +501,28 @@ namespace GameTab {
                 }
             }
 
-            if (ToggleButton("Spam", &State.ChatSpam))
+            if (ToggleButton("开启轰炸", &State.ChatSpam))
             {
                 if (State.BrainrotEveryone) State.BrainrotEveryone = false;
                 if (State.RizzUpEveryone) State.RizzUpEveryone = false;
                 State.Save();
             }
             if (((IsHost() && IsInGame()) || !State.SafeMode) && State.ChatSpamMode) ImGui::SameLine();
-            if ((IsHost() || !State.SafeMode) && State.ChatSpamMode && ToggleButton("Spam by Everyone", &State.ChatSpamEveryone))
+            if ((IsHost() || !State.SafeMode) && State.ChatSpamMode && ToggleButton("全员参与轰炸", &State.ChatSpamEveryone))
             {
                 State.Save();
             }
             if (IsHost() || !State.SafeMode) {
-                if (CustomListBoxInt("Chat Spam Mode", &State.ChatSpamMode,
-                    { State.SafeMode ? "With Message (Self-Spam ONLY)" : "With Message", "Blank Chat", State.SafeMode ? "Self Message + Blank Chat" : "Message + Blank Chat" })) State.Save();
+                if (CustomListBoxInt("文本轰炸", &State.ChatSpamMode,
+                    { State.SafeMode ? "仅带文本(仅自己轰炸)" : "带文本", "空白聊天", State.SafeMode ? "自身文本 + 空白聊天" : "文本 + 空白聊天" })) State.Save();
             }
 
-            if (std::find(State.ChatPresets.begin(), State.ChatPresets.end(), State.chatMessage) == State.ChatPresets.end() && AnimatedButton("Add Message as Preset")) {
+            if (std::find(State.ChatPresets.begin(), State.ChatPresets.end(), State.chatMessage) == State.ChatPresets.end() && AnimatedButton("添加消息到预设")) {
                 State.ChatPresets.push_back(State.chatMessage);
                 State.Save();
             }
             if (!(IsHost() || !State.SafeMode) && State.chatMessage.size() > 120) {
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Message will be detected by anticheat.");
+                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "消息将被反作弊系统检测到.");
             }
             if (!State.ChatPresets.empty()) {
                 static int selectedPresetIndex = 0;
@@ -531,43 +531,43 @@ namespace GameTab {
                 for (size_t i = 0; i < State.ChatPresets.size(); i++) {
                     presetVector[i] = State.ChatPresets[i].c_str();
                 }
-                CustomListBoxInt("Message to Send/Remove", &selectedPresetIndex, presetVector);
+                CustomListBoxInt("待发送/删除的消息", &selectedPresetIndex, presetVector);
                 auto msg = State.ChatPresets[selectedPresetIndex];
-                if (AnimatedButton("Set as Chat Message"))
+                if (AnimatedButton("设置为聊天消息"))
                 {
                     State.chatMessage = msg;
                 }
                 ImGui::SameLine();
-                if (AnimatedButton("Remove"))
+                if (AnimatedButton("移除"))
                     State.ChatPresets.erase(State.ChatPresets.begin() + selectedPresetIndex);
             }
         }
 
         if (openAnticheat) {
-            if (ToggleButton("Enable Anticheat (SMAC)", &State.Enable_SMAC)) State.Save();
-            if (IsHost()) CustomListBoxInt("Host Punishment ", &State.SMAC_HostPunishment, SMAC_HOST_PUNISHMENTS, 85.0f * State.dpiScale);
-            else CustomListBoxInt("Regular Punishment", &State.SMAC_Punishment, SMAC_PUNISHMENTS, 85.0f * State.dpiScale);
+            if (ToggleButton("启用反作弊 (SMAC)", &State.Enable_SMAC)) State.Save();
+            if (IsHost()) CustomListBoxInt("主持人惩罚 ", &State.SMAC_HostPunishment, SMAC_HOST_PUNISHMENTS, 85.0f * State.dpiScale);
+            else CustomListBoxInt("普通惩罚", &State.SMAC_Punishment, SMAC_PUNISHMENTS, 85.0f * State.dpiScale);
 
-            if (ToggleButton("Add Cheaters to Blacklist", &State.SMAC_AddToBlacklist)) State.Save();
+            if (ToggleButton("添加作弊者到黑名单", &State.SMAC_AddToBlacklist)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Punish Blacklist", &State.SMAC_PunishBlacklist)) State.Save();
+            if (ToggleButton("惩罚黑名单", &State.SMAC_PunishBlacklist)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Ignore Whitelist", &State.SMAC_IgnoreWhitelist)) State.Save();
+            if (ToggleButton("忽略白名单", &State.SMAC_IgnoreWhitelist)) State.Save();
             if (State.SMAC_PunishBlacklist) {
-                ImGui::Text("Blacklist");
+                ImGui::Text("黑名单");
                 if (State.BlacklistFriendCodes.empty())
-                    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "No users in blacklist!");
+                    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "没有用户在黑名单内！");
                 else {
                     ImGui::SameLine(0.f, 0.f);
-                    ImGui::Text(" (%d Users Blacklisted)", State.BlacklistFriendCodes.size());
+                    ImGui::Text(" (%d 已添加进黑名单)", State.BlacklistFriendCodes.size());
                 }
                 static std::string newBFriendCode = "";
                 bool isInBlacklistAlready = std::find(State.BlacklistFriendCodes.begin(), State.BlacklistFriendCodes.end(), newBFriendCode) != State.BlacklistFriendCodes.end();
-                InputString("New Friend Code", &newBFriendCode, ImGuiInputTextFlags_EnterReturnsTrue);
+                InputString("新好友代码", &newBFriendCode, ImGuiInputTextFlags_EnterReturnsTrue);
                 if (isInBlacklistAlready)
-                    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "This user is already blacklisted!");
+                    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "此用户已在黑名单内!");
                 if (newBFriendCode != "" && !isInBlacklistAlready) ImGui::SameLine();
-                if (newBFriendCode != "" && !isInBlacklistAlready && AnimatedButton("Add")) {
+                if (newBFriendCode != "" && !isInBlacklistAlready && AnimatedButton("添加")) {
                     State.BlacklistFriendCodes.push_back(newBFriendCode);
                     State.Save();
                     newBFriendCode = "";
@@ -580,27 +580,27 @@ namespace GameTab {
                     for (size_t i = 0; i < State.BlacklistFriendCodes.size(); i++) {
                         bCodeVector[i] = State.BlacklistFriendCodes[i].c_str();
                     }
-                    CustomListBoxInt("Player to Delete", &selectedBCodeIndex, bCodeVector);
+                    CustomListBoxInt("要删除的玩家", &selectedBCodeIndex, bCodeVector);
                     ImGui::SameLine();
-                    if (AnimatedButton("Delete"))
+                    if (AnimatedButton("删除"))
                         State.BlacklistFriendCodes.erase(State.BlacklistFriendCodes.begin() + selectedBCodeIndex);
                 }
             }
             if (State.SMAC_IgnoreWhitelist) {
-                ImGui::Text("Whitelist");
+                ImGui::Text("白名单");
                 if (State.WhitelistFriendCodes.empty())
-                    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "No users in whitelist!");
+                    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "没有用户在白名单内!");
                 else {
                     ImGui::SameLine(0.f, 0.f);
-                    ImGui::Text(" (%d Users Whitelisted)", State.WhitelistFriendCodes.size());
+                    ImGui::Text(" (%d 已添加进白名单)", State.WhitelistFriendCodes.size());
                 }
                 static std::string newWFriendCode = "";
                 static bool isInWhitelistAlready = std::find(State.WhitelistFriendCodes.begin(), State.WhitelistFriendCodes.end(), newWFriendCode) != State.WhitelistFriendCodes.end();
-                InputString("New Friend Code\n", &newWFriendCode, ImGuiInputTextFlags_EnterReturnsTrue);
+                InputString("新好友代码\n", &newWFriendCode, ImGuiInputTextFlags_EnterReturnsTrue);
                 if (isInWhitelistAlready)
-                    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "This user is already whitelisted!");
+                    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "此用户已在白名单内!");
                 if (newWFriendCode != "" && !isInWhitelistAlready) ImGui::SameLine();
-                if (newWFriendCode != "" && !isInWhitelistAlready && AnimatedButton("Add\n")) {
+                if (newWFriendCode != "" && !isInWhitelistAlready && AnimatedButton("添加\n")) {
                     State.WhitelistFriendCodes.push_back(newWFriendCode);
                     State.Save();
                     newWFriendCode = "";
@@ -613,63 +613,63 @@ namespace GameTab {
                     for (size_t i = 0; i < State.WhitelistFriendCodes.size(); i++) {
                         wCodeVector[i] = State.WhitelistFriendCodes[i].c_str();
                     }
-                    CustomListBoxInt("Player to Delete\n", &selectedWCodeIndex, wCodeVector);
+                    CustomListBoxInt("要删除的玩家\n", &selectedWCodeIndex, wCodeVector);
                     ImGui::SameLine();
-                    if (AnimatedButton("Delete\n"))
+                    if (AnimatedButton("删除"))
                         State.WhitelistFriendCodes.erase(State.WhitelistFriendCodes.begin() + selectedWCodeIndex);
                 }
             }
-            ImGui::Text("Detect Actions:");
-            if (ToggleButton("AUM/KillNetwork Usage", &State.SMAC_CheckAUM)) State.Save();
+            ImGui::Text("检测操作:");
+            if (ToggleButton("使用 AUM/KillNetwork", &State.SMAC_CheckAUM)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("SickoMenu Usage", &State.SMAC_CheckSicko)) State.Save();
+            if (ToggleButton("使用 SickoMenu", &State.SMAC_CheckSicko)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Abnormal Names", &State.SMAC_CheckBadNames)) State.Save();
+            if (ToggleButton("异常名称", &State.SMAC_CheckBadNames)) State.Save();
 
-            if (ToggleButton("Abnormal Set Color", &State.SMAC_CheckColor)) State.Save();
+            if (ToggleButton("异常设置颜色", &State.SMAC_CheckColor)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Abnormal Set Cosmetics", &State.SMAC_CheckCosmetics)) State.Save();
+            if (ToggleButton("异常设置服饰", &State.SMAC_CheckCosmetics)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Abnormal Chat Note", &State.SMAC_CheckChatNote)) State.Save();
+            if (ToggleButton("异常聊天", &State.SMAC_CheckChatNote)) State.Save();
 
-            if (ToggleButton("Abnormal Scanner", &State.SMAC_CheckScanner)) State.Save();
+            if (ToggleButton("异常扫描器", &State.SMAC_CheckScanner)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Abnormal Animation", &State.SMAC_CheckAnimation)) State.Save();
+            if (ToggleButton("异常动画", &State.SMAC_CheckAnimation)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Setting Tasks", &State.SMAC_CheckTasks)) State.Save();
+            if (ToggleButton("设置任务", &State.SMAC_CheckTasks)) State.Save();
 
-            if (ToggleButton("Abnormal Murders", &State.SMAC_CheckMurder)) State.Save();
+            if (ToggleButton("异常击杀", &State.SMAC_CheckMurder)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Abnormal Shapeshift", &State.SMAC_CheckShapeshift)) State.Save();
+            if (ToggleButton("异常变形", &State.SMAC_CheckShapeshift)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Abnormal Vanish", &State.SMAC_CheckVanish)) State.Save();
+            if (ToggleButton("异常隐身", &State.SMAC_CheckVanish)) State.Save();
 
 
-            if (ToggleButton("Abnormal Meetings/Body Reports", &State.SMAC_CheckReport)) State.Save();
+            if (ToggleButton("异常会议/尸体报告", &State.SMAC_CheckReport)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Abnormal Venting", &State.SMAC_CheckVent)) State.Save();
+            if (ToggleButton("异常通风管道", &State.SMAC_CheckVent)) State.Save();
             ImGui::SameLine();
            
-            if (ToggleButton("Abnormal Chat", &State.SMAC_CheckChat)) State.Save();
+            if (ToggleButton("异常聊天", &State.SMAC_CheckChat)) State.Save();
 
-            if (ToggleButton("Abnormal Task Completion", &State.SMAC_CheckTaskCompletion)) State.Save();
+            if (ToggleButton("异常任务完成", &State.SMAC_CheckTaskCompletion)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Abnormal Sabotages", &State.SMAC_CheckSabotage)) State.Save();
-            if (ToggleButton("Abnormal Player Levels (0 to ignore)", &State.SMAC_CheckLevel)) State.Save();
-            if (State.SMAC_CheckLevel && ImGui::InputInt("Level >=", &State.SMAC_HighLevel)) {
+            if (ToggleButton("异常破坏", &State.SMAC_CheckSabotage)) State.Save();
+            if (ToggleButton("异常玩家等级 (0表示忽略)", &State.SMAC_CheckLevel)) State.Save();
+            if (State.SMAC_CheckLevel && ImGui::InputInt("等级 >=", &State.SMAC_HighLevel)) {
                 State.Save();
             }
-            if (State.SMAC_CheckLevel && ImGui::InputInt("Level <=", &State.SMAC_LowLevel)) {
+            if (State.SMAC_CheckLevel && ImGui::InputInt("等级 <=", &State.SMAC_LowLevel)) {
                 State.Save();
             }
-            if (ToggleButton("Blocked Words", &State.SMAC_CheckBadWords)) State.Save();
+            if (ToggleButton("屏蔽词汇", &State.SMAC_CheckBadWords)) State.Save();
             if (State.SMAC_CheckBadWords) {
                 if (State.SMAC_BadWords.empty())
-                    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "No bad words added!");
+                    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "无不当词汇添加!");
                 static std::string newWord = "";
-                InputString("New Word", &newWord, ImGuiInputTextFlags_EnterReturnsTrue);
+                InputString("新词汇", &newWord, ImGuiInputTextFlags_EnterReturnsTrue);
                 ImGui::SameLine();
-                if (AnimatedButton("Add Word")) {
+                if (AnimatedButton("添加词汇")) {
                     State.SMAC_BadWords.push_back(newWord);
                     State.Save();
                     newWord = "";
@@ -681,9 +681,9 @@ namespace GameTab {
                     for (size_t i = 0; i < State.SMAC_BadWords.size(); i++) {
                         wordVector[i] = State.SMAC_BadWords[i].c_str();
                     }
-                    CustomListBoxInt("Word to Remove", &selectedWordIndex, wordVector);
+                    CustomListBoxInt("要移除的词汇", &selectedWordIndex, wordVector);
                     ImGui::SameLine();
-                    if (AnimatedButton("Remove"))
+                    if (AnimatedButton("移除"))
                         State.SMAC_BadWords.erase(State.SMAC_BadWords.begin() + selectedWordIndex);
                 }
             }
@@ -693,21 +693,21 @@ namespace GameTab {
             /*if (ToggleButton("Ignore Whitelisted Players [Exploits]", &State.Destruct_IgnoreWhitelist)) {
                 State.Save();
             }*/
-            if (ToggleButton("Ignore Whitelisted Players [Ban/Kick]", &State.Ban_IgnoreWhitelist)) {
+            if (ToggleButton("忽略白名单玩家的踢出/封禁", &State.Ban_IgnoreWhitelist)) {
                 State.Save();
             }
-            if (IsInLobby() && ToggleButton("Attempt to Crash Lobby", &State.CrashSpamReport)) {
+            if (IsInLobby() && ToggleButton("尝试崩溃大厅", &State.CrashSpamReport)) {
                 State.Save();
             }
-            if (State.CrashSpamReport) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("When the game starts, the lobby is destroyed"));
+            if (State.CrashSpamReport) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("当游戏开始时，大厅已被摧毁。"));
             if (State.AprilFoolsMode) {
-                ImGui::TextColored(ImVec4(0.79f, 0.03f, 1.f, 1.f), State.DiddyPartyMode ? "Diddy Party Mode" : (IsChatCensored() || IsStreamerMode() ? "F***son Mode" : "Fuckson Mode"));
+                ImGui::TextColored(ImVec4(0.79f, 0.03f, 1.f, 1.f), State.DiddyPartyMode ? "Diddy 派对模式" : (IsChatCensored() || IsStreamerMode() ? "F***son 模式" : "Fuckson 模式"));
                 if (ToggleButton("Mog Everyone [Sigma]", &State.BrainrotEveryone)) {
                     if (State.ChatSpam) State.ChatSpam = false;
                     if (State.RizzUpEveryone) State.RizzUpEveryone = false;
                     State.Save();
                 }
-                if (/*State.DiddyPartyMode && */ToggleButton("Rizz Up Everyone [Skibidi]", &State.RizzUpEveryone)) {
+                if (/*State.DiddyPartyMode && */ToggleButton("让每个人变得更强 [Skibidi]", &State.RizzUpEveryone)) {
                     if (State.ChatSpam) State.ChatSpam = false;
                     if (State.BrainrotEveryone) State.BrainrotEveryone = false;
                     State.Save();
@@ -716,94 +716,94 @@ namespace GameTab {
             if (IsHost()) {
                 ImGui::Dummy(ImVec2(5, 5) * State.dpiScale);
                 if (((IsInGame() && Object_1_IsNotNull((Object_1*)*Game::pShipStatus)) || (IsInLobby() && Object_1_IsNotNull((Object_1*)*Game::pLobbyBehaviour)))
-                    && AnimatedButton(IsInLobby() ? "Remove Lobby" : "Remove Map")) {
+                    && AnimatedButton(IsInLobby() ? "移除大厅" : "移除地图")) {
                     State.taskRpcQueue.push(new DestroyMap());
                 }
                 ImGui::Dummy(ImVec2(7, 7) * State.dpiScale);
-                if (ToggleButton("Ban Everyone", &State.BanEveryone)) {
+                if (ToggleButton("封禁所有人", &State.BanEveryone)) {
                     State.Save();
                 }
-                if (ToggleButton("Kick Everyone", &State.KickEveryone)) {
+                if (ToggleButton("踢出所有人", &State.KickEveryone)) {
                     State.Save();
                 }
-                if (SteppedSliderFloat("Kick/Ban Delay", &State.AutoPunishDelay, 0.f, 10.f, 0.1f, "%.1f", ImGuiSliderFlags_NoInput)) {
+                if (SteppedSliderFloat("踢出/封禁 延迟", &State.AutoPunishDelay, 0.f, 10.f, 0.1f, "%.1f", ImGuiSliderFlags_NoInput)) {
                     State.Save();
                 }
                 ImGui::Dummy(ImVec2(7, 7) * State.dpiScale);
-                const char* buttonLabel = IsInGame() ? "Kick AFK Players" : "Kick AFK Players [GAME ONLY]";
+                const char* buttonLabel = IsInGame() ? "提出挂机玩家" : "提出挂机玩家 (仅游戏中)";
                 if (ToggleButton(buttonLabel, &State.KickAFK)) {
                     State.Save();
                 }
                 if (State.KickAFK) ImGui::SameLine();
-                if (State.KickAFK && ToggleButton("Enable AFK Notifications", &State.NotificationsAFK)) {
+                if (State.KickAFK && ToggleButton("启用挂机提示", &State.NotificationsAFK)) {
                     State.Save();
                 }
-                if (State.KickAFK && ToggleButton("AFK - Second Chance", &State.SecondChance)) {
+                if (State.KickAFK && ToggleButton("挂机 - 第二次机会", &State.SecondChance)) {
                     State.Save();
                 }
-                std::string header = "Anti AFK ~ Advanced Options";
+                std::string header = "反挂机 ~ 高级选项";
                 if (!IsInGame()) {
-                    header += " [GAME-MATCH]";
+                    header += " [游戏比赛]";
                 }
                 ImGui::Dummy(ImVec2(5, 5) * State.dpiScale);
                 if (State.KickAFK && ImGui::CollapsingHeader(header.c_str()))
                 {
-                    if (SteppedSliderFloat("Time Before Kick", &State.TimerAFK, 40.f, 350.f, 1.f, "%.0f", ImGuiSliderFlags_NoInput)) {
+                    if (SteppedSliderFloat("踢出前的时间", &State.TimerAFK, 40.f, 350.f, 1.f, "%.0f", ImGuiSliderFlags_NoInput)) {
                         State.Save();
                     }
-                    if (State.SecondChance && SteppedSliderFloat("Extra Time", &State.AddExtraTime, 15.f, 120.f, 1.f, "%.0f", ImGuiSliderFlags_NoInput)) {
+                    if (State.SecondChance && SteppedSliderFloat("更多时间", &State.AddExtraTime, 15.f, 120.f, 1.f, "%.0f", ImGuiSliderFlags_NoInput)) {
                         State.Save();
                     }
-                    if (State.SecondChance && SteppedSliderFloat("Min Time Before Adding", &State.ExtraTimeThreshold, 5.f, 60.f, 1.f, "%.0f", ImGuiSliderFlags_NoInput)) {
+                    if (State.SecondChance && SteppedSliderFloat("添加前的剩余时间", &State.ExtraTimeThreshold, 5.f, 60.f, 1.f, "%.0f", ImGuiSliderFlags_NoInput)) {
                         State.Save();
                     }
-                    if (State.NotificationsAFK && SteppedSliderFloat("Warn-AFK Notifications Time", &State.NotificationTimeWarn, 5.f, 60.f, 1.f, "%.0f", ImGuiSliderFlags_NoInput)) {
+                    if (State.NotificationsAFK && SteppedSliderFloat("挂机通知时间", &State.NotificationTimeWarn, 5.f, 60.f, 1.f, "%.0f", ImGuiSliderFlags_NoInput)) {
                         State.Save();
                     }
                 }
                 ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
                 ImGui::Separator();
                 ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
-                if (ToggleButton("Whitelisted Players Only", &State.KickByWhitelist)) {
+                if (ToggleButton("仅白名单玩家", &State.KickByWhitelist)) {
                     State.Save();
                 }
                 if (State.KickByWhitelist) ImGui::SameLine();
-                if (State.KickByWhitelist && ToggleButton("Enable WL Notifications", &State.WhitelistNotifications)) {
+                if (State.KickByWhitelist && ToggleButton("启用 WL 通知", &State.WhitelistNotifications)) {
                     State.Save();
                 }
                 ImGui::Dummy(ImVec2(15, 15) * State.dpiScale);
-                if (ToggleButton("Ban Auto-Rejoin Players", &State.BanLeavers)) {
+                if (ToggleButton("封禁自动重连玩家", &State.BanLeavers)) {
                     State.Save();
                 }
                 ImGui::Dummy(ImVec2(5, 5) * State.dpiScale);
-                if (ImGui::CollapsingHeader("BA-RP ~ Advanced Options"))
+                if (ImGui::CollapsingHeader("BA-RP ~ 高级选项"))
                 {
-                    if (SteppedSliderFloat("Maximum Rejoins", &State.LeaveCount, 1.f, 15.f, 1.f, "%.0f", ImGuiSliderFlags_NoInput)) {
+                    if (SteppedSliderFloat("最多重连", &State.LeaveCount, 1.f, 15.f, 1.f, "%.0f", ImGuiSliderFlags_NoInput)) {
                         State.Save();
                     }
                     ImGui::Dummy(ImVec2(5, 5) * State.dpiScale);
-                    if (ToggleButton("Blacklist Auto-Rejoin Players", &State.BL_AutoLeavers)) {
+                    if (ToggleButton("自动重连黑名单玩家", &State.BL_AutoLeavers)) {
                         State.Save();
                     }
                 }
                 ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
                 ImGui::Separator();
                 ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
-                if (ToggleButton("Warn/Kick By Name-Checker", &State.KickByLockedName)) {
+                if (ToggleButton("按名字检查警告/踢出", &State.KickByLockedName)) {
                     State.Save();
                 }
                 if (State.KickByLockedName) ImGui::SameLine();
-                if (State.KickByLockedName && ToggleButton("Show Player Data Notifications", &State.ShowPDataByNC)) {
+                if (State.KickByLockedName && ToggleButton("显示玩家数据通知", &State.ShowPDataByNC)) {
                     State.Save();
                 }
                 if (State.KickByLockedName) {
-                    ImGui::Text("Blocked Names");
+                    ImGui::Text("被屏蔽的名称");
                     if (State.LockedNames.empty())
-                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "No users in Name-Checker!");
+                        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "名称检查器中没有用户!");
                     static std::string newName = "";
-                    InputString("New Nickname", &newName, ImGuiInputTextFlags_EnterReturnsTrue);
+                    InputString("新昵称", &newName, ImGuiInputTextFlags_EnterReturnsTrue);
                     if (newName != "") ImGui::SameLine();
-                    if (newName != "" && AnimatedButton("Add")) {
+                    if (newName != "" && AnimatedButton("添加")) {
                         newName = strToLower(newName);
                         State.LockedNames.push_back(newName);
                         State.Save();
@@ -817,28 +817,28 @@ namespace GameTab {
                         for (size_t i = 0; i < State.LockedNames.size(); i++) {
                             bNameVector[i] = State.LockedNames[i].c_str();
                         }
-                        CustomListBoxInt("Nickname to Delete", &selectedName, bNameVector);
+                        CustomListBoxInt("要删除的昵称", &selectedName, bNameVector);
                         ImGui::SameLine();
-                        if (AnimatedButton("Delete"))
+                        if (AnimatedButton("删除"))
                             State.LockedNames.erase(State.LockedNames.begin() + selectedName);
                     }
                 }
                 ImGui::Dummy(ImVec2(15, 15) * State.dpiScale);
                 ImGui::BeginGroup();
-                if (ToggleButton("Kick Warned Players", &State.KickWarned)) {
+                if (ToggleButton("踢出警告玩家", &State.KickWarned)) {
                     State.Save();
                 }
-                if (ToggleButton("Ban Warned Players", &State.BanWarned)) {
+                if (ToggleButton("封禁警告玩家", &State.BanWarned)) {
                     State.Save();
                 }
-                if (ToggleButton("Notify Warned Player", &State.NotifyWarned)) {
+                if (ToggleButton("通知警告玩家", &State.NotifyWarned)) {
                     State.Save();
                 }
 
                 ImGui::Dummy(ImVec2(5, 5) * State.dpiScale);
 
                 ImGui::PushItemWidth(80);
-                ImGui::InputInt("Max Warns", &State.MaxWarns);
+                ImGui::InputInt("最大警告", &State.MaxWarns);
                 if (State.MaxWarns < 1)
                     State.MaxWarns = 1;
                 ImGui::PopItemWidth();
@@ -848,13 +848,13 @@ namespace GameTab {
             ImGui::BeginGroup();
             ImGui::PushItemWidth(150);
             if (!IsHost()) ImGui::Dummy(ImVec2(5, 5) * State.dpiScale);
-            ImGui::Combo("Warn View Mode", &selectedWarnView, warnViewModes, WarnView_COUNT);
+            ImGui::Combo("警告视图模式", &selectedWarnView, warnViewModes, WarnView_COUNT);
             ImGui::PopItemWidth();
 
 
             if (selectedWarnView == WarnView_List) {
                 if (!State.WarnedFriendCodes.empty()) {
-                    ImGui::Text("Warned Players");
+                    ImGui::Text("已警告玩家");
 
                     std::string localFC = "";
                     if (Game::pLocalPlayer && *Game::pLocalPlayer) {
@@ -880,11 +880,11 @@ namespace GameTab {
                         for (const auto& entry : warnedList) warnedCStrs.push_back(entry.c_str());
 
                         ImGui::PushItemWidth(200);
-                        CustomListBoxInt("Warned FriendCodes", &selectedWarned, warnedCStrs);
+                        CustomListBoxInt("已警告好友代码", &selectedWarned, warnedCStrs);
                         ImGui::PopItemWidth();
 
                         ImGui::SameLine();
-                        if (ImGui::Button("Remove")) {
+                        if (ImGui::Button("移除")) {
                             if (selectedWarned >= 0 && selectedWarned < (int)fcKeys.size()) {
                                 std::string fc = fcKeys[selectedWarned];
                                 State.WarnedFriendCodes.erase(fc);
@@ -898,7 +898,7 @@ namespace GameTab {
                         auto& warnReasons = State.WarnReasons[selectedFc];
 
                         if (!warnReasons.empty()) {
-                            ImGui::Text("Warn Reasons:");
+                            ImGui::Text("警告原因:");
 
                             static int selectedReason = 0;
                             selectedReason = std::clamp(selectedReason, 0, (int)warnReasons.size() - 1);
@@ -917,7 +917,7 @@ namespace GameTab {
                             ImGui::PopItemWidth();
 
                             ImGui::SameLine();
-                            if (ImGui::Button("Delete")) {
+                            if (ImGui::Button("移除")) {
                                 if (selectedReason >= 0 && selectedReason < (int)warnReasons.size()) {
                                     warnReasons.erase(warnReasons.begin() + selectedReason);
                                     selectedReason = 0;
@@ -934,7 +934,7 @@ namespace GameTab {
                         }
                     }
                     else {
-                        ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "No warned players.");
+                        ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "没有被警告的玩家");
                     }
                 }
             }
@@ -944,10 +944,10 @@ namespace GameTab {
 
                 ImGui::PushItemWidth(200);
                 InputString("FriendCode##warn", &friendCodeToWarn);
-                InputString("Reason", &warnReason);
+                InputString("原因", &warnReason);
                 ImGui::PopItemWidth();
 
-                if (ImGui::Button("Submit Warn") && !friendCodeToWarn.empty() && !warnReason.empty()) {
+                if (ImGui::Button("提交警告") && !friendCodeToWarn.empty() && !warnReason.empty()) {
                     State.WarnedFriendCodes[friendCodeToWarn]++;
                     State.WarnReasons[friendCodeToWarn].push_back(warnReason);
                     State.Save();
@@ -963,24 +963,24 @@ namespace GameTab {
             ImGui::Separator();
             ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
 
-            if (ToggleButton("Enable Temp-Ban System", &State.TempBanEnabled)) {
+            if (ToggleButton("启用临时封禁系统", &State.TempBanEnabled)) {
                 State.Save();
             }
-            if (State.TempBanEnabled && ImGui::CollapsingHeader("Temp-Ban System")) {
+            if (State.TempBanEnabled && ImGui::CollapsingHeader("临时封禁系统")) {
                 static std::string friendCodeToTempBan;
                 static int banDays = 0, banHours = 0, banMinutes = 0, banSeconds = 0;
 
                 ImGui::BeginGroup();
                 ImGui::PushItemWidth(150);
-                InputString("Friend Code", &friendCodeToTempBan);
+                InputString("好友代码", &friendCodeToTempBan);
 
-                ImGui::InputInt("Days", &banDays);     banDays = std::max<int>(0, banDays);
-                ImGui::InputInt("Hours", &banHours);   banHours = std::clamp(banHours, 0, 23);
-                ImGui::InputInt("Minutes", &banMinutes); banMinutes = std::clamp(banMinutes, 0, 59);
-                ImGui::InputInt("Seconds", &banSeconds); banSeconds = std::clamp(banSeconds, 0, 59);
+                ImGui::InputInt("日", &banDays);     banDays = std::max<int>(0, banDays);
+                ImGui::InputInt("小时", &banHours);   banHours = std::clamp(banHours, 0, 23);
+                ImGui::InputInt("分钟", &banMinutes); banMinutes = std::clamp(banMinutes, 0, 59);
+                ImGui::InputInt("秒", &banSeconds); banSeconds = std::clamp(banSeconds, 0, 59);
                 ImGui::PopItemWidth();
 
-                if (!friendCodeToTempBan.empty() && ImGui::Button("Submit Temp-Ban")) {
+                if (!friendCodeToTempBan.empty() && ImGui::Button("提交临时封禁")) {
                     std::string selfFC;
                     if (Game::pLocalPlayer && *Game::pLocalPlayer) {
                         selfFC = convert_from_string((*Game::pLocalPlayer)->fields.FriendCode);
@@ -1024,11 +1024,11 @@ namespace GameTab {
                 ImGui::SameLine();
 
                 ImGui::BeginGroup();
-                ImGui::Text("Temp-Banned Players:");
+                ImGui::Text("临时封禁玩家:");
 
                 auto now = std::chrono::system_clock::now();
                 if (State.TempBannedFCs.empty()) {
-                    ImGui::TextColored(ImVec4(1, 0, 0, 1), "No players are temporarily banned.");
+                    ImGui::TextColored(ImVec4(1, 0, 0, 1), "没有玩家被临时封禁.");
                 }
                 else {
                     static int selectedTempBanIndex = 0;
@@ -1054,9 +1054,9 @@ namespace GameTab {
                     for (auto& s : displayList) displayCStrs.push_back(s.c_str());
 
                     selectedTempBanIndex = std::clamp(selectedTempBanIndex, 0, (int)displayCStrs.size() - 1);
-                    CustomListBoxInt("Select TempBan", &selectedTempBanIndex, displayCStrs);
+                    CustomListBoxInt("选择临时封禁", &selectedTempBanIndex, displayCStrs);
 
-                    if (ImGui::Button("Unban")) {
+                    if (ImGui::Button("解封")) {
                         if (selectedTempBanIndex >= 0 && selectedTempBanIndex < (int)friendCodeList.size()) {
                             std::string targetFC = friendCodeList[selectedTempBanIndex];
                             State.TempBannedFCs.erase(targetFC);
@@ -1066,21 +1066,21 @@ namespace GameTab {
                 }
 
                 ImGui::Dummy(ImVec2(10, 10) * State.dpiScale);
-                ImGui::TextColored(ImVec4(1, 0, 0, 1), "Note: Temporary Ban Features\nWorks as Host Only!");
+                ImGui::TextColored(ImVec4(1, 0, 0, 1), "注意: 临时封禁仅主持人可用");
                 ImGui::EndGroup();
             }
         }
 
        if (openHistory) {
-            ImGui::Text("Last 100 players:");
+            ImGui::Text("最后100位玩家:");
 
             static std::string historySearchBuf = "";
 ImGui::SetNextItemWidth(200);
 InputString("##HistorySearch", &historySearchBuf);
             ImGui::SameLine();
-            ImGui::TextDisabled("Search");
+            ImGui::TextDisabled("搜索");
             if (ImGui::IsItemHovered())
-                ImGui::SetTooltip("Filter by name, friend code, or PUID");
+                ImGui::SetTooltip("过滤名字, 好友代码, 或 PUID");
            
            static int selectedIndex = -1;
 
@@ -1157,30 +1157,30 @@ if (historySearchBuf != lastSearchQuery) {
                     ImGui::SameLine();
                     ImGui::BeginGroup();
 
-                    ImGui::Text("Is using Modified Client: %s", p.IsModded ? "Yes" : "No");
-                    if (p.IsModded && !p.ModClient.empty()) ImGui::Text("Client Name: %s", p.ModClient.c_str());
+                    ImGui::Text("使用Mod客户端: %s", p.IsModded ? "是" : "否");
+                    if (p.IsModded && !p.ModClient.empty()) ImGui::Text("客户端名称: %s", p.ModClient.c_str());
                     ImGui::NewLine();
-                    ImGui::Text("Friend Code: %s", p.FriendCode.c_str());
+                    ImGui::Text("好友代码: %s", p.FriendCode.c_str());
                     ImGui::Text("PUID: %s", p.Puid.c_str());
-                    ImGui::Text("Level: %d", p.Level);
-                    ImGui::Text("Platform: %s", p.Platform.c_str());
-                    ImGui::Text("Name-Checker: %s", p.NameCheck ? "Yes" : "None");
+                    ImGui::Text("等级: %d", p.Level);
+                    ImGui::Text("平台: %s", p.Platform.c_str());
+                    ImGui::Text("名称检查器: %s", p.NameCheck ? "有" : "无");
                     ImGui::NewLine();
 
-                    if (AnimatedButton("Copy Info"))
+                    if (AnimatedButton("复制信息"))
                     {
-                        std::string infoText = "Info of " + p.Nick + ":\n" +
-                            "Platform: " + p.Platform + "\n" +
-                            "Level: " + std::format("{}", p.Level) + "\n" +
+                        std::string infoText = p.Nick + "的信息:\n" +
+                            "平台: " + p.Platform + "\n" +
+                            "等级: " + std::format("{}", p.Level) + "\n" +
                             "PUID: " + p.Puid + "\n" +
-                            "Friend Code: " + p.FriendCode + "\n"
-                            "Is using Modified Client: " + (p.IsModded ? "Yes" : "No") + "\n" +
-                            (p.IsModded && !p.ModClient.empty() ? ("Client Name: " + p.ModClient + "\n") : "") +
-                            "On Name-Checker: " + (p.NameCheck ? "Yes" : "No");
+                            "好友代码: " + p.FriendCode + "\n"
+                            "使用Mod客户端: " + (p.IsModded ? "是" : "否") + "\n" +
+                            (p.IsModded && !p.ModClient.empty() ? ("客户端名称: " + p.ModClient + "\n") : "") +
+                            "名称检查器: " + (p.NameCheck ? "是" : "否");
                         ClipboardHelper_PutClipboardString(convert_to_string(infoText), NULL);
                     }
 
-                    if (AnimatedButton("Clear Player"))
+                    if (AnimatedButton("清理玩家"))
                     {
                         State.RemovedPlayers.insert(p.FriendCode);
                         State.PlayerHistory.erase(State.PlayerHistory.begin() + realIndex);
@@ -1192,7 +1192,7 @@ if (historySearchBuf != lastSearchQuery) {
                     ImGui::Spacing();
 
                     bool inWL = std::find(State.WhitelistFriendCodes.begin(), State.WhitelistFriendCodes.end(), p.FriendCode) != State.WhitelistFriendCodes.end();
-                    std::string wLabel = inWL ? "Remove from Whitelist" : "Add to Whitelist";
+                    std::string wLabel = inWL ? "从白名单移除" : "添加进白名单";
 
                     if (AnimatedButton(wLabel.c_str()))
                     {
@@ -1210,7 +1210,7 @@ if (historySearchBuf != lastSearchQuery) {
                     ImGui::SameLine();
 
                     bool inBL = std::find(State.BlacklistFriendCodes.begin(), State.BlacklistFriendCodes.end(), p.FriendCode) != State.BlacklistFriendCodes.end();
-                    std::string bLabel = inBL ? "Remove from Blacklist" : "Add to Blacklist";
+                    std::string bLabel = inBL ? "从黑名单移除" : "添加进黑名单";
 
                     if (AnimatedButton(bLabel.c_str()))
                     {
@@ -1228,7 +1228,7 @@ if (historySearchBuf != lastSearchQuery) {
 
                     std::string lowName = p.Nick;
                     std::transform(lowName.begin(), lowName.end(), lowName.begin(), ::tolower);
-                    std::string ncLabel = p.NameCheck ? "Remove from Name-Checker" : "Add to Name-Checker";
+                    std::string ncLabel = p.NameCheck ? "从名称检查器中移除" : "添加进名称检查器";
 
                     if (AnimatedButton(ncLabel.c_str()))
                     {
@@ -1256,7 +1256,7 @@ if (historySearchBuf != lastSearchQuery) {
             ImGui::Separator();
             ImGui::Dummy(ImVec2(5, 5) * State.dpiScale);
 
-            if (ImGui::Button("Clear History"))
+            if (ImGui::Button("清除历史"))
             {
                 for (auto& pp : State.PlayerHistory) State.RemovedPlayers.insert(pp.FriendCode);
                 State.PlayerHistory.clear();
@@ -1264,7 +1264,7 @@ if (historySearchBuf != lastSearchQuery) {
                 State.Save();
             }
             ImGui::SameLine(0, 20);
-            if (ImGui::Button("Update Player History"))
+            if (ImGui::Button("更新玩家历史"))
             {
                 bool changed = false;
                 for (auto pctrl : GetAllPlayerControl())
@@ -1285,7 +1285,7 @@ if (historySearchBuf != lastSearchQuery) {
                     for (auto& rp : State.PlayerHistory) if (rp.FriendCode == fc) { exists = true; break; }
                     if (exists) continue;
 
-                    std::string platform = "Unknown";
+                    std::string platform = "未知";
                     auto client = app::InnerNetClient_GetClientFromCharacter((InnerNetClient*)(*Game::pAmongUsClient), pctrl, NULL);
                     if (client != nullptr && client->fields.PlatformData != nullptr && pctrl->fields._.OwnerId == client->fields.Id) {
                         switch (client->fields.PlatformData->fields.Platform) {
@@ -1320,7 +1320,7 @@ if (historySearchBuf != lastSearchQuery) {
                             platform = "Playstation (Console)";
                             break;
                         default:
-                            platform = "Unknown";
+                            platform = "未知";
                             break;
                         }
                     }
@@ -1349,7 +1349,7 @@ if (historySearchBuf != lastSearchQuery) {
 
             ImGui::Dummy(ImVec2(5, 5)* State.dpiScale);
 
-            if (ImGui::CollapsingHeader("Platform Filters"))
+            if (ImGui::CollapsingHeader("平台过滤器"))
             {
                 ImGui::Columns(2, NULL, false);
 
@@ -1376,34 +1376,34 @@ if (historySearchBuf != lastSearchQuery) {
                     auto allPlayers = GetAllPlayerControl();
                     RoleRates roleRates = RoleRates(options, (int)allPlayers.size());
                     // this should be all the major ones. if people want more they're simple enough to add.
-                    ImGui::Text("Visual Tasks: %s", (options.GetBool(app::BoolOptionNames__Enum::VisualTasks) ? "On" : "Off"));
+                    ImGui::Text("任务可视: %s", (options.GetBool(app::BoolOptionNames__Enum::VisualTasks) ? "开" : "关"));
                     switch (options.GetInt(app::Int32OptionNames__Enum::TaskBarMode)) {
                     case 0:
-                        ImGui::Text("Task Bar Updates: Always");
+                        ImGui::Text("任务进度更新: 实时");
                         break;
                     case 1:
-                        ImGui::Text("Task Bar Updates: Meetings");
+                        ImGui::Text("任务进度更新: 会议时");
                         break;
                     case 2:
-                        ImGui::Text("Task Bar Updates: Never");
+                        ImGui::Text("任务进度更新: 从不");
                         break;
                     default:
-                        ImGui::Text("Task Bar Updates: Other");
+                        ImGui::Text("任务进度更新: 其他");
                         break;
                     }
-                    ImGui::Text("Confirm Ejects: %s", (options.GetBool(app::BoolOptionNames__Enum::ConfirmImpostor) ? "On" : "Off"));
+                    ImGui::Text("驱除确认: %s", (options.GetBool(app::BoolOptionNames__Enum::ConfirmImpostor) ? "开" : "关"));
                     switch (options.GetInt(app::Int32OptionNames__Enum::KillDistance)) {
                     case 0:
-                        ImGui::Text("Kill Distance: Short");
+                        ImGui::Text("击杀距离: 近");
                         break;
                     case 1:
-                        ImGui::Text("Kill Distance: Medium");
+                        ImGui::Text("击杀距离: 中");
                         break;
                     case 2:
-                        ImGui::Text("Kill Distance: Long");
+                        ImGui::Text("击杀距离: 远");
                         break;
                     default:
-                        ImGui::Text("Kill Distance: Other");
+                        ImGui::Text("击杀距离: 其他");
                         break;
                     }
 
@@ -1411,80 +1411,80 @@ if (historySearchBuf != lastSearchQuery) {
                     ImGui::Separator();
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
 
-                    ImGui::Text("Max Engineers: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Engineer));
-                    ImGui::Text("Engineer Chance: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Engineer));
-                    ImGui::Text("Engineer Vent Cooldown: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::EngineerCooldown, 1.0F));
-                    ImGui::Text("Engineer Duration in Vent: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::EngineerInVentMaxTime, 1.0F));
+                    ImGui::Text("最多工程师: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Engineer));
+                    ImGui::Text("工程师几率: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Engineer));
+                    ImGui::Text("工程师管道冷却: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::EngineerCooldown, 1.0F));
+                    ImGui::Text("工程师管道时间: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::EngineerInVentMaxTime, 1.0F));
 
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
                     ImGui::Separator();
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
 
-                    ImGui::Text("Max Scientists: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Scientist));
-                    ImGui::Text("Scientist Chance: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Scientist));
-                    ImGui::Text("Scientist Vitals Cooldown: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::ScientistCooldown, 1.0F));
-                    ImGui::Text("Scientist Battery Duration: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::ScientistBatteryCharge, 1.0F));
+                    ImGui::Text("最多科学家: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Scientist));
+                    ImGui::Text("科学家几率: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Scientist));
+                    ImGui::Text("科学家查看冷却: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::ScientistCooldown, 1.0F));
+                    ImGui::Text("科学家电池持续时间: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::ScientistBatteryCharge, 1.0F));
 
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
                     ImGui::Separator();
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
 
-                    ImGui::Text("Max Guardian Angels: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::GuardianAngel));
-                    ImGui::Text("Guardian Angel Chance: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::GuardianAngel));
-                    ImGui::Text("Guardian Angel Protect Cooldown: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::GuardianAngelCooldown, 1.0F));
-                    ImGui::Text("Guardian Angel Protection Duration: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::ProtectionDurationSeconds, 1.0F));
+                    ImGui::Text("最多守护天使: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::GuardianAngel));
+                    ImGui::Text("守护天使几率: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::GuardianAngel));
+                    ImGui::Text("守护天使保护冷却时间: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::GuardianAngelCooldown, 1.0F));
+                    ImGui::Text("守护天使保护时长: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::ProtectionDurationSeconds, 1.0F));
 
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
                     ImGui::Separator();
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
 
-                    ImGui::Text("Max Noisemakers: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Noisemaker));
-                    ImGui::Text("Noisemaker Chance: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Noisemaker));
-                    ImGui::Text("Noisemaker Alert Duration: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::NoisemakerAlertDuration, 1.0F));
+                    ImGui::Text("最多大嗓门: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Noisemaker));
+                    ImGui::Text("大嗓门几率: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Noisemaker));
+                    ImGui::Text("大嗓门警告时间: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::NoisemakerAlertDuration, 1.0F));
 
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
                     ImGui::Separator();
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
 
-                    ImGui::Text("Max Trackers: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Tracker));
-                    ImGui::Text("Tracker Chance: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Tracker));
-                    ImGui::Text("Tracking Cooldown: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::TrackerDuration, 1.0F));
-                    ImGui::Text("Tracking Duration: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::TrackerCooldown, 1.0F));
-                    ImGui::Text("Tracking Delay: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::TrackerDelay, 1.0F));
+                    ImGui::Text("最多侦查者: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Tracker));
+                    ImGui::Text("侦查者几率: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Tracker));
+                    ImGui::Text("侦查冷却: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::TrackerDuration, 1.0F));
+                    ImGui::Text("侦查时间: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::TrackerCooldown, 1.0F));
+                    ImGui::Text("侦查延迟: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::TrackerDelay, 1.0F));
 
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
                     ImGui::Separator();
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
 
-                    ImGui::Text("Max Detectives: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Detective));
-                    ImGui::Text("Detective Chance: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Detective));
-                    ImGui::Text("Detective Suspect Limit: %.2f", options.GetFloat(app::FloatOptionNames__Enum::DetectiveSuspectLimit, 1.0F));
+                    ImGui::Text("最多侦探: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Detective));
+                    ImGui::Text("侦探几率: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Detective));
+                    ImGui::Text("侦探嫌疑人限制: %.2f", options.GetFloat(app::FloatOptionNames__Enum::DetectiveSuspectLimit, 1.0F));
 
                     ImGui::Dummy(ImVec2(3, 3)* State.dpiScale);
                     ImGui::Separator();
                     ImGui::Dummy(ImVec2(3, 3)* State.dpiScale);
 
-                    ImGui::Text("Max Shapeshifters: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Shapeshifter));
-                    ImGui::Text("Shapeshifter Chance: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Shapeshifter));
-                    ImGui::Text("Shapeshifter Shift Cooldown: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::ShapeshifterCooldown, 1.0F));
-                    ImGui::Text("Shapeshifter Shift Duration: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::ShapeshifterDuration, 1.0F));
+                    ImGui::Text("最多变形者: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Shapeshifter));
+                    ImGui::Text("变形者几率: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Shapeshifter));
+                    ImGui::Text("变形者变形冷却: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::ShapeshifterCooldown, 1.0F));
+                    ImGui::Text("变形者变形时长: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::ShapeshifterDuration, 1.0F));
 
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
                     ImGui::Separator();
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
 
-                    ImGui::Text("Max Phantoms: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Phantom));
-                    ImGui::Text("Phantom Chance: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Phantom));
-                    ImGui::Text("Phantom Vanish Cooldown: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::PhantomCooldown, 1.0F));
-                    ImGui::Text("Phantom Vanish Duration: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::PhantomDuration, 1.0F));
+                    ImGui::Text("最多幻象师: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Phantom));
+                    ImGui::Text("幻象师几率: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Phantom));
+                    ImGui::Text("幻象师隐形冷却: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::PhantomCooldown, 1.0F));
+                    ImGui::Text("幻象师隐形时间: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::PhantomDuration, 1.0F));
 
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
                     ImGui::Separator();
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
 
-                    ImGui::Text("Max Vipers: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Viper));
-                    ImGui::Text("Viper Chance: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Viper));
-                    ImGui::Text("Viper Dissolve Time: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::ViperDissolveTime, 1.0F));
+                    ImGui::Text("最多毒蛇: %d", roleRates.GetRoleCount(app::RoleTypes__Enum::Viper));
+                    ImGui::Text("毒蛇几率: %d%", options.GetRoleOptions().GetChancePerGame(RoleTypes__Enum::Viper));
+                    ImGui::Text("毒蛇溶解时间: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::ViperDissolveTime, 1.0F));
                 }
                 else if (options.GetGameMode() == GameModes__Enum::HideNSeek) {
 
@@ -1493,36 +1493,36 @@ if (historySearchBuf != lastSearchQuery) {
                         ImGui::Text("Impostor: Round-robin");
                     }
                     else {
-                        std::string ImpostorName = std::format("Selected Impostor: {}", convert_from_string(NetworkedPlayerInfo_get_PlayerName(GetPlayerDataById(ImpostorId), nullptr)));
+                        std::string ImpostorName = std::format("指定伪装者: {}", convert_from_string(NetworkedPlayerInfo_get_PlayerName(GetPlayerDataById(ImpostorId), nullptr)));
                         ImGui::Text(const_cast<char*>(ImpostorName.c_str()));
                     }
-                    ImGui::Text("Flashlight Mode: %s", (options.GetBool(app::BoolOptionNames__Enum::UseFlashlight) ? "On" : "Off"));
-                    ImGui::Text("Show Names: %s", (options.GetBool(app::BoolOptionNames__Enum::ShowCrewmateNames) ? "On" : "Off"));
+                    ImGui::Text("手电筒模式: %s", (options.GetBool(app::BoolOptionNames__Enum::UseFlashlight) ? "On" : "Off"));
+                    ImGui::Text("显示名称: %s", (options.GetBool(app::BoolOptionNames__Enum::ShowCrewmateNames) ? "On" : "Off"));
 
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
                     ImGui::Separator();
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
 
-                    ImGui::Text("Max Vent Uses: %d", options.GetInt(app::Int32OptionNames__Enum::CrewmateVentUses));
-                    ImGui::Text("Duration in Vent: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::CrewmateTimeInVent, 1.0F));
+                    ImGui::Text("最多通风管道使用: %d", options.GetInt(app::Int32OptionNames__Enum::CrewmateVentUses));
+                    ImGui::Text("通风管道时间: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::CrewmateTimeInVent, 1.0F));
 
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
                     ImGui::Separator();
                     ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
 
-                    ImGui::Text("Hiding Time: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::EscapeTime, 1.0F));
-                    ImGui::Text("Final Hiding Time: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::FinalEscapeTime, 1.0F));
-                    ImGui::Text("Final Seeker Speed: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::SeekerFinalSpeed, 1.0F));
+                    ImGui::Text("躲藏时间: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::EscapeTime, 1.0F));
+                    ImGui::Text("终局躲藏时间: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::FinalEscapeTime, 1.0F));
+                    ImGui::Text("终局伪装者速度: %.2f s", options.GetFloat(app::FloatOptionNames__Enum::SeekerFinalSpeed, 1.0F));
 
                     ImGui::Dummy(ImVec2(3, 3)* State.dpiScale);
                     ImGui::Separator();
                     ImGui::Dummy(ImVec2(3, 3)* State.dpiScale);
 
-                    ImGui::Text("Hider Flashlight Size: % .2fx", options.GetFloat(app::FloatOptionNames__Enum::CrewmateFlashlightSize, 1.0F));
-                    ImGui::Text("Seeker Flashlight Size: % .2fx", options.GetFloat(app::FloatOptionNames__Enum::ImpostorFlashlightSize, 1.0F));
-                    ImGui::Text("Final Hide Seeker Map: %s", (options.GetBool(app::BoolOptionNames__Enum::SeekerFinalMap) ? "On" : "Off"));
-                    ImGui::Text("Final Hide Pings: %s", (options.GetBool(app::BoolOptionNames__Enum::SeekerPings) ? "On" : "Off"));
-                    ImGui::Text("Ping Interval: % .2f s", options.GetFloat(app::FloatOptionNames__Enum::MaxPingTime, 1.0F));
+                    ImGui::Text("船员手电筒大小: % .2fx", options.GetFloat(app::FloatOptionNames__Enum::CrewmateFlashlightSize, 1.0F));
+                    ImGui::Text("伪装者手电筒大小: % .2fx", options.GetFloat(app::FloatOptionNames__Enum::ImpostorFlashlightSize, 1.0F));
+                    ImGui::Text("终局船员寻找器: %s", (options.GetBool(app::BoolOptionNames__Enum::SeekerFinalMap) ? "On" : "Off"));
+                    ImGui::Text("终局位置提示: %s", (options.GetBool(app::BoolOptionNames__Enum::SeekerPings) ? "On" : "Off"));
+                    ImGui::Text("提示间隔: % .2f s", options.GetFloat(app::FloatOptionNames__Enum::MaxPingTime, 1.0F));
                 }
             }
             else CloseOtherGroups(Groups::General);
