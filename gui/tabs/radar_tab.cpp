@@ -9,7 +9,7 @@ namespace RadarTab {
 		ImGui::SameLine(100 * State.dpiScale);
 		ImGui::BeginChild("###Radar", ImVec2(500 * State.dpiScale, 0), true, ImGuiWindowFlags_NoBackground);
 		ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
-		if (ToggleButton("Show Radar", &State.ShowRadar)) {
+		if (ToggleButton("显示雷达", &State.ShowRadar)) {
 			State.Save();
 		}
 
@@ -17,13 +17,13 @@ namespace RadarTab {
 		ImGui::Separator();
 		ImGui::Dummy(ImVec2(7, 7) * State.dpiScale);
 
-		if (ToggleButton("Show Dead Bodies", &State.ShowRadar_DeadBodies)) {
+		if (ToggleButton("显示尸体", &State.ShowRadar_DeadBodies)) {
 			State.Save();
 		}
-		if (ToggleButton("Show Ghosts", &State.ShowRadar_Ghosts)) {
+		if (ToggleButton("显示幽灵", &State.ShowRadar_Ghosts)) {
 			State.Save();
 		}
-		if (ToggleButton("Right Click to Teleport", &State.ShowRadar_RightClickTP)) {
+		if (ToggleButton("右键传送", &State.ShowRadar_RightClickTP)) {
 			State.Save();
 		}
 
@@ -31,10 +31,10 @@ namespace RadarTab {
 		ImGui::Separator();
 		ImGui::Dummy(ImVec2(7, 7) * State.dpiScale);
 
-		if (ToggleButton("Hide Radar During Meetings", &State.HideRadar_During_Meetings)) {
+		if (ToggleButton("开会期间隐藏雷达", &State.HideRadar_During_Meetings)) {
 			State.Save();
 		}
-		if (ToggleButton("Draw Player Icons", &State.RadarDrawIcons)) {
+		if (ToggleButton("绘制玩家图标", &State.RadarDrawIcons)) {
 			State.Save();
 		}
 		/*if (State.RadarDrawIcons && State.RevealRoles) {
@@ -44,13 +44,13 @@ namespace RadarTab {
 			}
 		}*/
 
-		if (ToggleButton("Lock Radar Position", &State.LockRadar)) {
+		if (ToggleButton("锁定雷达位置", &State.LockRadar)) {
 			State.Save();
 		}
-		if (ToggleButton("Show Border", &State.RadarBorder)) {
+		if (ToggleButton("显示边框", &State.RadarBorder)) {
 			State.Save();
 		}
-		if (ImGui::ColorEdit4("Radar Color",
+		if (ImGui::ColorEdit4("雷达颜色",
 			(float*)&State.SelectedColor,
 			ImGuiColorEditFlags__OptionsDefault
 			| ImGuiColorEditFlags_NoInputs
@@ -58,11 +58,11 @@ namespace RadarTab {
 			| ImGuiColorEditFlags_AlphaPreview)) {
 			State.Save();
 		}
-		if (ImGui::InputInt("Extra Width", &State.RadarExtraWidth)) {
+		if (ImGui::InputInt("额外宽度", &State.RadarExtraWidth)) {
 			State.RadarExtraWidth = abs(State.RadarExtraWidth); //prevent negatives
 			State.Save();
 		}
-		if (ImGui::InputInt("Extra Height", &State.RadarExtraHeight)) {
+		if (ImGui::InputInt("额外高度", &State.RadarExtraHeight)) {
 			State.RadarExtraHeight = abs(State.RadarExtraHeight); //prevent negatives
 			State.Save();
 		}
