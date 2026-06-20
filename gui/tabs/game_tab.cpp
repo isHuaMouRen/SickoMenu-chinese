@@ -730,7 +730,7 @@ namespace GameTab {
                     State.Save();
                 }
                 ImGui::Dummy(ImVec2(7, 7) * State.dpiScale);
-                const char* buttonLabel = IsInGame() ? "提出挂机玩家" : "提出挂机玩家 (仅游戏中)";
+                const char* buttonLabel = IsInGame() ? "踢出挂机玩家" : "踢出挂机玩家 (仅游戏中)";
                 if (ToggleButton(buttonLabel, &State.KickAFK)) {
                     State.Save();
                 }
