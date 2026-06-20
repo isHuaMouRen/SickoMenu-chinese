@@ -35,16 +35,16 @@ namespace AboutTab {
     void Render() {
         ImGui::SameLine(100 * State.dpiScale);
         ImGui::BeginChild("###About", ImVec2(500 * State.dpiScale, 0), true, ImGuiWindowFlags_NoBackground);
-        if (TabGroup("Welcome", openWelcome)) {
+        if (TabGroup("欢迎", openWelcome)) {
             CloseOtherGroups(Groups::Welcome);
         }
         ImGui::SameLine();
-        if (TabGroup("Credits", openCredits)) {
+        if (TabGroup("制作组", openCredits)) {
             CloseOtherGroups(Groups::Credits);
         }
 
         if (openWelcome) {
-            ImGui::Text(std::format("Welcome {}to ", State.HasOpenedMenuBefore ? "back " : "").c_str());
+            ImGui::Text(std::format("欢迎{}", State.HasOpenedMenuBefore ? "回到 " : "来到 ").c_str());
             ImGui::SameLine(0.0f, 0.0f);
             ImGui::TextColored(SickoCol, "SickoMenu");
             ImGui::SameLine(0.0f, 0.0f);
@@ -54,43 +54,47 @@ namespace AboutTab {
             ImGui::SameLine(0.0f, 0.0f);
             ImGui::TextColored(GoatCol, "g0aty");
             ImGui::SameLine(0.0f, 0.0f);
+            ImGui::Text("  |  汉化 by ");
+            ImGui::SameLine(0.0f, 0.0f);
+            ImGui::TextColored(GoatCol, "isHuaMouRen");
+            ImGui::SameLine(0.0f, 0.0f);
             ImGui::Text("!");
 
             ImGui::TextColored(SickoCol, "SickoMenu");
             ImGui::SameLine(0.0f, 0.0f);
-            ImGui::Text(" is a powerful utility for Among Us.");
-            ImGui::Text("It aims to improve the game experience for all players!");
-            ImGui::Text("Use the \"Check for Updates\" button to download the latest release!");
+            ImGui::Text(" 是一款适用于《Among Us》的强大实用工具。");
+            ImGui::Text("旨在提升所有玩家的游戏体验！");
+            ImGui::Text("使用\"检查更新\"按钮下载最新版本！");
             if (ColoredButton(DevCol, "GitHub")) {
                 OpenLink("https://github.com/g0aty/SickoMenu");
             }
             ImGui::SameLine();
-            if (ColoredButton(GoldCol, "Check for Updates")) {
+            if (ColoredButton(GoldCol, "检查更新")) {
                 OpenLink("https://github.com/g0aty/SickoMenu/releases/latest");
             }
             ImGui::SameLine();
-            if (ColoredButton(State.RgbColor, "Donate")) {
+            if (ColoredButton(State.RgbColor, "捐赠")) {
                 OpenLink("https://ko-fi.com/g0aty");
             }
-            ImGui::Text("Join the Discord server for support, bug reports, and sneak peeks!");
-            if (ColoredButton(ContributorCol, "Join our Discord!")) {
+            ImGui::Text("加入 Discord 服务器，获取支持、提交漏洞报告以及抢先体验！");
+            if (ColoredButton(ContributorCol, "加入我们的Discord!")) {
                 OpenLink("https://dsc.gg/sickos"); //SickoMenu discord invite
             }
 
             ImGui::TextColored(SickoCol, "SickoMenu");
             ImGui::SameLine(0.0f, 0.0f);
-            ImGui::Text(" is a free and open-source software.");
+            ImGui::Text(" 是一款免费且开源的软件。");
 
             if (State.SickoVersion.find("pr") != std::string::npos || State.SickoVersion.find("rc") != std::string::npos) {
-                if (State.SickoVersion.find("pr") != std::string::npos) ImGui::TextColored(State.RgbColor, "You have access to pre-releases, enjoy!");
-                else ImGui::TextColored(State.RgbColor, "You have access to the release candidate, enjoy!");
-                BoldText("If you don't have access to the pre-release builds channel on our Discord and haven't self", ImVec4(0.f, 1.f, 0.f, 1.f));
-                BoldText("compiled, please report it to our support staff by making a ticket on our Discord server!", ImVec4(0.f, 1.f, 0.f, 1.f));
+                if (State.SickoVersion.find("pr") != std::string::npos) ImGui::TextColored(State.RgbColor, "你已获得预发行版的访问权限，祝您使用愉快！");
+                else ImGui::TextColored(State.RgbColor, "您已获得发布候选版本的访问权限，祝您使用愉快！");
+                BoldText("如果您无法访问我们 Discord 上的预发布版本频道，且尚未自行编译，", ImVec4(0.f, 1.f, 0.f, 1.f));
+                BoldText("请在我们的 Discord 服务器上提交工单，向支持团队报告此问题！", ImVec4(0.f, 1.f, 0.f, 1.f));
             }
             else {
-                ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "If you've paid for this menu, demand a refund immediately.");
-                BoldText("Make sure you have downloaded the latest version of SickoMenu from GitHub or our", ImVec4(0.f, 1.f, 0.f, 1.f));
-                BoldText("official Discord!", ImVec4(0.f, 1.f, 0.f, 1.f));
+                ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "如果您是付费获得的此Mod，请立即申请退款。");
+                BoldText("请确保您已从 GitHub 或我们的官方 Discord 下载了", ImVec4(0.f, 1.f, 0.f, 1.f));
+                BoldText("最新版本的 SickoMenu！", ImVec4(0.f, 1.f, 0.f, 1.f));
             }
             //hopefully stop people from reselling a foss menu for actual money
 
@@ -104,32 +108,37 @@ namespace AboutTab {
                     if (State.RizzUpEveryone) State.RizzUpEveryone = false;
                     State.Save();
                 }*/
-                ImGui::TextColored(DiddyCol, "Happy April Fools'!");
-                ImGui::TextColored(DiddyCol, "This is NOT a real update as the official release is not yet ready.");
-                ImGui::TextColored(DiddyCol, "Please wait for the official release to support the latest versions of Among Us!");
+                ImGui::TextColored(DiddyCol, "愚人节快乐！");
+                ImGui::TextColored(DiddyCol, "这不是真实更新，因为官方版本尚未准备就绪。");
+                ImGui::TextColored(DiddyCol, "请等待官方发布，以支持《Among Us》的最新版本！");
             }
         }
 
         if (openCredits) {
             ImGui::TextColored(SickoCol, "SickoMenu");
             ImGui::SameLine(0.0f, 0.0f);
-            ImGui::Text(" is a fork of");
+            ImGui::Text(" 是基于");
             ImGui::SameLine(0.0f, 0.0f);
             ImGui::TextColored(AumCol, " AmongUsMenu");
             ImGui::SameLine(0.0f, 0.0f);
-            ImGui::TextColored(RedCol, " (archived)");
+            ImGui::TextColored(RedCol, " (已存档)");
             ImGui::SameLine(0.0f, 0.0f);
-            ImGui::Text(", go check it out!");
+            ImGui::Text(" 的二次开发版本(Fork)，快去看看吧！");
 
             if (ColoredButton(AumCol, "AmongUsMenu")) {
                 OpenLink("https://github.com/BitCrackers/AmongUsMenu");
             }
-            BoldText("Lead Developer", GoldCol);
+            BoldText("首席开发者", GoldCol);
             if (ColoredButton(GoatCol, "g0aty")) {
                 OpenLink("https://github.com/g0aty");
             }
 
-            BoldText("Developers", DevCol);
+            BoldText("汉化版作者", GoldCol);
+            if (ColoredButton(GoatCol, "isHuaMouRen")) {
+                OpenLink("https://github.com/isHuaMouRen");
+            }
+
+            BoldText("开发者", DevCol);
             if (ColoredButton(DevCol, "GDjkhp")) {
                 OpenLink("https://github.com/GDjkhp");
             }
@@ -166,7 +175,7 @@ namespace AboutTab {
                 OpenLink("https://github.com/M4-sicko");
             }
 
-            BoldText("Contributors", ContributorCol);
+            BoldText("贡献者", ContributorCol);
             if (ColoredButton(ContributorCol, "acer51-doctom")) {
                 OpenLink("https://github.com/acer51-doctom");
             }
@@ -175,30 +184,30 @@ namespace AboutTab {
                 OpenLink("https://github.com/ZamTDS");
             }
 
-            BoldText("Some people who contributed to AUM", AumCol);
+            BoldText("为AUM做出贡献的人", AumCol);
             if (ColoredButton(AumCol, "KulaGGin")) {
                 OpenLink("https://github.com/KulaGGin");
             }
             ImGui::SameLine();
-            ImGui::Text("(Helped with some ImGui code for replay system)");
+            ImGui::Text("(协助编写了一些用于回放系统的 ImGui 代码)");
 
             if (ColoredButton(AumCol, "tomsa000")) {
                 OpenLink("https://github.com/tomsa000");
             }
             ImGui::SameLine();
-            ImGui::Text("(Helped with fixing memory leaks and smart pointers)");
+            ImGui::Text("(协助修复内存泄漏和智能指针问题)");
 
             if (ColoredButton(AumCol, "cddjr")) {
                 OpenLink("https://github.com/cddjr");
             }
             ImGui::SameLine();
-            ImGui::Text("(Helped in updating to the Fungle release)");
+            ImGui::Text("(协助更新至Fungle版本)");
 
-            ImGui::Text("Thanks to");
+            ImGui::Text("鸣谢");
             ImGui::SameLine(0.0f, 0.0f);
             ImGui::TextColored(AumCol, " v0idp");
             ImGui::SameLine(0.0f, 0.0f);
-            ImGui::Text(" for originally creating");
+            ImGui::Text(" 最初创作 ");
             ImGui::SameLine(0.0f, 0.0f);
             ImGui::TextColored(AumCol, " AmongUsMenu");
             ImGui::SameLine(0.0f, 0.0f);
@@ -207,17 +216,17 @@ namespace AboutTab {
                 OpenLink("https://github.com/v0idp");
             }
 
-            ImGui::Text("Everyone else who contributed to");
+            ImGui::Text("以及其他所有为");
             ImGui::SameLine(0.0f, 0.0f);
-            ImGui::TextColored(AumCol, " AUM");
+            ImGui::TextColored(AumCol, " AUM ");
             ImGui::SameLine(0.0f, 0.0f);
-            ImGui::Text(" and I couldn't list here.");
+            ImGui::Text("做出贡献的人我无法一一列出。");
 
-            ImGui::Text("Thank you for making ");
+            ImGui::Text("感谢您让 ");
             ImGui::SameLine(0.0f, 0.0f);
             ImGui::TextColored(SickoCol, "SickoMenu");
             ImGui::SameLine(0.0f, 0.0f);
-            ImGui::Text(" possible!");
+            ImGui::Text(" 成为可能！");
         }
         ImGui::EndChild();
     }
