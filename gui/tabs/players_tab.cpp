@@ -62,7 +62,7 @@ namespace PlayersTab {
 
     std::string GetPlatformString(PlayerControl* playerCtrl, app::ClientData* client, uint64_t& outPsn, uint64_t& outXbox) {
         if (client == NULL || client->fields.PlatformData == NULL || playerCtrl->fields._.OwnerId != client->fields.Id) {
-            return "Unknown";
+            return "未知";
         }
 
         outPsn = client->fields.PlatformData->fields.PsnPlatformId;
@@ -90,7 +90,7 @@ namespace PlayersTab {
         case Platforms__Enum::Playstation:
             return "Playstation (Console)";
         default:
-            return "Unknown";
+            return "未知";
         }
     }
 
@@ -394,10 +394,10 @@ namespace PlayersTab {
 
                     if (!selectedPlayer.get_PlayerControl()->fields.notRealPlayer && selectedPlayer.get_PlayerData() != NULL) {
                         bool isUsingMod = selectedPlayer.is_LocalPlayer() || State.modUsers.count(selectedPid);
-                        ImGui::Text("Is using Modified Client: %s", isUsingMod ? "Yes" : "No");
-                        if (isUsingMod) ImGui::Text("Client Name: %s", selectedPlayer.is_LocalPlayer() ? "SickoMenu" : RemoveHtmlTags(State.modUsers.at(selectedPid)).c_str());
+                        ImGui::Text("使用Mod客户端: %s", isUsingMod ? "是" : "否");
+                        if (isUsingMod) ImGui::Text("客户端名称: %s", selectedPlayer.is_LocalPlayer() ? "SickoMenu" : RemoveHtmlTags(State.modUsers.at(selectedPid)).c_str());
 
-                        ImGui::Text("Player ID: %d", selectedPid);
+                        ImGui::Text("玩家ID: %d", selectedPid);
 
                         /*std::string puid = cachedDetails.puid;
                         std::string puidText = std::format("PUID:\n{}", (!IsStreamerMode()) ? puid : ((puid != "") ? puid.substr(0, 1) + "..." : ""));
@@ -406,35 +406,35 @@ namespace PlayersTab {
                         }*/
 
                         uint32_t playerLevel = selectedPlayer.get_PlayerData()->fields.PlayerLevel + 1;
-                        ImGui::Text("Level: %d", playerLevel);
+                        ImGui::Text("等级: %d", playerLevel);
 
-                        ImGui::Text("Platform: %s", cachedDetails.platformName.c_str());
+                        ImGui::Text("平台: %s", cachedDetails.platformName.c_str());
 
                         std::string friendCode = cachedDetails.friendCode;
                         bool isWhitelisted = std::find(State.WhitelistFriendCodes.begin(), State.WhitelistFriendCodes.end(), friendCode) != State.WhitelistFriendCodes.end();
                         bool shouldTryHidingInfo = selectedPlayer.is_LocalPlayer() || (isWhitelisted && State.HideWhitelistedPlayerInfo);
 
                         if (shouldTryHidingInfo) {
-                            if (AnimatedButton(showHiddenInfo ? "Hide Sensitive Info" : "Show Sensitive Info")) showHiddenInfo = !showHiddenInfo;
+                            if (AnimatedButton(showHiddenInfo ? "隐藏敏感信息" : "显示敏感信息")) showHiddenInfo = !showHiddenInfo;
                         }
 
                         if (!shouldTryHidingInfo || showHiddenInfo) {
-                            std::string friendCodeText = std::format("Friend Code: {}", (!IsStreamerMode()) ? friendCode : ((friendCode != "") ? friendCode.substr(0, 1) + "..." : ""));
+                            std::string friendCodeText = std::format("好友代码: {}", (!IsStreamerMode()) ? friendCode : ((friendCode != "") ? friendCode.substr(0, 1) + "..." : ""));
                             if (friendCode != "") {
                                 ImGui::Text(const_cast<char*>(friendCodeText.c_str()));
                             }
 
                             if (cachedDetails.psnId != 0)
-                                ImGui::Text("PSN Platform ID: %llu", cachedDetails.psnId);
+                                ImGui::Text("PSN 平台 ID: %llu", cachedDetails.psnId);
                             if (cachedDetails.xboxId != 0)
-                                ImGui::Text("Xbox Platform ID: %llu", cachedDetails.xboxId);
+                                ImGui::Text("Xbox 平台 ID: %llu", cachedDetails.xboxId);
                         }
                     }
                     else {
-                        ImGui::Text("Is using Modified Client: No");
-                        ImGui::Text("Player ID: %d", selectedPid);
+                        ImGui::Text("使用Mod客户端: 否");
+                        ImGui::Text("玩家ID: %d", selectedPid);
                         uint32_t playerLevel = selectedPlayer.get_PlayerData()->fields.PlayerLevel + 1;
-                        ImGui::Text("Level: %d", playerLevel);
+                        ImGui::Text("等级: %d", playerLevel);
                     }
                 }
             }
@@ -446,7 +446,7 @@ namespace PlayersTab {
             ImGui::SameLine();
             ImGui::BeginChild("players#actions", ImVec2(300, 0) * State.dpiScale, true, ImGuiWindowFlags_NoBackground);
             if (selectedPlayer.has_value()) {
-                if (TabGroup("Player", openPlayer)) {
+                if (TabGroup("玩家", openPlayer)) {
                     CloseOtherGroups(Groups::Player);
                 }
                 ImGui::SameLine();
@@ -458,23 +458,23 @@ namespace PlayersTab {
                     CloseOtherGroups(Groups::Info);
                 }
             }
-            if (State.DisableMeetings && IsHost()) ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Meetings have been disabled.");
+            if (State.DisableMeetings && IsHost()) ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "会议已禁用.");
             GameOptions options;
             if (IsInGame() && !GetPlayerData(*Game::pLocalPlayer)->fields.IsDead && (!State.DisableMeetings || !IsHost())) { //Player selection doesn't matter
                 if (!State.InMeeting) {
-                    if (AnimatedButton("Call Meeting")) {
+                    if (AnimatedButton("召开会议")) {
                         RepairSabotage(*Game::pLocalPlayer);
                         State.rpcQueue.push(new RpcReportBody({}));
                     }
                 }
                 else if (IsHost() || !State.SafeMode) {
-                    if (AnimatedButton("Call Meeting")) {
+                    if (AnimatedButton("召开会议")) {
                         RepairSabotage(*Game::pLocalPlayer);
                         State.rpcQueue.push(new RpcForceMeeting(*Game::pLocalPlayer, {}));
                     }
                 }
             }
-            if ((IsHost() || !State.SafeMode) && State.InMeeting && AnimatedButton("Skip Vote by All")) {
+            if ((IsHost() || !State.SafeMode) && State.InMeeting && AnimatedButton("跳过所有投票")) {
                 State.VoteOffPlayerId = Game::SkippedVote;
                 for (auto player : GetAllPlayerControl()) {
                     /*if (player != selectedPlayer.get_PlayerControl()) {
@@ -491,12 +491,12 @@ namespace PlayersTab {
                     auto it = std::find(State.validDeadBodyIds.begin(), State.validDeadBodyIds.end(), playerId);
                     // ensure that the dead body actually exists, otherwise we get kicked by the anticheat if we aren't hosting
                     if (!State.InMeeting && it != State.validDeadBodyIds.end()) {
-                        if (!GetPlayerData(*Game::pLocalPlayer)->fields.IsDead && AnimatedButton("Report Body")) {
+                        if (!GetPlayerData(*Game::pLocalPlayer)->fields.IsDead && AnimatedButton("报告尸体")) {
                             State.rpcQueue.push(new RpcReportBody(State.selectedPlayer));
                         }
                     }
                     else if (IsHost() || !State.SafeMode) {
-                        if (AnimatedButton("Report Body")) {
+                        if (AnimatedButton("报告尸体")) {
                             State.rpcQueue.push(new RpcForceMeeting(*Game::pLocalPlayer, State.selectedPlayer));
                         }
                     }
@@ -505,12 +505,12 @@ namespace PlayersTab {
                 if (!selectedPlayer.is_Disconnected() && selectedPlayers.size() == 1)
                 {
                     if (State.playerToFollow.equals(State.selectedPlayer) || (selectedPlayer.is_LocalPlayer() && selectedPlayer.has_value())) {
-                        if (AnimatedButton("Stop Spectating")) {
+                        if (AnimatedButton("停止观察")) {
                             State.playerToFollow = {};
                         }
                     }
                     else {
-                        if (!selectedPlayer.is_LocalPlayer() && AnimatedButton("Spectate")) {
+                        if (!selectedPlayer.is_LocalPlayer() && AnimatedButton("观察")) {
                             State.FreeCam = false;
                             State.playerToFollow = State.selectedPlayer;
                         }
@@ -521,13 +521,13 @@ namespace PlayersTab {
                     && !GetPlayerData(*Game::pLocalPlayer)->fields.IsDead && ((*Game::pLocalPlayer)->fields.killTimer <= 0.0f)
                     && !State.InMeeting)
                 {
-                    if (AnimatedButton("Kill"))
+                    if (AnimatedButton("击杀"))
                     {
                         State.rpcQueue.push(new CmdCheckMurder(State.selectedPlayer));
                     }
                 }
                 else if (IsHost() || !State.SafeMode) {
-                    if (IsInGame() && AnimatedButton("Kill"))
+                    if (IsInGame() && AnimatedButton("击杀"))
                     {
                         for (PlayerSelection p : selectedPlayers) {
                             auto validPlayer = p.validate();
@@ -547,7 +547,7 @@ namespace PlayersTab {
                     && !State.InMeeting)
                 {
                     ImGui::SameLine();
-                    if (AnimatedButton("Telekill"))
+                    if (AnimatedButton("传送击杀"))
                     {
                         previousPlayerPosition = GetTrueAdjustedPosition(*Game::pLocalPlayer);
                         for (auto p : selectedPlayers)
@@ -557,7 +557,7 @@ namespace PlayersTab {
                 }
                 else if (IsInGame() && (IsHost() || !State.SafeMode)) {
                     ImGui::SameLine();
-                    if (AnimatedButton("Telekill"))
+                    if (AnimatedButton("传送击杀"))
                     {
                         previousPlayerPosition = GetTrueAdjustedPosition(*Game::pLocalPlayer);
                         for (auto p : selectedPlayers) {
@@ -576,7 +576,7 @@ namespace PlayersTab {
                 }
 
                 if ((IsInMultiplayerGame() || IsInLobby()) && (!selectedPlayer.is_LocalPlayer() || selectedPlayers.size() != 1)) {
-                    if (IsHost() && AnimatedButton("Kick")) {
+                    if (IsHost() && AnimatedButton("踢出")) {
                         State.selectedPlayer = {};
                         State.selectedPlayers.clear();
                         auto future = std::async(std::launch::async, [&]() {
@@ -589,7 +589,7 @@ namespace PlayersTab {
                         future.get();
                     }
 
-                    if (AnimatedButton("Votekick")) {
+                    if (AnimatedButton("投票踢出")) {
                         if (IsHost()) {
                             State.selectedPlayer = {};
                             State.selectedPlayers.clear();
@@ -613,7 +613,7 @@ namespace PlayersTab {
                         }
                     }
                     if (!State.SafeMode) {
-                        if (AnimatedButton("Attempt to Kick")) {
+                        if (AnimatedButton("尝试踢出")) {
                             State.selectedPlayer = {};
                             State.selectedPlayers.clear();
                             for (auto p : selectedPlayers) {
@@ -641,7 +641,7 @@ namespace PlayersTab {
                         }
                     }*/
 
-                    if (IsHost() && AnimatedButton("Ban")) {
+                    if (IsHost() && AnimatedButton("封禁")) {
                         State.selectedPlayer = {};
                         State.selectedPlayers.clear();
                         auto future = std::async(std::launch::async, [&]() {
@@ -661,24 +661,24 @@ namespace PlayersTab {
                         Game::PlayerId playerId = selectedPlayer.get_PlayerControl()->fields.PlayerId;
                         if (std::find(State.WhitelistFriendCodes.begin(), State.WhitelistFriendCodes.end(), friendCode) == State.WhitelistFriendCodes.end()) {
                             if (std::find(State.BlacklistFriendCodes.begin(), State.BlacklistFriendCodes.end(), friendCode) != State.BlacklistFriendCodes.end()) {
-                                if (AnimatedButton("Remove from Blacklist")) {
+                                if (AnimatedButton("从黑名单移除")) {
                                     State.BlacklistFriendCodes.erase(std::find(State.BlacklistFriendCodes.begin(), State.BlacklistFriendCodes.end(), friendCode));
                                     State.Save();
                                 }
                             }
-                            else if (AnimatedButton("Add to Blacklist")) {
+                            else if (AnimatedButton("添加到黑名单")) {
                                 State.BlacklistFriendCodes.push_back(friendCode);
                                 State.Save();
                             }
                         }
                         if (std::find(State.BlacklistFriendCodes.begin(), State.BlacklistFriendCodes.end(), friendCode) == State.BlacklistFriendCodes.end()) {
                             if (std::find(State.WhitelistFriendCodes.begin(), State.WhitelistFriendCodes.end(), friendCode) != State.WhitelistFriendCodes.end()) {
-                                if (AnimatedButton("Remove from Whitelist")) {
+                                if (AnimatedButton("从白名单移除")) {
                                     State.WhitelistFriendCodes.erase(std::find(State.WhitelistFriendCodes.begin(), State.WhitelistFriendCodes.end(), friendCode));
                                     State.Save();
                                 }
                             }
-                            else if (AnimatedButton("Add to Whitelist")) {
+                            else if (AnimatedButton("添加进白名单")) {
                                 State.WhitelistFriendCodes.push_back(friendCode);
                                 State.Save();
                             }
@@ -689,13 +689,13 @@ namespace PlayersTab {
                             // Convert the name into lowercase
                             Game::PlayerId playerId = selectedPlayer.get_PlayerControl()->fields.PlayerId;
                             if (std::find(State.LockedNames.begin(), State.LockedNames.end(), nickname) != State.LockedNames.end()) {
-                                if (AnimatedButton("Remove Nickname from Name-Checker")) {
+                                if (AnimatedButton("从名称检查器移除昵称")) {
                                     State.LockedNames.erase(std::remove(State.LockedNames.begin(), State.LockedNames.end(), nickname), State.LockedNames.end());
                                     State.Save();
                                 }
                             }
                             else {
-                                if (AnimatedButton("Add Nickname to Name-Checker")) {
+                                if (AnimatedButton("添加昵称到昵称检查器")) {
                                     State.LockedNames.push_back(nickname);
                                     State.Save();
                                 }
@@ -740,7 +740,7 @@ namespace PlayersTab {
 
                 if (State.RealRole == RoleTypes__Enum::GuardianAngel && role == RoleTypes__Enum::GuardianAngel) {
                     app::GuardianAngelRole* guardianAngelRole = (app::GuardianAngelRole*)playerRole;
-                    if (selectedPlayers.size() == 1 && guardianAngelRole->fields.cooldownSecondsRemaining <= 0 && AnimatedButton("Protect")) {
+                    if (selectedPlayers.size() == 1 && guardianAngelRole->fields.cooldownSecondsRemaining <= 0 && AnimatedButton("保护")) {
                         if (IsInGame())
                             State.rpcQueue.push(new CmdCheckProtect(*Game::pLocalPlayer, State.selectedPlayer));
                         else if (IsInLobby())
@@ -748,7 +748,7 @@ namespace PlayersTab {
                     }
                 }
                 else if ((IsHost() && IsInGame()) || !State.SafeMode) {
-                    if (AnimatedButton("Protect")) {
+                    if (AnimatedButton("保护")) {
                         for (auto p : selectedPlayers) {
                             app::NetworkedPlayerInfo_PlayerOutfit* outfit = GetPlayerOutfit(p.validate().get_PlayerData());
                             auto colorId = outfit->fields.ColorId;
@@ -823,9 +823,9 @@ namespace PlayersTab {
                     }
                     ventId = std::clamp(ventId, 0, (int)allVents.size() - 1);
 
-                    CustomListBoxInt("Vent", &ventId, allVents);
+                    CustomListBoxInt("通风管道", &ventId, allVents);
 
-                    if (AnimatedButton("Teleport to Vent")) {
+                    if (AnimatedButton("传送至通风管道")) {
                         for (auto p : selectedPlayers) {
                             State.rpcQueue.push(new RpcBootFromVent(p.validate().get_PlayerControl(),
                                 (State.mapType == Settings::MapType::Hq) ? ventId + 1 : ventId)); //MiraHQ vents start from 1 instead of 0
@@ -835,7 +835,7 @@ namespace PlayersTab {
 
                 if (IsInGame() && !selectedPlayer.is_Disconnected() && (IsInMultiplayerGame() || selectedPlayer.is_LocalPlayer()))
                 {
-                    if ((!State.SafeMode || (selectedPlayer.is_LocalPlayer() && selectedPlayers.size() == 1)) && AnimatedButton("Complete all Tasks")) {
+                    if ((!State.SafeMode || (selectedPlayer.is_LocalPlayer() && selectedPlayers.size() == 1)) && AnimatedButton("完成所有任务")) {
                         if (State.SafeMode) {
                             CompleteAllTasks();
                         }
@@ -851,18 +851,18 @@ namespace PlayersTab {
 
                         if (State.RevealRoles && PlayerIsImpostor(selectedPlayer.get_PlayerData()))
                         {
-                            ImGui::TextColored(ImVec4(0.8F, 0.2F, 0.0F, 1.0F), "Fake Tasks:");
+                            ImGui::TextColored(ImVec4(0.8F, 0.2F, 0.0F, 1.0F), "假任务:");
                         }
                         else
                         {
-                            ImGui::Text("Tasks:");
+                            ImGui::Text("任务:");
                         }
 
                         bool shouldEndListBox = ImGui::ListBoxHeader("###tasks#list"/*, ImVec2(181, 94) * State.dpiScale*/);
 
                         if (selectedPlayer.get_PlayerControl()->fields.myTasks == nullptr)
                         {
-                            ImGui::Text("ERROR: Could not load tasks.");
+                            ImGui::Text("错误: 无法加载任务.");
                         }
                         else
                         {
@@ -897,12 +897,12 @@ namespace PlayersTab {
                     bool cooldownActive = (State.NotifyWarned && (currentTime - State.LastWarnTime < 3.0));
 
                     ImVec2 buttonSize = ImVec2(0, 0);
-                    buttonSize = ImGui::CalcTextSize("Add Warn");
+                    buttonSize = ImGui::CalcTextSize("添加警告");
                     buttonSize.x += ImGui::GetStyle().FramePadding.x * 2;
                     buttonSize.y += ImGui::GetStyle().FramePadding.y * 2;
 
                     if (!cooldownActive) {
-                        if (ImGui::Button("Add Warn")) {
+                        if (ImGui::Button("添加警告")) {
                             if (strlen(warnReasonBuf) > 0) {
                                 std::string reasonStr = warnReasonBuf;
                                 State.WarnedFriendCodes[WarnedfriendCode] = warnCount + 1;
@@ -933,16 +933,16 @@ namespace PlayersTab {
                     }
 
                     ImGui::SameLine();
-                    ImGui::Text("Total Warns: %d", warnCount);
+                    ImGui::Text("总计警告: %d", warnCount);
 
-                    ImGui::InputText("Warn Reason", warnReasonBuf, IM_ARRAYSIZE(warnReasonBuf));
-                    ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Requirement: Enter Warn Reason.");
+                    ImGui::InputText("警告原因", warnReasonBuf, IM_ARRAYSIZE(warnReasonBuf));
+                    ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "要求: 输入警告原因.");
 
                     ImGui::NewLine();
 
                     auto& warnReasons = State.WarnReasons[WarnedfriendCode];
                     if (!warnReasons.empty()) {
-                        ImGui::Text("Warn Reasons:");
+                        ImGui::Text("警告原因:");
 
                         static int selectedReason = 0;
                         selectedReason = std::clamp(selectedReason, 0, (int)warnReasons.size() - 1);
@@ -961,7 +961,7 @@ namespace PlayersTab {
                         ImGui::PopItemWidth();
 
                         ImGui::SameLine();
-                        if (ImGui::Button("Delete")) {
+                        if (ImGui::Button("删除")) {
                             if (selectedReason >= 0 && selectedReason < (int)warnReasons.size()) {
                                 warnReasons.erase(warnReasons.begin() + selectedReason);
                                 selectedReason = 0;
@@ -980,14 +980,14 @@ namespace PlayersTab {
 
             if (openTrolling && selectedPlayer.has_value()) {
                 if ((IsHost() && IsInGame()) || !State.SafeMode) {
-                    if (AnimatedButton("Send Blank Chat As")) {
+                    if (AnimatedButton("发送空白聊天")) {
                         for (auto p : selectedPlayers) {
                             if (IsInGame()) State.rpcQueue.push(new RpcSendChatNote(p.validate().get_PlayerControl(), 1));
                             if (IsInLobby()) State.lobbyRpcQueue.push(new RpcSendChatNote(p.validate().get_PlayerControl(), 1));
                         }
                     }
                     ImGui::SameLine();
-                    if (AnimatedButton("Spam Blank Chat As")) {
+                    if (AnimatedButton("发送空白聊天轰炸")) {
                         for (auto p : selectedPlayers) {
                             if (IsInGame()) State.rpcQueue.push(new RpcSpamChatNote(p.validate().get_PlayerControl()));
                             if (IsInLobby()) State.lobbyRpcQueue.push(new RpcSpamChatNote(p.validate().get_PlayerControl()));
@@ -997,7 +997,7 @@ namespace PlayersTab {
 
                 if ((IsHost() || !State.SafeMode) && IsInGame() && selectedPlayers.size() == 1) {
                     if (!State.InMeeting) {
-                        if (AnimatedButton("Force Meeting By") && !GetPlayerData(selectedPlayer.get_PlayerControl())->fields.IsDead) {
+                        if (AnimatedButton("强制开启会议") && !GetPlayerData(selectedPlayer.get_PlayerControl())->fields.IsDead) {
                             if (IsHost() || !State.SafeMode) State.rpcQueue.push(new RpcForceReportBody(selectedPlayer.get_PlayerControl(), {}));
                             else {
                                 State.rpcQueue.push(new RpcReportBody(selectedPlayer));
@@ -1006,7 +1006,7 @@ namespace PlayersTab {
                         }
                     }
                     else {
-                        if (AnimatedButton("Force Meeting By")) {
+                        if (AnimatedButton("强制开启会议")) {
                             State.rpcQueue.push(new RpcForceMeeting(selectedPlayer.get_PlayerControl(), {}));
                         }
                     }
@@ -1015,7 +1015,7 @@ namespace PlayersTab {
                 if ((IsHost() || !State.SafeMode) && selectedPlayer.has_value() && IsInGame() && selectedPlayers.size() == 1) {
                     ImGui::SameLine();
                     if (!State.InMeeting) {
-                        if (!selectedPlayer.get_PlayerData()->fields.IsDead && AnimatedButton("Self-Report")) {
+                        if (!selectedPlayer.get_PlayerData()->fields.IsDead && AnimatedButton("自报告")) {
                             if (IsHost() || !State.SafeMode) State.rpcQueue.push(new RpcForceReportBody(selectedPlayer.get_PlayerControl(), selectedPlayer));
                             else {
                                 State.rpcQueue.push(new RpcReportBody(selectedPlayer));
@@ -1024,7 +1024,7 @@ namespace PlayersTab {
                         }
                     }
                     else {
-                        if (AnimatedButton("Self-Report")) {
+                        if (AnimatedButton("自报告")) {
                             State.rpcQueue.push(new RpcForceMeeting(selectedPlayer.get_PlayerControl(), State.selectedPlayer));
                         }
                     }
@@ -1062,65 +1062,65 @@ namespace PlayersTab {
                             }
                         }
                         ImGui::SetNextItemWidth(300 * State.dpiScale);
-                        if (ImGui::CollapsingHeader("Cosmetics Stealer")) {
+                        if (ImGui::CollapsingHeader("装扮窃取")) {
                             if (!State.SafeMode) {
-                                if (AnimatedButton("Name"))
+                                if (AnimatedButton("名称"))
                                     ImpersonateName(selectedPlayer.get_PlayerData());
                                 ImGui::SameLine();
                             }
                             if (IsHost() || !State.SafeMode) {
-                                if (AnimatedButton("Color") && queue != nullptr)
+                                if (AnimatedButton("颜色") && queue != nullptr)
                                     queue->push(new RpcForceColor(*Game::pLocalPlayer, colorId));
                                 ImGui::SameLine();
                             }
-                            if (AnimatedButton("Hat") && queue != nullptr)
+                            if (AnimatedButton("帽子") && queue != nullptr)
                                 queue->push(new RpcSetHat(hatId));
                             ImGui::SameLine();
-                            if (AnimatedButton("Skin") && queue != nullptr)
+                            if (AnimatedButton("皮肤") && queue != nullptr)
                                 queue->push(new RpcSetSkin(skinId));
 
-                            if (AnimatedButton("Visor") && queue != nullptr)
+                            if (AnimatedButton("面罩") && queue != nullptr)
                                 queue->push(new RpcSetVisor(visorId));
                             ImGui::SameLine();
-                            if (AnimatedButton("Pet") && queue != nullptr)
+                            if (AnimatedButton("宠物") && queue != nullptr)
                                 queue->push(new RpcSetPet(petId));
                             ImGui::SameLine();
-                            if (AnimatedButton("Nameplate") && queue != nullptr)
+                            if (AnimatedButton("铭牌") && queue != nullptr)
                                 queue->push(new RpcSetNamePlate(namePlateId));
                         }
 
                         ImGui::SetNextItemWidth(300 * State.dpiScale);
-                        if (ImGui::CollapsingHeader("Cosmetics Resetter")) {
+                        if (ImGui::CollapsingHeader("服饰重置")) {
                             ResetOriginalAppearance();
                             if (!State.SafeMode) {
-                                if (AnimatedButton("Name") && queue != nullptr)
+                                if (AnimatedButton("名称") && queue != nullptr)
                                     queue->push(new RpcSetName(State.originalName));
                                 ImGui::SameLine();
                             }
-                            if (AnimatedButton("Color") && queue != nullptr) {
+                            if (AnimatedButton("颜色") && queue != nullptr) {
                                 if (IsHost() || !State.SafeMode) queue->push(new RpcForceColor(*Game::pLocalPlayer, State.originalColor));
                                 else queue->push(new RpcSetColor(State.originalColor));
                             }
                             ImGui::SameLine();
-                            if (AnimatedButton("Hat") && queue != nullptr)
+                            if (AnimatedButton("帽子") && queue != nullptr)
                                 queue->push(new RpcSetHat(State.originalHat));
                             ImGui::SameLine();
-                            if (AnimatedButton("Skin") && queue != nullptr)
+                            if (AnimatedButton("皮肤") && queue != nullptr)
                                 queue->push(new RpcSetSkin(State.originalSkin));
 
-                            if (AnimatedButton("Visor") && queue != nullptr)
+                            if (AnimatedButton("面罩") && queue != nullptr)
                                 queue->push(new RpcSetVisor(State.originalVisor));
                             ImGui::SameLine();
-                            if (AnimatedButton("Pet") && queue != nullptr)
+                            if (AnimatedButton("宠物") && queue != nullptr)
                                 queue->push(new RpcSetPet(State.originalNamePlate));
                             ImGui::SameLine();
-                            if (AnimatedButton("Nameplate") && queue != nullptr)
+                            if (AnimatedButton("铭牌") && queue != nullptr)
                                 queue->push(new RpcSetNamePlate(State.originalNamePlate));
                         }
                     }
                 }
 
-                if (!State.SafeMode && AnimatedButton("Impersonate Everyone To") && selectedPlayers.size() == 1) {
+                if (!State.SafeMode && AnimatedButton("假扮所有人") && selectedPlayers.size() == 1) {
                     app::NetworkedPlayerInfo_PlayerOutfit* outfit = GetPlayerOutfit(selectedPlayer.get_PlayerData());
                     auto petId = outfit->fields.PetId;
                     auto skinId = outfit->fields.SkinId;
@@ -1153,28 +1153,28 @@ namespace PlayersTab {
 
                 if (State.activeImpersonation)
                 {
-                    if (AnimatedButton("Reset Impersonation"))
+                    if (AnimatedButton("重置伪装"))
                     {
                         ControlAppearance(false);
                     }
                 }
 
-                if (!State.SafeMode && IsInLobby() && AnimatedButton(selectedPlayers.size() == 1 ? "Allow Player to NoClip" : "Allow Players to NoClip")) {
+                if (!State.SafeMode && IsInLobby() && AnimatedButton(selectedPlayers.size() == 1 ? "允许玩家穿墙" : "允许玩家穿墙")) {
                     for (auto p : selectedPlayers) {
                         if (p.has_value() && p.validate().is_LocalPlayer()) State.NoClip = true;
                         else State.lobbyRpcQueue.push(new RpcMurderLoop(*Game::pLocalPlayer, p.validate().get_PlayerControl(), 1, true));
                         if (selectedPlayers.size() == 1) {
-                            ShowHudNotification(std::format("Allowed {} to NoClip!",
+                            ShowHudNotification(std::format("已允许 {} 穿墙!",
                                 convert_from_string(NetworkedPlayerInfo_get_PlayerName(p.validate().get_PlayerData(), NULL))));
                         }
                         else {
-                            ShowHudNotification(std::format("Allowed {} players to NoClip!", selectedPlayers.size()));
+                            ShowHudNotification(std::format("以允许 {} 个玩家穿墙!", selectedPlayers.size()));
                         }
                     }
                 }
 
                 if (!State.SafeMode) {
-                    if (AnimatedButton("Suicide")) {
+                    if (AnimatedButton("自杀")) {
                         for (auto p : selectedPlayers) {
                             auto validPlayer = p.validate();
                             if (IsInGame()) {
@@ -1188,7 +1188,7 @@ namespace PlayersTab {
                         }
                     }
                     ImGui::SameLine();
-                    if (AnimatedButton("Exile")) {
+                    if (AnimatedButton("放逐")) {
                         for (auto p : selectedPlayers) {
                             if (IsInGame()) State.rpcQueue.push(new RpcExiled(p.validate().get_PlayerControl(), true));
                             else State.lobbyRpcQueue.push(new RpcExiled(p.validate().get_PlayerControl(), true));
@@ -1198,11 +1198,11 @@ namespace PlayersTab {
 
                 if ((IsHost() || !State.SafeMode) && selectedPlayers.size() == 1) {
                     if (IsInGame()) {
-                        if (!State.murderLoop && AnimatedButton("Murder Loop")) {
+                        if (!State.murderLoop && AnimatedButton("循环击杀")) {
                             State.murderCount = 200; //controls how many times the player is to be murdered
                             State.murderLoop = true;
                         }
-                        if (State.murderLoop && AnimatedButton("Stop Murder Loop")) {
+                        if (State.murderLoop && AnimatedButton("停止击杀循环")) {
                             State.murderLoop = false;
                             State.murderCount = 0;
                         }
@@ -1229,20 +1229,20 @@ namespace PlayersTab {
 
                 if (!State.SafeMode && IsInGame() && selectedPlayers.size() == 1) {
                     ImGui::SameLine();
-                    if (!State.suicideLoop && AnimatedButton("Suicide Loop")) {
+                    if (!State.suicideLoop && AnimatedButton("循环自杀")) {
                         State.suicideCount = 200; //controls how many times the player is to be murdered
                         State.suicideLoop = true;
                     }
-                    if (State.suicideLoop && AnimatedButton("Stop Suicide Loop")) {
+                    if (State.suicideLoop && AnimatedButton("停止自杀循环")) {
                         State.suicideCount = 0;
                         State.suicideLoop = false;
                     }
                     ImGui::SameLine();
-                    ImGui::Text(std::format("Stop Suicide Loop ({})", 800 - State.suicideCount * 4).c_str());
+                    ImGui::Text(std::format("停止自杀循环 ({})", 800 - State.suicideCount * 4).c_str());
                 }
 
                 if (!State.SafeMode && selectedPlayers.size() == 1 && IsInGame()) {
-                    if (AnimatedButton("Kill Crewmates By")) {
+                    if (AnimatedButton("击杀船员")) {
                         for (auto player : GetAllPlayerControl()) {
                             if (!PlayerIsImpostor(GetPlayerData(player))) {
                                 if (!State.SafeMode) {
@@ -1268,7 +1268,7 @@ namespace PlayersTab {
                             }
                         }
                     }
-                    if (AnimatedButton("Kill Impostors By") && IsInGame()) {
+                    if (AnimatedButton("击杀伪装者") && IsInGame()) {
                         for (auto player : GetAllPlayerControl()) {
                             if (!State.SafeMode) {
                                 if (IsInGame()) {
@@ -1296,7 +1296,7 @@ namespace PlayersTab {
 
                 if (!State.SafeMode)
                 {
-                    if (selectedPlayers.size() == 1 && AnimatedButton("Shift Everyone To"))
+                    if (selectedPlayers.size() == 1 && AnimatedButton("将所有人转移到"))
                     {
                         for (auto player : GetAllPlayerControl()) {
                             if (player == selectedPlayer.get_PlayerControl()) continue; //skip the player itself
@@ -1309,7 +1309,7 @@ namespace PlayersTab {
                         }
                     }
                     ImGui::SameLine();
-                    if (AnimatedButton("Unshift Everyone"))
+                    if (AnimatedButton("停止转移所有人"))
                     {
                         for (auto player : GetAllPlayerControl()) {
                             if (IsInGame()) {
@@ -1323,7 +1323,7 @@ namespace PlayersTab {
                     if (selectedPlayers.size() == 1 && selectedPlayer.has_value()) {
                         auto roleType = selectedPlayer.get_PlayerData()->fields.RoleType;
                         if (roleType == RoleTypes__Enum::Phantom) {
-                            if (AnimatedButton("Force Vanish"))
+                            if (AnimatedButton("强制隐身"))
                             {
                                 for (auto p : selectedPlayers) {
                                     auto validPlayer = p.validate();
@@ -1336,7 +1336,7 @@ namespace PlayersTab {
                                 }
                             }
                             ImGui::SameLine();
-                            if (AnimatedButton("Force Appear"))
+                            if (AnimatedButton("强制显形"))
                             {
                                 for (auto p : selectedPlayers) {
                                     auto validPlayer = p.validate();
@@ -1353,7 +1353,7 @@ namespace PlayersTab {
                 }
                 ImGui::NewLine();
                 if ((IsHost() || !State.SafeMode) && State.InMeeting && selectedPlayers.size() == 1) {
-                    if (AnimatedButton("Vote Off")) {
+                    if (AnimatedButton("关闭投票")) {
                         State.VoteOffPlayerId = selectedPlayer.get_PlayerControl()->fields.PlayerId;
                         for (auto player : GetAllPlayerControl()) {
                             State.rpcQueue.push(new RpcVotePlayer(player, selectedPlayer.get_PlayerControl()));
@@ -1362,7 +1362,7 @@ namespace PlayersTab {
                 }
 
                 if (!selectedPlayer.is_LocalPlayer() && selectedPlayers.size() == 1) {
-                    if (AnimatedButton("Teleport To")) {
+                    if (AnimatedButton("传送至")) {
                         if (IsInGame())
                             State.rpcQueue.push(new RpcSnapTo(GetTrueAdjustedPosition(selectedPlayer.get_PlayerControl())));
                         else if (IsInLobby())
@@ -1371,7 +1371,7 @@ namespace PlayersTab {
                 }
                 ImGui::SameLine();
                 if (!selectedPlayer.is_LocalPlayer() && !State.SafeMode) {
-                    if (AnimatedButton("Teleport To You")) {
+                    if (AnimatedButton("传送到我")) {
                         for (auto p : selectedPlayers) {
                             if (IsInGame())
                                 State.rpcQueue.push(new RpcForceSnapTo(p.validate().get_PlayerControl(), GetTrueAdjustedPosition(*Game::pLocalPlayer)));
@@ -1398,7 +1398,7 @@ namespace PlayersTab {
                 }
 
                 if ((IsHost() || !State.SafeMode) && IsInGame() && selectedPlayers.size() == 1 && !selectedPlayer.get_PlayerData()->fields.IsDead) {
-                    if (AnimatedButton("Turn into Ghost"))
+                    if (AnimatedButton("变成幽灵"))
                     {
                         if (PlayerIsImpostor(selectedPlayer.get_PlayerData())) {
                             if (IsInGame())
@@ -1418,7 +1418,7 @@ namespace PlayersTab {
                 if ((IsHost() || !State.SafeMode) && (IsInGame() || IsInLobby()) && selectedPlayers.size() == 1) {
                     if (!IsInMultiplayerGame() || !selectedPlayer.get_PlayerControl()->fields.roleAssigned)
                     {
-                        if (CustomListBoxInt("Select Role", &State.FakeRole, FAKEROLES, 100.0f * State.dpiScale)) {
+                        if (CustomListBoxInt("选择身份", &State.FakeRole, FAKEROLES, 100.0f * State.dpiScale)) {
                             // for some reason, detective is 12 (0x0c) instead of 11, and viper is 18 (0x12) instead of 12
                             if (State.FakeRole == 12) State.FakeRoleId = State.FakeRole + 6;
                             else if (State.FakeRole == 11) State.FakeRoleId = State.FakeRole + 1;
@@ -1426,7 +1426,7 @@ namespace PlayersTab {
                             State.Save();
                         }
                         ImGui::SameLine();
-                        if (AnimatedButton("Set Role"))
+                        if (AnimatedButton("设置身份"))
                         {
                             if (IsInGame())
                                 State.rpcQueue.push(new RpcSetRole(selectedPlayer.get_PlayerControl(), RoleTypes__Enum(State.FakeRoleId)));
@@ -1436,10 +1436,10 @@ namespace PlayersTab {
                     }
                     else {
                         static int ghostRole = 0;
-                        if (CustomListBoxInt("Select Role", &ghostRole, GHOSTROLES, 100.0f * State.dpiScale))
+                        if (CustomListBoxInt("选择身份", &ghostRole, GHOSTROLES, 100.0f * State.dpiScale))
                             State.Save();
                         ImGui::SameLine();
-                        if (AnimatedButton("Set Role"))
+                        if (AnimatedButton("设置身份"))
                         {
                             auto roleType = RoleTypes__Enum::CrewmateGhost;
                             switch (ghostRole) {
@@ -1462,7 +1462,7 @@ namespace PlayersTab {
                 }
 
                 if (GameOptions().GetBool(BoolOptionNames__Enum::VisualTasks)) {
-                    if (!State.SafeMode && AnimatedButton("Set Scanner")) {
+                    if (!State.SafeMode && AnimatedButton("设置扫描器")) {
                         for (auto p : selectedPlayers) {
                             if (IsInGame())
                                 State.rpcQueue.push(new RpcForceScanner(p.validate().get_PlayerControl(), true));
@@ -1471,7 +1471,7 @@ namespace PlayersTab {
                         }
                     }
                     ImGui::SameLine();
-                    if (!State.SafeMode && AnimatedButton("Stop Scanner")) {
+                    if (!State.SafeMode && AnimatedButton("停止扫描器")) {
                         for (auto p : selectedPlayers) {
                             if (IsInGame())
                                 State.rpcQueue.push(new RpcForceScanner(p.validate().get_PlayerControl(), false));
@@ -1486,13 +1486,13 @@ namespace PlayersTab {
                     if ((IsInGame() || IsInLobby()) && !selectedPlayer.is_Disconnected() && !selectedPlayer.is_LocalPlayer())
                     {
                         if (State.playerToWhisper.equals(State.selectedPlayer) && State.activeWhisper) {
-                            if (AnimatedButton("Stop Whispering To")) {
+                            if (AnimatedButton("停止低声对话")) {
                                 State.playerToWhisper = {};
                                 State.activeWhisper = false;
                             }
                         }
                         else {
-                            if (AnimatedButton("Whisper To")) {
+                            if (AnimatedButton("低声对话")) {
                                 State.playerToWhisper = State.selectedPlayer;
                                 State.activeWhisper = true;
                             }
@@ -1505,7 +1505,7 @@ namespace PlayersTab {
                     }
                     ImGui::SameLine();*/
                     static std::string scMessage = "";
-                    if (AnimatedButton(!State.SafeMode ? "Force SickoChat" : "Fake SickoChat")) {
+                    if (AnimatedButton(!State.SafeMode ? "强制 SickoChat" : "假 SickoChat")) {
                         if (IsInGame()) State.rpcQueue.push(new RpcForceSickoChat(selectedPlayer, scMessage, !State.SafeMode));
                         if (IsInLobby()) State.lobbyRpcQueue.push(new RpcForceSickoChat(selectedPlayer, scMessage, !State.SafeMode));
                     }
@@ -1515,13 +1515,13 @@ namespace PlayersTab {
                     if (!State.SafeMode && (IsInGame() || IsInLobby()) && !selectedPlayer.is_Disconnected() && !selectedPlayer.is_LocalPlayer())
                     {
                         if (State.playerToChatAs.equals(State.selectedPlayer) && State.activeChatSpoof) {
-                            if (AnimatedButton("Stop Chatting As")) {
+                            if (AnimatedButton("停止聊天和")) {
                                 State.playerToChatAs = {};
                                 State.activeChatSpoof = false;
                             }
                         }
                         else {
-                            if (AnimatedButton("Chat As")) {
+                            if (AnimatedButton("聊天")) {
                                 State.playerToChatAs = State.selectedPlayer;
                                 State.activeChatSpoof = true;
                             }
@@ -1531,7 +1531,7 @@ namespace PlayersTab {
             }
             if (openInfo && selectedPlayer.has_value() && selectedPlayers.size() == 1 && !selectedPlayer.get_PlayerControl()->fields.notRealPlayer) {
                 ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
-                if (AnimatedButton("Steal Data")) {
+                if (AnimatedButton("偷取数据")) {
                     State.StealedPUID = convert_from_string(selectedPlayer.get_PlayerData()->fields.Puid);
                     State.StealedFC = convert_from_string(selectedPlayer.get_PlayerData()->fields.FriendCode);
                     State.Save();
@@ -1541,27 +1541,27 @@ namespace PlayersTab {
                     State.Save();
                 }
                 ImGui::Dummy(ImVec2(2, 2) * State.dpiScale);
-                if (InputString("Friend Code", &State.StealedFC)) {
+                if (InputString("好友代码", &State.StealedFC)) {
                     State.Save();
                 }
                 ImGui::Dummy(ImVec2(10, 10) * State.dpiScale);
                 {
-                    if (convert_from_string(selectedPlayer.get_PlayerData()->fields.Puid) != "" && AnimatedButton("Copy PUID"))
+                    if (convert_from_string(selectedPlayer.get_PlayerData()->fields.Puid) != "" && AnimatedButton("复制 PUID"))
                         ClipboardHelper_PutClipboardString(selectedPlayer.get_PlayerData()->fields.Puid, NULL);
                 }
                 ImGui::SameLine();
                 {
-                    if (convert_from_string(selectedPlayer.get_PlayerData()->fields.FriendCode) != "" && AnimatedButton("Copy Friend Code"))
+                    if (convert_from_string(selectedPlayer.get_PlayerData()->fields.FriendCode) != "" && AnimatedButton("复制好友代码"))
                         ClipboardHelper_PutClipboardString(selectedPlayer.get_PlayerData()->fields.FriendCode, NULL);
                 }
 
                 static int reportReason = 0;
-                if (AnimatedButton("Report Player")) {
+                if (AnimatedButton("报告玩家")) {
                     if (IsInGame()) State.rpcQueue.push(new ReportPlayer(selectedPlayer.get_PlayerControl(), (ReportReasons__Enum)reportReason));
                     if (IsInLobby()) State.lobbyRpcQueue.push(new ReportPlayer(selectedPlayer.get_PlayerControl(), (ReportReasons__Enum)reportReason));
                 }
 
-                ImGui::Text("Reason");
+                ImGui::Text("原因");
 
                 const std::vector<const char*> REPORTREASONS = { "Inappropriate Name", "Inappropriate Chat", "Cheating/Hacking", "Harassment/Misconduct" };
 
@@ -1573,13 +1573,13 @@ namespace PlayersTab {
                     static int banDays = 0, banHours = 0, banMinutes = 0, banSeconds = 0;
 
                     ImGui::PushItemWidth(200);
-                    ImGui::InputInt("Days", &banDays);     banDays = std::max<int>(0, banDays);
-                    ImGui::InputInt("Hours", &banHours);   banHours = std::clamp(banHours, 0, 23);
-                    ImGui::InputInt("Minutes", &banMinutes); banMinutes = std::clamp(banMinutes, 0, 59);
-                    ImGui::InputInt("Seconds", &banSeconds); banSeconds = std::clamp(banSeconds, 0, 59);
+                    ImGui::InputInt("天", &banDays);     banDays = std::max<int>(0, banDays);
+                    ImGui::InputInt("小时", &banHours);   banHours = std::clamp(banHours, 0, 23);
+                    ImGui::InputInt("分钟", &banMinutes); banMinutes = std::clamp(banMinutes, 0, 59);
+                    ImGui::InputInt("秒", &banSeconds); banSeconds = std::clamp(banSeconds, 0, 59);
                     ImGui::PopItemWidth();
 
-                    if (ImGui::Button("Confirm TempBan")) {
+                    if (ImGui::Button("同意临时封禁")) {
                         std::string targetFC = convert_from_string(selectedPlayer.get_PlayerData()->fields.FriendCode);
                         std::string selfFC = convert_from_string((*Game::pLocalPlayer)->fields.FriendCode);
                         if (!targetFC.empty() && targetFC != selfFC) {
@@ -1617,10 +1617,10 @@ namespace PlayersTab {
                     ImGui::NewLine(); //force a new line
 
                     if (!State.SafeMode) {
-                        if (InputString("Username", &forcedName)) {
+                        if (InputString("用户名", &forcedName)) {
                             State.Save();
                         }
-                        if (AnimatedButton("Force Name"))
+                        if (AnimatedButton("强制指定名称"))
                         {
                             if (IsInGame())
                                 State.rpcQueue.push(new RpcForceName(selectedPlayer.get_PlayerControl(), forcedName));
@@ -1631,7 +1631,7 @@ namespace PlayersTab {
 
                     CustomListBoxInt(" ", &forcedColor, COLORS, 85.0f * State.dpiScale);
                     ImGui::SameLine();
-                    if (AnimatedButton("Force Color"))
+                    if (AnimatedButton("强制指定颜色"))
                     {
                         if (IsInGame()) {
                             if (IsHost())
@@ -1649,8 +1649,8 @@ namespace PlayersTab {
 
                     if (!State.SafeMode && (IsInGame() || IsInLobby())) {
                         static int level = 0;
-                        ImGui::InputInt("Level", &level);
-                        if (AnimatedButton("Force Level")) {
+                        ImGui::InputInt("等级", &level);
+                        if (AnimatedButton("强制指定等级")) {
                             if (IsInGame())
                                 State.rpcQueue.push(new RpcSetLevel(selectedPlayer.get_PlayerControl(), level));
                             else if (IsInLobby())
