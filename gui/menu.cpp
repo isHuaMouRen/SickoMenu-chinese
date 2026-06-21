@@ -144,7 +144,7 @@ namespace Menu {
 		try {
 			if (!init)
 				Menu::Init();
-			std::string modText = std::format("SickoMenu {}", State.SickoVersion);
+			std::string modText = std::format("SickoMenu {}  汉化 by isHuaMouRen", State.SickoVersion);
 			ImGui::Begin("SickoMenu", &State.ShowMenu, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollWithMouse);
 			static ImVec4 titleCol = State.MenuThemeColor;
 			if (State.RgbMenuTheme)
