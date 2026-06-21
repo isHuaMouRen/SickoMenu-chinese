@@ -45,20 +45,20 @@ namespace ConsoleGui
 		else
 			titleCol = State.GradientMenuTheme ? State.MenuGradientColor : State.MenuThemeColor;
 		titleCol.w = 1.f;
-		ImGui::TextColored(titleCol, "Console");
+		ImGui::TextColored(titleCol, "控制台");
 		ImGui::SameLine(ImGui::GetWindowWidth() - 20 * State.dpiScale);
 		if (AnimatedButton("-")) State.ShowConsole = false; //minimize button
 		ImGui::BeginChild("console#filter", ImVec2(520, 40) * State.dpiScale, true, ImGuiWindowFlags_NoBackground);
-		ImGui::Text("Event Filter: ");
+		ImGui::Text("事件过滤器: ");
 		ImGui::SameLine();
-		CustomListBoxIntMultiple("Event Types", &ConsoleGui::event_filter, 100.f * State.dpiScale);
+		CustomListBoxIntMultiple("事件类型", &ConsoleGui::event_filter, 100.f * State.dpiScale);
 		if (IsInGame()) {
 			ImGui::SameLine(0.f * State.dpiScale, 5.f * State.dpiScale);
-			ImGui::Text("Player Filter: ");
+			ImGui::Text("玩家过滤器: ");
 			ImGui::SameLine();
-			CustomListBoxPlayerSelectionMultiple("Players", &ConsoleGui::player_filter, 150.f * State.dpiScale);
+			CustomListBoxPlayerSelectionMultiple("玩家", &ConsoleGui::player_filter, 150.f * State.dpiScale);
 		}
-		if (AnimatedButton("Clear Console")) {
+		if (AnimatedButton("清空控制台")) {
 			synchronized(Replay::replayEventMutex) {
 				State.liveConsoleEvents.clear();
 			}
