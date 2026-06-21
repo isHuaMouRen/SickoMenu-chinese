@@ -131,9 +131,9 @@ namespace Menu {
 			}
 		}
 		ImGui::TextColored(ImVec4(0.f, 0.f, 0.f, 0.f), "space");
-		if (searchResults.size() == 0) BoldText("No results.");
+		if (searchResults.size() == 0) BoldText("[汉化版搜索功能不可用]");
 		else {
-			BoldText(("Search Result" + std::string(searchResults.size() == 1 ? "" : "s")).c_str());
+			BoldText(("[汉化版搜索功能不可用]" + std::string(searchResults.size() == 1 ? "" : "s")).c_str());
 			for (std::string i : searchResults) {
 				ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.f), i.c_str());
 			}
@@ -165,7 +165,7 @@ namespace Menu {
 			ImGui::BeginChild("###SickoMenu", ImVec2(90 * State.dpiScale, 0), true, ImGuiWindowFlags_NoBackground);
 			// Search field
 			ImGui::SetNextItemWidth(90 * State.dpiScale); // Adjust the width of the input box
-			if (InputStringWithHint("##Search", "Search...", &State.searchQuery)/* && State.AprilFoolsMode*/) {
+			if (InputStringWithHint("##Search", "搜索中...", &State.searchQuery)/* && State.AprilFoolsMode*/) {
 				/*if (ToLower(searchQuery) == StrRev("nosduh")) {
 					State.AprilFoolsMode = !State.AprilFoolsMode;
 					if (!State.AprilFoolsMode) State.DiddyPartyMode = false;
@@ -174,44 +174,44 @@ namespace Menu {
 					State.DiddyPartyMode = !State.DiddyPartyMode;
 				}*/
 			}
-			if (ImGui::Selectable("About", openAbout)) {
+			if (ImGui::Selectable("关于", openAbout)) {
 				CloseAllOtherTabs(Tabs::About);
 			}
-			if (ImGui::Selectable("Settings", openSettings)) {
+			if (ImGui::Selectable("设置", openSettings)) {
 				CloseAllOtherTabs(Tabs::Settings);
 			}
-			if (ImGui::Selectable("Game", openGame)) {
+			if (ImGui::Selectable("游戏", openGame)) {
 				CloseAllOtherTabs(Tabs::Game);
 			}
-			if (ImGui::Selectable("Self", openSelf)) {
+			if (ImGui::Selectable("自己", openSelf)) {
 				CloseAllOtherTabs(Tabs::Self);
 			}
-			if (ImGui::Selectable("Radar", openRadar)) {
+			if (ImGui::Selectable("雷达", openRadar)) {
 				CloseAllOtherTabs(Tabs::Radar);
 			}
-			if (ImGui::Selectable("Replay", openReplay)) {
+			if (ImGui::Selectable("回放", openReplay)) {
 				CloseAllOtherTabs(Tabs::Replay);
 			}
 			if (ImGui::Selectable("ESP", openEsp)) {
 				CloseAllOtherTabs(Tabs::Esp);
 			}
-			if ((IsInGame() || IsInLobby()) && ImGui::Selectable("Players", openPlayers)) {
+			if ((IsInGame() || IsInLobby()) && ImGui::Selectable("玩家", openPlayers)) {
 				CloseAllOtherTabs(Tabs::Players);
 			}
-			if ((IsInGame() && GetPlayerData(*Game::pLocalPlayer)->fields.Tasks != NULL) && ImGui::Selectable("Tasks", openTasks)) {
+			if ((IsInGame() && GetPlayerData(*Game::pLocalPlayer)->fields.Tasks != NULL) && ImGui::Selectable("任务", openTasks)) {
 				CloseAllOtherTabs(Tabs::Tasks);
 			}
-			if (IsInGame() && ShipStatus__TypeInfo->static_fields->Instance != NULL && ImGui::Selectable("Sabotage", openSabotage)) {
+			if (IsInGame() && ShipStatus__TypeInfo->static_fields->Instance != NULL && ImGui::Selectable("破坏", openSabotage)) {
 				CloseAllOtherTabs(Tabs::Sabotage);
 			}
-			if ((IsInGame() && !State.mapDoors.empty()) && ImGui::Selectable("Doors", openDoors)) {
+			if ((IsInGame() && !State.mapDoors.empty()) && ImGui::Selectable("门", openDoors)) {
 				CloseAllOtherTabs(Tabs::Doors);
 			}
-			if (IsHost() && ImGui::Selectable("Host", openHost)) {
+			if (IsHost() && ImGui::Selectable("主持人", openHost)) {
 				CloseAllOtherTabs(Tabs::Host);
 			}
 #ifdef _DEBUG
-			if (State.showDebugTab && ImGui::Selectable("Debug", openDebug)) {
+			if (State.showDebugTab && ImGui::Selectable("调试", openDebug)) {
 				CloseAllOtherTabs(Tabs::Debug);
 			}
 #endif
@@ -221,7 +221,7 @@ namespace Menu {
 			ImVec4 GreenCol = ImVec4(0.f, 1.f, 0.f, 1.f);
 			if (!isPanicWarning) {
 				ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() - 90 * State.dpiScale, ImGui::GetWindowHeight() - 20 * State.dpiScale));
-				if (/*!State.AprilFoolsMode && */ColoredButton(PanicCol, "Disable Menu")) {
+				if (/*!State.AprilFoolsMode && */ColoredButton(PanicCol, "禁用菜单")) {
 					isPanicWarning = State.PanicWarning;
 					if (!State.PanicWarning) State.PanicMode = true;
 				}
@@ -236,20 +236,20 @@ namespace Menu {
 				ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() - 90 * State.dpiScale,
 					ImGui::GetWindowHeight() - 65 * State.dpiScale));
 				if (!panicKeybind) {
-					ImGui::TextColored(PanicCol, "No Panic");
-					ImGui::TextColored(PanicCol, "Keybind!");
+					ImGui::TextColored(PanicCol, "无恐慌");
+					ImGui::TextColored(PanicCol, "键已绑定!");
 				}
 				else {
-					ImGui::TextColored(PanicCol, ("Press " + (std::string)KeyBinds::ToString(State.KeyBinds.Toggle_Sicko)).c_str());
-					ImGui::TextColored(PanicCol, ("to re-enable!"));
+					ImGui::TextColored(PanicCol, ("按下 " + (std::string)KeyBinds::ToString(State.KeyBinds.Toggle_Sicko)).c_str());
+					ImGui::TextColored(PanicCol, ("重新启用!"));
 				}
-				ImGui::TextColored(PanicCol, "Continue?");
-				if (ColoredButton(PanicCol, "Yes")) {
+				ImGui::TextColored(PanicCol, "继续?");
+				if (ColoredButton(PanicCol, "是")) {
 					isPanicWarning = false;
 					State.PanicMode = true;
 				}
 				ImGui::SameLine();
-				if (ColoredButton(GreenCol, "No")) {
+				if (ColoredButton(GreenCol, "否")) {
 					isPanicWarning = false;
 				}
 			}
