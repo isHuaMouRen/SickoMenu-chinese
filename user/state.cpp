@@ -191,6 +191,7 @@ void Settings::Load() {
         JSON_TRYGET("MaxVision", this->MaxVision);
         JSON_TRYGET("Wallhack", this->Wallhack);
         JSON_TRYGET("FreeCamSpeed", this->FreeCamSpeed);
+        JSON_TRYGET("EnableZoom", this->EnableZoom);
         JSON_TRYGET("ZoomLevel", this->CameraHeight);
         JSON_TRYGET("UnlockVents", this->UnlockVents);
         JSON_TRYGET("UnlockKillButton", this->UnlockKillButton);
@@ -700,6 +701,7 @@ void Settings::Save() {
                 { "MaxVision", this->MaxVision },
                 { "Wallhack", this->Wallhack },
                 { "FreeCamSpeed", this->FreeCamSpeed },
+                { "EnableZoom", this->EnableZoom },
                 { "ZoomLevel", this->CameraHeight },
                 { "UnlockVents", this->UnlockVents },
                 { "UnlockKillButton", this->UnlockKillButton },
