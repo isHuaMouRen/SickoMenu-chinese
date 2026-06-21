@@ -22,14 +22,14 @@ namespace TasksTab {
 			}
 
 			if (tasks.size() != tasksCompleted) {
-				if (AnimatedButton("Complete All Tasks")) {
+				if (AnimatedButton("完成所有任务")) {
 					CompleteAllTasks();
 				}
 			}
 			if (!State.SafeMode) {
 				ImGui::SameLine();
 			}
-			if (!State.SafeMode && AnimatedButton("Complete Everyone's Tasks")) {
+			if (!State.SafeMode && AnimatedButton("完成所有人的任务")) {
 				for (auto player : GetAllPlayerControl()) {
 					CompleteAllTasks(player);
 				}
@@ -39,11 +39,11 @@ namespace TasksTab {
 
 			for (size_t i = 0; i < tasks.size(); ++i) {
 				auto task = tasks[i];
-				if (!NormalPlayerTask_get_IsComplete(task, NULL) && AnimatedButton(("Complete##" + std::to_string(task->fields._._Id_k__BackingField)).c_str())) {
+				if (!NormalPlayerTask_get_IsComplete(task, NULL) && AnimatedButton(("完成##" + std::to_string(task->fields._._Id_k__BackingField)).c_str())) {
 					State.taskRpcQueue.push(new RpcCompleteTask(task->fields._._Id_k__BackingField));
 				}
 				else if (NormalPlayerTask_get_IsComplete(task, NULL)) {
-					ColoredButton(ImVec4(0.f, 1.f, 0.f, 1.f), ("Completed!##" + std::to_string(task->fields._._Id_k__BackingField)).c_str());
+					ColoredButton(ImVec4(0.f, 1.f, 0.f, 1.f), ("已完成！##" + std::to_string(task->fields._._Id_k__BackingField)).c_str());
 				}
 
 				ImGui::SameLine();
@@ -62,25 +62,25 @@ namespace TasksTab {
 			//}
 
 			GameOptions options;
-			if (!options.GetBool(app::BoolOptionNames__Enum::VisualTasks) && ToggleButton("Bypass Visual Tasks Being Off", &State.BypassVisualTasks))
+			if (!options.GetBool(app::BoolOptionNames__Enum::VisualTasks) && ToggleButton("绕过任务不可视", &State.BypassVisualTasks))
 				State.Save();
 
 			if (options.GetGameMode() == GameModes__Enum::Normal && !options.GetBool(app::BoolOptionNames__Enum::VisualTasks)) {
-				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Visual tasks are turned OFF in this lobby.");
-				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Any animations (other than cameras) are client-sided only!");
+				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "此大厅中的任务可视已关闭.");
+				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "除摄像头外的所有动画均为仅客户端可见!");
 			}
 			else if (options.GetGameMode() == GameModes__Enum::HideNSeek)
-				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Animations other than cameras are client-sided only in Hide n Seek!");
+				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "在 躲猫猫 模式中，除摄像头外的动画仅客户端可见!");
 
 			if (State.mapType == Settings::MapType::Ship) {
 				if (!State.BypassVisualTasks && (options.GetGameMode() == GameModes__Enum::Normal && !options.GetBool(app::BoolOptionNames__Enum::VisualTasks)) || options.GetGameMode() == GameModes__Enum::HideNSeek) {
-					if (AnimatedButton("Play Shields Animation (Client-sided)"))
+					if (AnimatedButton("播放盾牌动画 (仅客户端)"))
 					{
 						State.rpcQueue.push(new RpcPlayAnimation(1));
 					}
 				}
 				else {
-					if (AnimatedButton("Play Shields Animation"))
+					if (AnimatedButton("播放盾牌动画"))
 					{
 						State.rpcQueue.push(new RpcPlayAnimation(1));
 					}
@@ -89,13 +89,13 @@ namespace TasksTab {
 
 			if (State.mapType == Settings::MapType::Ship) {
 				if (!State.BypassVisualTasks && (options.GetGameMode() == GameModes__Enum::Normal && !options.GetBool(app::BoolOptionNames__Enum::VisualTasks)) || options.GetGameMode() == GameModes__Enum::HideNSeek) {
-					if (AnimatedButton("Play Trash Animation (Client-sided)"))
+					if (AnimatedButton("播放垃圾动画 (仅客户端)"))
 					{
 						State.rpcQueue.push(new RpcPlayAnimation(10));
 					}
 				}
 				else {
-					if (AnimatedButton("Play Trash Animation"))
+					if (AnimatedButton("播放垃圾动画"))
 					{
 						State.rpcQueue.push(new RpcPlayAnimation(10));
 					}
@@ -105,13 +105,13 @@ namespace TasksTab {
 			if (State.mapType == Settings::MapType::Ship || State.mapType == Settings::MapType::Pb) {
 
 				if (!State.BypassVisualTasks && (options.GetGameMode() == GameModes__Enum::Normal && !options.GetBool(app::BoolOptionNames__Enum::VisualTasks)) || options.GetGameMode() == GameModes__Enum::HideNSeek) {
-					if (ToggleButton("Play Weapons Animation (Client-sided)", &State.PlayWeaponsAnimation))
+					if (ToggleButton("播放小行星武器动画 (仅客户端)", &State.PlayWeaponsAnimation))
 					{
 						State.Save();
 					}
 				}
 				else {
-					if (ToggleButton("Play Weapons Animation", &State.PlayWeaponsAnimation))
+					if (ToggleButton("播放小行星武器动画", &State.PlayWeaponsAnimation))
 					{
 						State.Save();
 					}
@@ -119,7 +119,7 @@ namespace TasksTab {
 			}
 
 			if (!State.BypassVisualTasks && (options.GetGameMode() == GameModes__Enum::Normal && !options.GetBool(app::BoolOptionNames__Enum::VisualTasks)) || options.GetGameMode() == GameModes__Enum::HideNSeek) {
-				if (ToggleButton("Play Medbay Scan Animation (Client-sided)", &State.PlayMedbayScan))
+				if (ToggleButton("播放扫描仪动画 (仅客户端)", &State.PlayMedbayScan))
 				{
 					if (State.PlayMedbayScan)
 					{
@@ -132,7 +132,7 @@ namespace TasksTab {
 				}
 			}
 			else {
-				if (ToggleButton("Play Medbay Scan Animation", &State.PlayMedbayScan))
+				if (ToggleButton("播放扫描仪动画", &State.PlayMedbayScan))
 				{
 					if (State.PlayMedbayScan)
 					{
@@ -145,14 +145,14 @@ namespace TasksTab {
 				}
 			}
 
-			if (!(State.mapType == Settings::MapType::Hq || State.mapType == Settings::MapType::Fungle) && ToggleButton("Fake Cameras In Use", &State.FakeCameraUsage))
+			if (!(State.mapType == Settings::MapType::Hq || State.mapType == Settings::MapType::Fungle) && ToggleButton("假摄像头使用中", &State.FakeCameraUsage))
 			{
 				State.rpcQueue.push(new RpcUpdateSystem(SystemTypes__Enum::Security, (State.FakeCameraUsage ? 1 : 0)));
 			}
 
 			if (IsInMultiplayerGame() && IsInGame()) {
 				float taskPercentage = (float)(*Game::pGameData)->fields.CompletedTasks / (float)(*Game::pGameData)->fields.TotalTasks;
-				ImGui::TextColored(ImVec4(1.0f - taskPercentage, 1.0f, 1.0f - taskPercentage, 1.0f), "%.2f%% Total Tasks Completed", taskPercentage * 100);
+				ImGui::TextColored(ImVec4(1.0f - taskPercentage, 1.0f, 1.0f - taskPercentage, 1.0f), "已完成 %.2f%% 项任务", taskPercentage * 100);
 			}
 
 			ImGui::EndChild();
