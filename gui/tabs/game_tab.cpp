@@ -1366,22 +1366,22 @@ namespace GameTab {
 
             ImGui::Dummy(ImVec2(5, 5)* State.dpiScale);
 
-            if (ImGui::CollapsingHeader("Lobby History")) {
+            if (ImGui::CollapsingHeader("大厅历史")) {
                 if (State.LobbyHistory.empty()) {
-                    ImGui::TextDisabled("No lobbies visited yet.");
+                    ImGui::TextDisabled("尚未访问过任何大厅.");
                 }
                 else {
-                    if (SliderIntV2("Lobbies to Show", &State.LobbyHistoryLimit, 1, 50, "%d", ImGuiSliderFlags_NoInput))
+                    if (SliderIntV2("展示的大厅", &State.LobbyHistoryLimit, 1, 50, "%d", ImGuiSliderFlags_NoInput))
                         State.Save();
                     int displayCount = (int)State.LobbyHistory.size() < State.LobbyHistoryLimit ? (int)State.LobbyHistory.size() : State.LobbyHistoryLimit;
-                    ImGui::Text("Last %d/%d lobbies:", displayCount, State.LobbyHistoryLimit);
+                    ImGui::Text("最后 %d/%d 个大厅:", displayCount, State.LobbyHistoryLimit);
                     ImGui::Columns(3, "lobbyHistoryCols", false);
                     ImGui::SetColumnWidth(0, 80 * State.dpiScale);
                     ImGui::SetColumnWidth(1, 120 * State.dpiScale);
                     ImGui::SetColumnWidth(2, 160 * State.dpiScale);
 
-                    ImGui::TextDisabled("Code"); ImGui::NextColumn();
-                    ImGui::TextDisabled("Host"); ImGui::NextColumn();
+                    ImGui::TextDisabled("代码"); ImGui::NextColumn();
+                    ImGui::TextDisabled("主持人"); ImGui::NextColumn();
                     ImGui::NextColumn();
                     ImGui::Separator();
 
@@ -1391,17 +1391,17 @@ namespace GameTab {
                         lobbyCount++;
                         ImGui::Text("%s", lobby.Code.c_str());
                         ImGui::NextColumn();
-                        ImGui::Text("%s", lobby.HostName.empty() ? "Unknown" : lobby.HostName.c_str());
+                        ImGui::Text("%s", lobby.HostName.empty() ? "未知" : lobby.HostName.c_str());
                         ImGui::NextColumn();
-                        if (AnimatedButton(("Copy##" + lobby.Code).c_str()))
+                        if (AnimatedButton(("复制##" + lobby.Code).c_str()))
                             ImGui::SetClipboardText(lobby.Code.c_str());
                         ImGui::SameLine();
-                        if (AnimatedButton(("Join##" + lobby.Code).c_str())) {
+                        if (AnimatedButton(("加入##" + lobby.Code).c_str())) {
                             State.AutoJoinLobbyCode = lobby.Code;
                             State.AutoJoinLobby = true;
                         }
                         ImGui::SameLine();
-                        if (AnimatedButton(("Clear##" + lobby.Code).c_str())) {
+                        if (AnimatedButton(("清除##" + lobby.Code).c_str())) {
                             State.LobbyHistory.erase(std::remove_if(State.LobbyHistory.begin(), State.LobbyHistory.end(),
                                 [&lobby](const auto& l) { return l.Code == lobby.Code; }), State.LobbyHistory.end());
                             break;
@@ -1411,7 +1411,7 @@ namespace GameTab {
                     ImGui::Columns(1);
 
                     ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
-                    if (AnimatedButton("Clear History##lobby"))
+                    if (AnimatedButton("清除历史##lobby"))
                         State.LobbyHistory.clear();
                 }
             }
