@@ -1072,7 +1072,7 @@ namespace GameTab {
         }
 
         if (openHistory) {
-            ImGui::Text("Last 100 players:");
+            ImGui::Text("最后100位玩家:");
 
             static std::string historySearchBuf = "";
             ImGui::SetNextItemWidth(200);
@@ -1080,7 +1080,7 @@ namespace GameTab {
             ImGui::SameLine();
             ImGui::TextDisabled("搜索");
             if (ImGui::IsItemHovered())
-                ImGui::SetTooltip("Filter by name, friend code, or PUID");
+                ImGui::SetTooltip("过滤名字, 好友代码, 或 PUID");
            
             static int selectedIndex = -1;
 
