@@ -1353,34 +1353,34 @@ std::string GetRoleName(RoleBehaviour* roleBehaviour, bool abbreviated /* = fals
     switch (roleBehaviour->fields.Role)
     {
     case RoleTypes__Enum::Engineer:
-        return (abbreviated ? "Eng" : "Engineer");
+        return (abbreviated ? "工程" : "工程师");
     case RoleTypes__Enum::GuardianAngel:
-        return (abbreviated ? "GA" : "Guardian Angel");
+        return (abbreviated ? "守护" : "守护天使");
     case RoleTypes__Enum::Impostor:
-        return (abbreviated ? "Imp" : "Impostor");
+        return (abbreviated ? "伪装" : "伪装者");
     case RoleTypes__Enum::Scientist:
-        return (abbreviated ? "Sci" : "Scientist");
+        return (abbreviated ? "科学" : "科学家");
     case RoleTypes__Enum::Shapeshifter:
-        return (abbreviated ? "SS" : "Shapeshifter");
+        return (abbreviated ? "变形" : "变形者");
     case RoleTypes__Enum::Crewmate:
-        return (abbreviated ? "Crew" : "Crewmate");
+        return (abbreviated ? "船员" : "船员");
     case RoleTypes__Enum::CrewmateGhost:
-        return (abbreviated ? "CG" : "Crewmate Ghost");
+        return (abbreviated ? "船员幽灵" : "船员幽灵");
     case RoleTypes__Enum::ImpostorGhost:
-        return (abbreviated ? "IG" : "Impostor Ghost");
+        return (abbreviated ? "伪装者幽灵" : "伪装者幽灵");
     case RoleTypes__Enum::Noisemaker:
-        return (abbreviated ? "NM" : "Noisemaker");
+        return (abbreviated ? "大嗓门" : "大嗓门");
     case (RoleTypes__Enum)10:
     case RoleTypes__Enum::Tracker:
-        return (abbreviated ? "Tra" : "Tracker");
+        return (abbreviated ? "侦查" : "侦查者");
     case RoleTypes__Enum::Phantom:
-        return (abbreviated ? "Ph" : "Phantom");
+        return (abbreviated ? "幻象" : "幻象师");
     case RoleTypes__Enum::Detective:
-        return (abbreviated ? "Det" : "Detective");
+        return (abbreviated ? "侦探" : "侦探");
     case RoleTypes__Enum::Viper:
-        return (abbreviated ? "Vip" : "Viper");
+        return (abbreviated ? "毒蛇" : "毒蛇");
     default:
-        return (abbreviated ? "Unk" : "Unknown");
+        return (abbreviated ? "未知" : "未知");
     }
 }
 
