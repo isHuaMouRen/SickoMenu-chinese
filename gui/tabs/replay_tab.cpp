@@ -12,7 +12,7 @@ namespace ReplayTab {
 		if (ToggleButton("显示回放", &State.ShowReplay)) {
 			State.Save();
 		}
-		if (ToggleButton("仅显示上次", &State.Replay_ShowOnlyLastSeconds))
+		if (ToggleButton("仅显示最后", &State.Replay_ShowOnlyLastSeconds))
 		{
 			State.Save();
 		}

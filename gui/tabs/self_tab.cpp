@@ -589,7 +589,7 @@ namespace SelfTab {
             ImGui::SameLine();
             if (ToggleButton("无搜索者动画", &State.NoSeekerAnim)) State.Save();
 
-            if (ToggleButton("杀死其他伪装者", &State.KillImpostors)) {
+            if (ToggleButton("可杀死其他伪装者", &State.KillImpostors)) {
                 State.Save();
             }
             ImGui::SameLine();
@@ -597,7 +597,7 @@ namespace SelfTab {
                 State.Save();
             }
 
-            if (ToggleButton("更好的聊天消息", &State.BetterChatNotifications)) {
+            if (ToggleButton("更好的聊天提醒", &State.BetterChatNotifications)) {
                 State.Save();
             }
             ImGui::SameLine();

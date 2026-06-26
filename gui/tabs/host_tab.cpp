@@ -277,7 +277,7 @@ namespace HostTab {
                     State.CancelingStartGame = true;
                 }
 
-                if (ToggleButton("总是允许开始按钮", &State.AlwaysAllowStart))
+                if (ToggleButton("强制启用开始按钮", &State.AlwaysAllowStart))
                     State.Save();
 
                 if (ToggleButton("修改开始倒计时", &State.ModifyStartCountdown))
@@ -427,7 +427,7 @@ namespace HostTab {
                     State.Save();
                 }
 
-                if (ToggleButton("禁用 Medbay 扫描", &State.DisableMedbayScan)) {
+                if (ToggleButton("禁用扫描", &State.DisableMedbayScan)) {
                     State.Save();
                 }
 

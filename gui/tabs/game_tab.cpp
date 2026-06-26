@@ -191,7 +191,7 @@ namespace GameTab {
 
         if (openGeneral) {
             ImGui::Dummy(ImVec2(2, 2) * State.dpiScale);
-            if (SteppedSliderFloat("玩家速度倍增", &State.PlayerSpeed, 0.f, 10.f, 0.05f, "%.2fx", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
+            if (SteppedSliderFloat("移动速度", &State.PlayerSpeed, 0.f, 10.f, 0.05f, "%.2fx", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
                 State.PrevPlayerSpeed = State.PlayerSpeed;
             }
             if (SteppedSliderFloat("击杀距离", &State.KillDistance, 0.f, 20.f, 0.1f, "%.1f m", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
@@ -205,7 +205,7 @@ namespace GameTab {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("应用速度倍增", &State.MultiplySpeed)) {
+            if (ToggleButton("应用移动速度", &State.MultiplySpeed)) {
                 State.Save();
             }
             ImGui::SameLine();
@@ -249,7 +249,7 @@ namespace GameTab {
                 }
             }
             ImGui::SameLine();
-            if (ToggleButton("追踪颜色", &State.SnipeColor)) {
+            if (ToggleButton("狙击颜色", &State.SnipeColor)) {
                 State.Save();
             }
 
@@ -298,7 +298,7 @@ namespace GameTab {
                     if (p != *Game::pLocalPlayer) State.lobbyRpcQueue.push(new RpcMurderLoop(*Game::pLocalPlayer, p, 1, true));
                 }
                 State.NoClip = true;
-                ShowHudNotification("以允许所有人穿墙！");
+                ShowHudNotification("已允许所有人穿墙！");
             }
             /*if (IsHost() && (IsInGame() || IsInLobby()) && AnimatedButton("Spawn Dummy")) {
                 auto outfit = GetPlayerOutfit(GetPlayerData(*Game::pLocalPlayer));

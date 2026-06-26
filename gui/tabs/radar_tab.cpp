@@ -31,7 +31,7 @@ namespace RadarTab {
 		ImGui::Separator();
 		ImGui::Dummy(ImVec2(7, 7) * State.dpiScale);
 
-		if (ToggleButton("开会期间隐藏雷达", &State.HideRadar_During_Meetings)) {
+		if (ToggleButton("会议期间隐藏雷达", &State.HideRadar_During_Meetings)) {
 			State.Save();
 		}
 		if (ToggleButton("绘制玩家图标", &State.RadarDrawIcons)) {

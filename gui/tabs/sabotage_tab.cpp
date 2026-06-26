@@ -132,7 +132,7 @@ namespace SabotageTab {
                 }
             }
             else if (State.mapType == Settings::MapType::Airship) {
-                if (AnimatedButton("破坏坠机风险")) {
+                if (AnimatedButton("坠机风险")) {
                     State.rpcQueue.push(new RpcUpdateSystem(SystemTypes__Enum::HeliSabotage, 128));
                 }
             }
@@ -146,7 +146,7 @@ namespace SabotageTab {
                     State.rpcQueue.push(new RpcUpdateSystem(SystemTypes__Enum::MushroomMixupSabotage, 1));
                 }
             }
-            if (AnimatedButton("破坏通信")) {
+            if (AnimatedButton("破坏通讯")) {
                 State.rpcQueue.push(new RpcUpdateSystem(SystemTypes__Enum::Comms, 128));
             }
 
@@ -169,7 +169,7 @@ namespace SabotageTab {
                 }
             }
             ImGui::SameLine();
-            if (ToggleButton("破坏灯光 (自动移动开关)", &State.DisableLightSwitches)) State.Save();
+            if (ToggleButton("破坏灯光 (混乱切换开关)", &State.DisableLightSwitches)) State.Save();
 
             if (ToggleButton("禁用修复通信", &State.DisableComms)) State.Save();
 
