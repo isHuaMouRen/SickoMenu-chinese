@@ -438,6 +438,13 @@ void dInnerNetClient_Update(InnerNetClient* __this, MethodInfo* method)
                 State.Save();
             }
 
+            // Resolve missing host name when joining through a code / invite using GetHostUsername which is known to work
+            if (!State.LobbyHistory.empty() && State.LobbyHistory.front().HostName.empty() && IsInLobby()) {
+                std::string host = GetHostUsername();
+                if (!host.empty())
+                    State.LobbyHistory.front().HostName = RemoveHtmlTags(host);
+            }
+
             static int joinDelay = 0;
             if (joinDelay > 0) joinDelay--;
             if (State.AutoJoinLobby && joinDelay <= 0) {
@@ -736,6 +743,47 @@ void dInnerNetClient_Update(InnerNetClient* __this, MethodInfo* method)
                 if (IsHost() && IsInLobby() && State.AutoStartGame && (600 - State.LobbyTimer) >= State.AutoStartTimer && !autoStartedGame) {
                     autoStartedGame = true;
                     InnerNetClient_SendStartGame(__this, NULL);
+                }
+
+                if (IsHost() && IsInGame() && State.AutoKickSlackers) {
+                    static float slackerTimer = 0.f;
+                    slackerTimer += Time_get_deltaTime(NULL);
+                    if (slackerTimer >= (float)State.AutoKickSlackersGrace) {
+                        for (auto pc : GetAllPlayerControl()) {
+                            if (pc == nullptr || pc == *Game::pLocalPlayer) continue;
+                            auto pd = GetPlayerData(pc);
+                            if (pd == nullptr || pd->fields.Disconnected || pd->fields.IsDead) continue;
+                            auto tasks = GetNormalPlayerTasks(pc);
+                            if (tasks.empty()) continue;
+                            int total = (int)tasks.size();
+                            int completed = 0;
+                            for (auto task : tasks) {
+                                if (task != nullptr && NormalPlayerTask_get_IsComplete(task, NULL))
+                                    completed++;
+                            }
+                            int pct = (total > 0) ? (completed * 100 / total) : 100;
+                            if (pct < State.AutoKickSlackersThreshold) {
+                                std::string fc = convert_from_string(pd->fields.FriendCode);
+                                bool whitelisted = std::find(State.WhitelistFriendCodes.begin(), State.WhitelistFriendCodes.end(), fc) != State.WhitelistFriendCodes.end();
+                                if (!whitelisted || !State.AutoKickSlackersIgnoreWhitelist) {
+                                    std::string playerName = convert_from_string(NetworkedPlayerInfo_get_PlayerName(pd, NULL));
+                                    LOG_DEBUG("Task Enforcer: kicking " + playerName + " (" + std::to_string(pct) + "% tasks)");
+                                    InnerNetClient_KickPlayer((InnerNetClient*)(*Game::pAmongUsClient), pc->fields._.OwnerId, false, NULL);
+                                    if (auto* notifier = (NotificationPopper*)Game::HudManager.GetInstance()->fields.Notifier) {
+                                        auto* spriteBackup = new Sprite(*notifier->fields.playerDisconnectSprite);
+                                        Color colorBackup = notifier->fields.disconnectColor;
+                                        notifier->fields.playerDisconnectSprite = notifier->fields.settingsChangeSprite;
+                                        notifier->fields.disconnectColor = Color(1.0f, 0.5f, 0.0f, 1.0f);
+                                        std::string msg = std::format("<#FFF><b>{}</b></color> was kicked by Task Enforcer ({}/{}% tasks)", playerName, pct, State.AutoKickSlackersThreshold);
+                                        NotificationPopper_AddDisconnectMessage(notifier, convert_to_string(msg), NULL);
+                                        notifier->fields.playerDisconnectSprite = spriteBackup;
+                                        notifier->fields.disconnectColor = colorBackup;
+                                    }
+                                }
+                            }
+                        }
+                        slackerTimer = 0.f;
+                    }
                 }
 
                 /*if (IsHost() && State.AutoStartGamePlayers && IsInLobby() && !editingAutoStartPlayerCount && !autoStartedGame) {  //this makes sure they dont start the game by mistake, if they are typing a 2 digit number eg 12
@@ -1378,6 +1426,7 @@ void dAmongUsClient_OnGameJoined(AmongUsClient* __this, String* gameIdString, Me
                 State.LobbyHistory.push_front(lobby);
                 while ((int)State.LobbyHistory.size() > State.LobbyHistoryMaxStored)
                     State.LobbyHistory.pop_back();
+                State.Save();
             }
             State.LobbyHostCache.clear();
 

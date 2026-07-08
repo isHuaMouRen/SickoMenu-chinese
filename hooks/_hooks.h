@@ -157,7 +157,7 @@ void dPlayerControl_OnDestroy(PlayerControl* __this, MethodInfo* method);
 void dMapCountOverlay_OnEnable(MapCountOverlay* __this, MethodInfo* method);
 void dMapCountOverlay_OnDisable(MapCountOverlay* __this, MethodInfo* method);
 void dBanMenu_Select(BanMenu* __this, int32_t clientId, MethodInfo* method);
-void* dIntroCutscene_ShowTeam (IntroCutscene* __this, List_1_PlayerControl_* teamToShow, float duration, MethodInfo* method);
+void* dIntroCutscene_ShowTeam(IntroCutscene* __this, List_1_PlayerControl_* teamToShow, float duration, MethodInfo* method);
 int32_t dLogicOptionsHnS_GetCrewmateLeadTime(LogicOptionsHnS* __this, MethodInfo* method);
 void dGameContainer_SetupGameInfo(GameContainer* __this, MethodInfo* method);
 void dChatNotification_SetUp(ChatNotification* __this, PlayerControl* sender, String* text, MethodInfo* method);

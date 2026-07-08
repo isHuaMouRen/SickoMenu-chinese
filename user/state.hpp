@@ -560,6 +560,10 @@ public:
     Game::PlayerId VoteOffPlayerId = Game::HasNotVoted;
     bool LevelFarm = false;
     bool AutoStartGame = false;
+    bool AutoKickSlackers = false;
+    bool AutoKickSlackersIgnoreWhitelist = true;
+    int AutoKickSlackersThreshold = 50; 
+    int AutoKickSlackersGrace = 60; 
     int AutoStartTimer = 60;
     bool AutoStartGamePlayers = false;
     int AutoStartPlayerCount = 15;
