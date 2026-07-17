@@ -1072,7 +1072,9 @@ namespace GameTab {
         }
 
         if (openHistory) {
-            ImGui::Text("最后100位玩家:");
+            ImGui::Dummy(ImVec2(0, 3)* State.dpiScale);
+            if (ImGui::CollapsingHeader("玩家历史", ImGuiTreeNodeFlags_DefaultOpen)) {
+                ImGui::Text("最后100位玩家:");
 
             static std::string historySearchBuf = "";
             ImGui::SetNextItemWidth(200);
@@ -1365,8 +1367,9 @@ namespace GameTab {
             }
 
             ImGui::Dummy(ImVec2(5, 5)* State.dpiScale);
+            }
 
-            if (ImGui::CollapsingHeader("大厅历史")) {
+            if (ImGui::CollapsingHeader("大厅历史", ImGuiTreeNodeFlags_DefaultOpen)) {
                 if (State.LobbyHistory.empty()) {
                     ImGui::TextDisabled("尚未访问过任何大厅.");
                 }

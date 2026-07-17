@@ -155,7 +155,26 @@ namespace TasksTab {
 				ImGui::TextColored(ImVec4(1.0f - taskPercentage, 1.0f, 1.0f - taskPercentage, 1.0f), "已完成 %.2f%% 项任务", taskPercentage * 100);
 			}
 
+			if (IsHost()) {
+				ImGui::Dummy(ImVec2(7, 7) * State.dpiScale);
+				ImGui::Separator();
+				ImGui::Dummy(ImVec2(7, 7) * State.dpiScale);
+				if (ImGui::CollapsingHeader("Task Enforcer")) {
+					ImGui::Dummy(ImVec2(5, 5) * State.dpiScale);
+					if (ToggleButton("Auto Kick Slackers", &State.AutoKickSlackers))
+						State.Save();
+					ImGui::SameLine();
+					if (ToggleButton("Ignore Whitelisted Players", &State.AutoKickSlackersIgnoreWhitelist))
+						State.Save();
+					ImGui::Text("Kicks players below task threshold after grace period.");
+					if (SliderIntV2("Task Threshold %", &State.AutoKickSlackersThreshold, 1, 100, "%d%%", ImGuiSliderFlags_NoInput))
+						State.Save();
+					if (SliderIntV2("Grace Period (sec)", &State.AutoKickSlackersGrace, 10, 500, "%ds", ImGuiSliderFlags_NoInput))
+						State.Save();
+				}
+			}
+
 			ImGui::EndChild();
-		}
 	}
+}
 }
