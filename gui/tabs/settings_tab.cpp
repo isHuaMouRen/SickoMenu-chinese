@@ -29,6 +29,12 @@ namespace SettingsTab {
 		openKeybinds = group == Groups::Keybinds;
 	}
 
+	void OpenSubGroup(const std::string& name) {
+		if (name == "General") CloseOtherGroups(Groups::General);
+		else if (name == "Spoofing") CloseOtherGroups(Groups::Spoofing);
+		else if (name == "Customization") CloseOtherGroups(Groups::Customization);
+		else if (name == "Keybinds") CloseOtherGroups(Groups::Keybinds);
+	}
 	void CheckKeybindEdit(bool hotKey) {
 		State.KeybindsBeingEdited = State.KeybindsBeingEdited || hotKey;
 	}
@@ -479,37 +485,37 @@ namespace SettingsTab {
 				SteppedSliderFloat("圆角半径倍数", &State.RoundingRadiusMultiplier, 0.f, 2.f, 0.01f, "%.2f", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput);
 			}
 
-			if (ImGui::CollapsingHeader("身份颜色")) {
-				ImGui::ColorEdit4("船员幽灵", (float*)&State.CrewmateGhostColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
-				ImGui::SameLine(150.f * State.dpiScale);
+			if (ImGui::CollapsingHeader("角色颜色")) {
 				ImGui::ColorEdit4("船员", (float*)&State.CrewmateColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
-				ImGui::SameLine(300.f * State.dpiScale);
-				ImGui::ColorEdit4("工程师", (float*)&State.EngineerColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
-
-				ImGui::ColorEdit4("天使守护者", (float*)&State.GuardianAngelColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
 				ImGui::SameLine(150.f * State.dpiScale);
 				ImGui::ColorEdit4("科学家", (float*)&State.ScientistColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
 				ImGui::SameLine(300.f * State.dpiScale);
-				ImGui::ColorEdit4("伪装者", (float*)&State.ImpostorColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				ImGui::ColorEdit4("工程师", (float*)&State.EngineerColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
 				
+				ImGui::ColorEdit4("大嗓门", (float*)&State.NoisemakerColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				ImGui::SameLine(150.f * State.dpiScale);
+				ImGui::ColorEdit4("侦查者", (float*)&State.TrackerColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				ImGui::SameLine(300.f * State.dpiScale);
+				ImGui::ColorEdit4("侦探", (float*)&State.DetectiveColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				
+				ImGui::ColorEdit4("伪装者", (float*)&State.ImpostorColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				ImGui::SameLine(150.f * State.dpiScale);
 				ImGui::ColorEdit4("变形者", (float*)&State.ShapeshifterColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				ImGui::SameLine(300.f * State.dpiScale);
+				ImGui::ColorEdit4("幻术师", (float*)&State.PhantomColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				
+				ImGui::ColorEdit4("毒蛇", (float*)&State.ViperColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
 				ImGui::SameLine(150.f * State.dpiScale);
 				ImGui::ColorEdit4("伪装者幽灵", (float*)&State.ImpostorGhostColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
 				ImGui::SameLine(300.f * State.dpiScale);
-				ImGui::ColorEdit4("大嗓门", (float*)&State.NoisemakerColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
-				
-				ImGui::ColorEdit4("侦查者", (float*)&State.TrackerColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
-				ImGui::SameLine(150.f * State.dpiScale);
-				ImGui::ColorEdit4("幻象师", (float*)&State.PhantomColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
-				ImGui::SameLine(300.f * State.dpiScale);
-				ImGui::ColorEdit4("侦探", (float*)&State.DetectiveColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				ImGui::ColorEdit4("守护天使", (float*)&State.GuardianAngelColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
 
-				ImGui::ColorEdit4("毒蛇", (float*)&State.ViperColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				ImGui::ColorEdit4("船员幽灵", (float*)&State.CrewmateGhostColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
 
 				if (AnimatedButton("重置身份颜色")) {
 					State.CrewmateGhostColor = ImVec4(1.f, 1.f, 1.f, 0.5f);
-					State.CrewmateColor = ImVec4(1.f, 1.f, 1.f, 1.f);
-					State.EngineerColor = ImVec4(0.f, 1.f, 1.f, 1.f);
+					State.CrewmateColor = ImVec4(0.f, 1.f, 1.f, 1.f);
+					State.EngineerColor = ImVec4(0.f, 0.5f, 1.f, 1.f);
 					State.GuardianAngelColor = ImVec4(0.5f, 0.5f, 0.5f, 0.5f);
 					State.ScientistColor = ImVec4(0.2f, 0.2f, 1.f, 1.f);
 					State.ImpostorColor = ImVec4(1.f, 0.1f, 0.1f, 1.f);

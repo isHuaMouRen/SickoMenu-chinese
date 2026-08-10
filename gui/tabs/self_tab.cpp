@@ -5,6 +5,7 @@
 #include "utility.h"
 #include "state.hpp"
 #include "logger.h"
+#include "_hooks.h"
 
 extern void RevealAnonymousVotes(); // in MeetingHud.cpp
 
@@ -52,6 +53,13 @@ namespace SelfTab {
         openUtils = group == Groups::Utils;
         openRandomizers = group == Groups::Randomizers;
         openTextEditor = group == Groups::TextEditor;
+    }
+
+    void OpenSubGroup(const std::string& name) {
+        if (name == "Visuals") CloseOtherGroups(Groups::Visuals);
+        else if (name == "Utils") CloseOtherGroups(Groups::Utils);
+        else if (name == "Randomizers") CloseOtherGroups(Groups::Randomizers);
+        else if (name == "Text Editor") CloseOtherGroups(Groups::TextEditor);
     }
 
     std::string GetTextEditorName(std::string str) {
@@ -813,67 +821,68 @@ namespace SelfTab {
         }
 
         if (openRandomizers) {
-            if (ToggleButton("轮换器", &State.Cycler)) {
-                State.Save();
-            }
-            ImGui::SameLine();
-            if (ToggleButton("在开会时轮换", &State.CycleInMeeting)) {
-                State.Save();
-            }
-            ImGui::SameLine();
-            if (ToggleButton(State.SafeMode ? "玩家服装轮换" : "玩家轮换", &State.CycleBetweenPlayers)) {
-                State.Save();
-            }
+            ImGui::Dummy(ImVec2(4, 4)* State.dpiScale);
+                if (ToggleButton("轮换器", &State.Cycler)) {
+                    State.Save();
+                }
+                ImGui::SameLine();
+                if (ToggleButton("在开会时轮换", &State.CycleInMeeting)) {
+                    State.Save();
+                }
+                ImGui::SameLine();
+                if (ToggleButton(State.SafeMode ? "在玩家服装之间轮换" : "在玩家之间轮换", &State.CycleBetweenPlayers)) {
+                    State.Save();
+                }
 
-            if (SteppedSliderFloat("轮换计时器", &State.CycleTimer, 0.2f, 1.f, 0.02f, "%.2fs", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
-                State.PrevCycleTimer = State.CycleTimer;
-                State.CycleDuration = State.CycleTimer * 50;
-            }
+                if (SteppedSliderFloat("轮换计时器", &State.CycleTimer, 0.2f, 1.f, 0.02f, "%.2fs", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
+                    State.PrevCycleTimer = State.CycleTimer;
+                    State.CycleDuration = State.CycleTimer * 50;
+                }
 
-            ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
-            if (ImGui::CollapsingHeader("轮换器设置")) {
-                if (!State.SafeMode) {
-                    if (ToggleButton("轮换名称", &State.CycleName)) {
+                ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
+                if (ImGui::CollapsingHeader("轮换器设置")) {
+                    ImGui::Dummy(ImVec2(4, 2)* State.dpiScale);
+                    if (!State.SafeMode) {
+                        if (ToggleButton("轮换名称", &State.CycleName)) {
+                            State.Save();
+                        }
+
+                        ImGui::SameLine(120.0f * State.dpiScale);
+                    }
+                    if (ToggleButton("轮换颜色", &State.RandomColor)) {
+                        State.Save();
+                    }
+
+                    ImGui::SameLine(!State.SafeMode ? (240.0f * State.dpiScale) : (120.0f * State.dpiScale));
+                    if (ToggleButton("轮换帽子", &State.RandomHat)) {
+                        State.Save();
+                    }
+                    ImGui::SameLine(240.0f * State.dpiScale);
+                    if (ToggleButton("轮换铭牌", &State.RandomNamePlate)) {
+                        State.Save();
+                    }
+                    if (ToggleButton("轮换面罩", &State.RandomVisor)) {
                         State.Save();
                     }
 
                     ImGui::SameLine(120.0f * State.dpiScale);
-                }
-                if (ToggleButton("轮换颜色", &State.RandomColor)) {
-                    State.Save();
-                }
-
-                ImGui::SameLine(!State.SafeMode ? (240.0f * State.dpiScale) : (120.0f * State.dpiScale));
-                if (ToggleButton("轮换帽子", &State.RandomHat)) {
-                    State.Save();
-                }
-
-                if (ToggleButton("轮换面罩", &State.RandomVisor)) {
-                    State.Save();
-                }
-
-                ImGui::SameLine(120.0f * State.dpiScale);
-                if (ToggleButton("轮换皮肤", &State.RandomSkin)) {
-                    State.Save();
-                }
-
-                ImGui::SameLine(240.0f * State.dpiScale);
-                if (ToggleButton("轮换宠物", &State.RandomPet)) {
-                    State.Save();
-                }
-
-                if (ToggleButton("轮换铭牌", &State.RandomNamePlate)) {
-                    State.Save();
-                }
-
-                if (IsHost() || !State.SafeMode) {
-                    ImGui::SameLine();
-                    if (ToggleButton(IsHost() ? "轮换所有人(仅颜色)" : "轮换所有人", &State.CycleForEveryone)) {
+                    if (ToggleButton("轮换皮肤", &State.RandomSkin)) {
                         State.Save();
                     }
-                }
-            }
 
+                    ImGui::SameLine(240.0f * State.dpiScale);
+                    if (ToggleButton("轮换宠物", &State.RandomPet)) {
+                        State.Save();
+                    }
+
+                    if (IsHost() || !State.SafeMode) {
+                        if (ToggleButton(IsHost() ? "轮换所有人 (仅颜色)" : "轮换所有人", &State.CycleForEveryone)) {
+                            State.Save();
+                        }
+                    }
+                }
+
+            ImGui::Dummy(ImVec2(4, 4)* State.dpiScale);
 
             if (!State.SafeMode && ImGui::CollapsingHeader("轮换名称选项")) {
                 if (CustomListBoxInt("轮换名称生成", &State.cyclerNameGeneration, NAMEGENERATION, 75 * State.dpiScale)) {
@@ -908,12 +917,14 @@ namespace SelfTab {
                 }
             }
 
-            if (ToggleButton("混淆者（随心所欲地随机化外观）", &State.confuser)) {
-                State.Save();
-            }
+            if (ImGui::CollapsingHeader("Confuser", ImGuiTreeNodeFlags_DefaultOpen)) {
+                ImGui::Dummy(ImVec2(4, 2) * State.dpiScale);
+                if (ToggleButton("Confuser (Randomize Appearance at Will)", &State.confuser)) {
+                    State.Save();
+                }
 
-            if (ImGui::CollapsingHeader("混淆选项")) {
-                if ((IsInGame() || IsInLobby()) && AnimatedButton("立即混淆")) {
+                ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
+                if ((IsInGame() || IsInLobby()) && AnimatedButton("Confuse Now")) {
                     ControlAppearance(true);
                 }
                 if (IsInGame() || IsInLobby()) {
@@ -1004,6 +1015,69 @@ namespace SelfTab {
                         ImGui::SameLine();
                         if (AnimatedButton("删除 "))
                             State.cyclerUserNames.erase(State.cyclerUserNames.begin() + selectedNameIndex);
+                    }
+                }
+            }
+            ImGui::Dummy(ImVec2(4, 2)* State.dpiScale);
+            if (ImGui::CollapsingHeader("Cosmetic Presets", ImGuiTreeNodeFlags_DefaultOpen)) {
+                ImGui::Dummy(ImVec2(4, 2) * State.dpiScale);
+                if (ToggleButton("Auto Apply on Join", &State.AutoApplyCosmeticPreset))
+                    State.Save();
+                ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
+                if (!State.CosmeticPresets.empty()) {
+                    std::vector<const char*> names;
+                    for (auto& p : State.CosmeticPresets) names.push_back(p.Name.c_str());
+                    CustomListBoxInt("##cosmeticpresetselect", &State.SelectedCosmeticPreset, names, 200.0f * State.dpiScale);
+                    ImGui::SameLine();
+                    if (AnimatedButton("Apply##cosmeticpreset")) {
+                        ApplyCosmeticPreset(State.CosmeticPresets[std::clamp(State.SelectedCosmeticPreset, 0, (int)State.CosmeticPresets.size() - 1)]);
+                    }
+                    ImGui::SameLine();
+                    if (AnimatedButton("Update##cosmeticpreset")) {
+                        auto outfit = GetPlayerOutfit(GetPlayerData(*Game::pLocalPlayer));
+                        if (outfit != nullptr) {
+                            int idx = std::clamp(State.SelectedCosmeticPreset, 0, (int)State.CosmeticPresets.size() - 1);
+                            auto& p = State.CosmeticPresets[idx];
+                            p.ColorId = outfit->fields.ColorId;
+                            p.HatId = outfit->fields.HatId ? convert_from_string(outfit->fields.HatId) : "";
+                            p.SkinId = outfit->fields.SkinId ? convert_from_string(outfit->fields.SkinId) : "";
+                            p.VisorId = outfit->fields.VisorId ? convert_from_string(outfit->fields.VisorId) : "";
+                            p.PetId = outfit->fields.PetId ? convert_from_string(outfit->fields.PetId) : "";
+                            p.NamePlateId = outfit->fields.NamePlateId ? convert_from_string(outfit->fields.NamePlateId) : "";
+                            State.Save();
+                        }
+                    }
+                    ImGui::SameLine();
+                    if (AnimatedButton("Delete##cosmeticpreset")) {
+                        int idx = std::clamp(State.SelectedCosmeticPreset, 0, (int)State.CosmeticPresets.size() - 1);
+                        State.CosmeticPresets.erase(State.CosmeticPresets.begin() + idx);
+                        State.SelectedCosmeticPreset = std::clamp(State.SelectedCosmeticPreset, 0, (int)State.CosmeticPresets.size() - 1);
+                        State.Save();
+                    }
+                }
+                else {
+                    ImGui::TextDisabled("No cosmetic presets saved.");
+                }
+
+                ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
+                static std::string newCosmeticName = "My Outfit";
+                ImGui::SetNextItemWidth(160 * State.dpiScale);
+                InputString("Preset Name##cosmetic", &newCosmeticName);
+                ImGui::SameLine();
+                if (AnimatedButton("Save Current##cosmeticpreset")) {
+                    auto outfit = GetPlayerOutfit(GetPlayerData(*Game::pLocalPlayer));
+                    if (outfit != nullptr) {
+                        Settings::CosmeticPreset p;
+                        p.Name = newCosmeticName.empty() ? "Preset" : newCosmeticName;
+                        p.ColorId = outfit->fields.ColorId;
+                        p.HatId = outfit->fields.HatId ? convert_from_string(outfit->fields.HatId) : "";
+                        p.SkinId = outfit->fields.SkinId ? convert_from_string(outfit->fields.SkinId) : "";
+                        p.VisorId = outfit->fields.VisorId ? convert_from_string(outfit->fields.VisorId) : "";
+                        p.PetId = outfit->fields.PetId ? convert_from_string(outfit->fields.PetId) : "";
+                        p.NamePlateId = outfit->fields.NamePlateId ? convert_from_string(outfit->fields.NamePlateId) : "";
+                        State.CosmeticPresets.push_back(p);
+                        State.SelectedCosmeticPreset = (int)State.CosmeticPresets.size() - 1;
+                        State.Save();
                     }
                 }
             }

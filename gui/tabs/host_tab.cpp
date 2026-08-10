@@ -4,6 +4,7 @@
 #include "game.h"
 #include "state.hpp"
 #include "gui-helpers.hpp"
+#include "_hooks.h"
 
 bool editingAutoStartPlayerCount = false;
 
@@ -24,6 +25,12 @@ namespace HostTab {
         openUtils = group == Groups::Utils;
         openSettings = group == Groups::Settings;
         openTournaments = group == Groups::Tournaments;
+    }
+
+    void OpenSubGroup(const std::string& name) {
+        if (name == "Utils") CloseOtherGroups(Groups::Utils);
+        else if (name == "Settings") CloseOtherGroups(Groups::Settings);
+        else if (name == "Tournaments") CloseOtherGroups(Groups::Tournaments);
     }
 
     /*std::string GetPlayerNameFromFriendCode(std::string friendCode) {
@@ -57,10 +64,69 @@ namespace HostTab {
         return std::count_if(State.assignedRoles.cbegin(), State.assignedRoles.cend(), [role](RoleType i) {return i == role; });
     }
 
+    static bool CaptureHostPreset(Settings::HostPreset& p) {
+        if (!GameOptions().HasOptions()) return false;
+        GameOptions o;
+        auto ro = o.GetRoleOptions();
+        p.PlayerSpeed = o.GetFloat(app::FloatOptionNames__Enum::PlayerSpeedMod);
+        p.CrewmateVision = o.GetFloat(app::FloatOptionNames__Enum::CrewLightMod);
+        p.ImpostorVision = o.GetFloat(app::FloatOptionNames__Enum::ImpostorLightMod);
+        p.KillCooldown = o.GetFloat(app::FloatOptionNames__Enum::KillCooldown);
+        p.KillDistance = o.GetInt(app::Int32OptionNames__Enum::KillDistance);
+        p.NumImpostors = o.GetNumImpostors();
+        p.MaxPlayers = o.GetMaxPlayers();
+        p.MapId = o.GetMapId();
+        p.VisualTasks = o.GetBool(app::BoolOptionNames__Enum::VisualTasks);
+        p.ConfirmImpostor = o.GetBool(app::BoolOptionNames__Enum::ConfirmImpostor);
+        p.AnonymousVotes = o.GetBool(app::BoolOptionNames__Enum::AnonymousVotes);
+        p.NumEmergencyMeetings = o.GetInt(app::Int32OptionNames__Enum::NumEmergencyMeetings);
+        p.EmergencyCooldown = o.GetInt(app::Int32OptionNames__Enum::EmergencyCooldown);
+        p.DiscussionTime = o.GetInt(app::Int32OptionNames__Enum::DiscussionTime);
+        p.VotingTime = o.GetInt(app::Int32OptionNames__Enum::VotingTime);
+        p.TaskBarMode = o.GetInt(app::Int32OptionNames__Enum::TaskBarMode);
+        p.NumCommonTasks = o.GetInt(app::Int32OptionNames__Enum::NumCommonTasks);
+        p.NumLongTasks = o.GetInt(app::Int32OptionNames__Enum::NumLongTasks);
+        p.NumShortTasks = o.GetInt(app::Int32OptionNames__Enum::NumShortTasks);
+        p.ShapeshifterCooldown = o.GetFloat(app::FloatOptionNames__Enum::ShapeshifterCooldown);
+        p.ShapeshifterDuration = o.GetFloat(app::FloatOptionNames__Enum::ShapeshifterDuration);
+        p.ShapeshifterLeaveSkin = o.GetBool(app::BoolOptionNames__Enum::ShapeshifterLeaveSkin);
+        p.GuardianAngelCooldown = o.GetFloat(app::FloatOptionNames__Enum::GuardianAngelCooldown);
+        p.GuardianAngelProtectVisible = o.GetBool(app::BoolOptionNames__Enum::ImpostorsCanSeeProtect);
+        p.GuardianAngelProtectDuration = o.GetFloat(app::FloatOptionNames__Enum::ProtectionDurationSeconds);
+        p.ScientistCooldown = o.GetFloat(app::FloatOptionNames__Enum::ScientistCooldown);
+        p.ScientistBatteryCharge = o.GetFloat(app::FloatOptionNames__Enum::ScientistBatteryCharge);
+        p.EngineerCooldown = o.GetFloat(app::FloatOptionNames__Enum::EngineerCooldown);
+        p.EngineerInVentMaxTime = o.GetFloat(app::FloatOptionNames__Enum::EngineerInVentMaxTime);
+        p.PhantomCooldown = o.GetFloat(app::FloatOptionNames__Enum::PhantomCooldown);
+        p.PhantomDuration = o.GetFloat(app::FloatOptionNames__Enum::PhantomDuration);
+        p.TrackerCooldown = o.GetFloat(app::FloatOptionNames__Enum::TrackerCooldown);
+        p.TrackerDuration = o.GetFloat(app::FloatOptionNames__Enum::TrackerDuration);
+        p.TrackerDelay = o.GetFloat(app::FloatOptionNames__Enum::TrackerDelay);
+        p.NoisemakerAlertDuration = o.GetFloat(app::FloatOptionNames__Enum::NoisemakerAlertDuration);
+        p.NoisemakerImpostorAlert = o.GetBool(app::BoolOptionNames__Enum::NoisemakerImpostorAlert);
+        p.ViperDissolveTime = o.GetFloat(app::FloatOptionNames__Enum::ViperDissolveTime);
+        p.DetectiveSuspectLimit = o.GetFloat(app::FloatOptionNames__Enum::DetectiveSuspectLimit);
+        static const app::RoleTypes__Enum roles[] = {
+            app::RoleTypes__Enum::Scientist, app::RoleTypes__Enum::Engineer,
+            app::RoleTypes__Enum::GuardianAngel, app::RoleTypes__Enum::Shapeshifter,
+            app::RoleTypes__Enum::Noisemaker, app::RoleTypes__Enum::Phantom,
+            app::RoleTypes__Enum::Tracker, app::RoleTypes__Enum::Detective,
+            app::RoleTypes__Enum::Viper
+        };
+        for (auto role : roles) {
+            Settings::RolePreset rp;
+            rp.Count = ro.GetNumPerGame(role);
+            rp.Chance = ro.GetChancePerGame(role);
+            p.RoleRates[(int)role] = rp;
+        }
+        return true;
+    }
+
     void Render() {
         if (IsHost()) {
             ImGui::SameLine(100 * State.dpiScale);
             ImGui::BeginChild("###Host", ImVec2(500 * State.dpiScale, 0), true, ImGuiWindowFlags_NoBackground);
+            ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
             if (TabGroup("工具", openUtils)) {
                 CloseOtherGroups(Groups::Utils);
             }
@@ -98,7 +164,21 @@ namespace HostTab {
                             if (outfit == NULL) continue;
                             const std::string& playerName = convert_from_string(outfit->fields.PlayerName);
                             //player colors in host tab by gdjkhp (https://github.com/GDjkhp/AmongUsMenu/commit/53b017183bac503c546f198e2bc03539a338462c)
-                            if (CustomListBoxInt((playerName + "###" + ToString(playerData)).c_str(), reinterpret_cast<int*>(&State.assignedRoles[index]), ROLE_NAMES, 80 * State.dpiScale, AmongUsColorToImVec4(GetPlayerColor(outfit->fields.ColorId)), 0, RemoveHtmlTags(playerName).c_str()))
+							//now with role colors in role selection
+                            RoleColor ROLE_NAMES_COLOR[] = {
+                                {"Random",			ImVec4(1.f, 1.f, 1.f, 1.f)},
+                                {"Crewmate",		State.CrewmateColor},
+                                {"Scientist",		State.ScientistColor},
+                                {"Engineer",		State.EngineerColor},
+                                {"Noisemaker",		State.NoisemakerColor},
+                                {"Tracker",			State.TrackerColor},
+                                {"Detective",		State.DetectiveColor},
+                                {"Impostor",		State.ImpostorColor},
+                                {"Shapeshifter",	State.ShapeshifterColor},
+                                {"Phantom",			State.PhantomColor},
+                                {"Viper",			State.ViperColor},
+                            };
+                            if (CustomListBoxIntColored((playerName + "###" + ToString(playerData)).c_str(), reinterpret_cast<int*>(&State.assignedRoles[index]), ROLE_NAMES, 80 * State.dpiScale, AmongUsColorToImVec4(GetPlayerColor(outfit->fields.ColorId)), 0, RemoveHtmlTags(playerName).c_str(), ROLE_NAMES_COLOR, IM_ARRAYSIZE(ROLE_NAMES_COLOR)))
                             {
                                 State.engineers_amount = (int)GetRoleCount(RoleType::Engineer);
                                 State.scientists_amount = (int)GetRoleCount(RoleType::Scientist);
@@ -350,15 +430,15 @@ namespace HostTab {
                 if (ToggleButton("Ignore RPCs", &State.IgnoreRPCs))
                     State.Save();*/
 
-                //if (State.DisableKills) ImGui::Text("Note: Cheaters can still bypass this feature!");
+                    //if (State.DisableKills) ImGui::Text("Note: Cheaters can still bypass this feature!");
 
-                /*if (ToggleButton("Disable Specific RPC Call ID", &State.DisableCallId))
-                    State.Save();
-                int callId = State.ToDisableCallId;
-                if (ImGui::InputInt("ID to Disable", &callId)) {
-                    State.ToDisableCallId = (uint8_t)callId;
-                    State.Save();
-                }*/
+                    /*if (ToggleButton("Disable Specific RPC Call ID", &State.DisableCallId))
+                        State.Save();
+                    int callId = State.ToDisableCallId;
+                    if (ImGui::InputInt("ID to Disable", &callId)) {
+                        State.ToDisableCallId = (uint8_t)callId;
+                        State.Save();
+                    }*/
 
                 if ((State.mapType == Settings::MapType::Airship) && IsInGame() && AnimatedButton("切换移动平台位置"))
                 {
@@ -439,11 +519,66 @@ namespace HostTab {
             }
 
             if (openSettings) {
+                ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
+                if (ImGui::CollapsingHeader("Host Presets", ImGuiTreeNodeFlags_DefaultOpen)) {
+                    ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
+                    if (ToggleButton("Auto Apply on Host", &State.AutoApplyHostPreset))
+                        State.Save();
+
+                    ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
+
+                    // Preset list
+                    if (!State.HostPresets.empty()) {
+                        std::vector<const char*> presetNames;
+                        for (auto& p : State.HostPresets) presetNames.push_back(p.Name.c_str());
+                        CustomListBoxInt("##presetselect", &State.SelectedHostPreset, presetNames, 200.0f * State.dpiScale);
+                        ImGui::SameLine();
+                        if (AnimatedButton("Apply")) {
+                            int idx = std::clamp(State.SelectedHostPreset, 0, (int)State.HostPresets.size() - 1);
+                            RequestApplyHostPreset(idx);
+                        }
+                        ImGui::SameLine();
+                        if (AnimatedButton("Update##preset")) {
+                            int idx = std::clamp(State.SelectedHostPreset, 0, (int)State.HostPresets.size() - 1);
+                            if (CaptureHostPreset(State.HostPresets[idx])) {
+                                State.Save();
+                            }
+                        }
+                        ImGui::SameLine();
+                        if (AnimatedButton("Delete##preset")) {
+                            int idx = std::clamp(State.SelectedHostPreset, 0, (int)State.HostPresets.size() - 1);
+                            State.HostPresets.erase(State.HostPresets.begin() + idx);
+                            State.SelectedHostPreset = std::clamp(State.SelectedHostPreset, 0, (int)State.HostPresets.size() - 1);
+                            State.Save();
+                        }
+                    }
+                    else {
+                        ImGui::TextDisabled("No presets saved.");
+                    }
+
+                    ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
+
+                    // Save new preset
+                    static std::string newPresetName = "My Preset";
+                    ImGui::SetNextItemWidth(160 * State.dpiScale);
+                    InputString("Preset Name", &newPresetName);
+                    ImGui::SameLine();
+                    if (AnimatedButton("Save Current##preset")) {
+                        Settings::HostPreset p;
+                        p.Name = newPresetName.empty() ? "Preset" : newPresetName;
+                        if (CaptureHostPreset(p)) {
+                            State.HostPresets.push_back(p);
+                            State.SelectedHostPreset = (int)State.HostPresets.size() - 1;
+                            State.Save();
+                        }
+                    }
+                }
+                ImGui::Dummy(ImVec2(4, 4)* State.dpiScale);
                 // AU v2022.8.24 has been able to change maps in lobby.
                 // State.mapHostChoice = State.FlipSkeld ? 3 : options.GetByte(app::ByteOptionNames__Enum::MapId);
                 /*if (State.mapHostChoice > 3)
                     State.mapHostChoice--;*/
-                // State.mapHostChoice = std::clamp(State.mapHostChoice, 0, (int)MAP_NAMES.size() - 1);
+                    // State.mapHostChoice = std::clamp(State.mapHostChoice, 0, (int)MAP_NAMES.size() - 1);
                 int mapId = options.GetByte(app::ByteOptionNames__Enum::MapId);
                 if (mapId == 3) mapId = 0; // Dleks is the map with ID 3, and we are disabling it for now
                 State.mapHostChoice = mapId > 3 ? (mapId - 1) : mapId;
