@@ -450,11 +450,11 @@ namespace PlayersTab {
                     CloseOtherGroups(Groups::Player);
                 }
                 ImGui::SameLine();
-                if (TabGroup("Trolling", openTrolling)) {
+                if (TabGroup("钓鱼", openTrolling)) {
                     CloseOtherGroups(Groups::Trolling);
                 }
                 if (IsInMultiplayerGame() || IsInLobby()) ImGui::SameLine();
-                if ((IsInMultiplayerGame() || IsInLobby()) && TabGroup("Info", openInfo)) {
+                if ((IsInMultiplayerGame() || IsInLobby()) && TabGroup("信息", openInfo)) {
                     CloseOtherGroups(Groups::Info);
                 }
             }
@@ -763,7 +763,7 @@ namespace PlayersTab {
                 if (IsHost() && IsInGame() && selectedPlayers.size() == 1) {
                     auto pid = selectedPlayer.get_PlayerData()->fields.PlayerId;
                     bool isVoteImmune = std::find(State.VoteImmunePlayers.begin(), State.VoteImmunePlayers.end(), pid) != State.VoteImmunePlayers.end();
-                    if (AnimatedButton(isVoteImmune ? "Remove Vote Immunity" : "Vote Immune")) {
+                    if (AnimatedButton(isVoteImmune ? "移除投票免疫" : "投票免疫")) {
                         if (isVoteImmune) {
                             State.VoteImmunePlayers.erase(std::remove(State.VoteImmunePlayers.begin(), State.VoteImmunePlayers.end(), pid), State.VoteImmunePlayers.end());
                             State.VoteRedirectTargets.erase(pid);
@@ -774,7 +774,7 @@ namespace PlayersTab {
                     if (isVoteImmune) {
                         // build candidate list: Skip (253) first, then other players
                         std::vector<uint8_t> candidates = { 253 };
-                        std::vector<std::string> candidateNames = { "Skip" };
+                        std::vector<std::string> candidateNames = { "跳过" };
                         for (auto pc : GetAllPlayerControl()) {
                             if (pc == nullptr) continue;
                             auto pd = GetPlayerData(pc);
@@ -798,8 +798,8 @@ namespace PlayersTab {
 
                         std::vector<const char*> candidateNamesRaw;
                         for (auto& n : candidateNames) candidateNamesRaw.push_back(n.c_str());
-                        ImGui::Text("Redirect Votes To:");
-                        if (CustomListBoxInt("Redirect Votes To", &curIndex, candidateNamesRaw))
+                        ImGui::Text("重定向投票至:");
+                        if (CustomListBoxInt("重定向投票至", &curIndex, candidateNamesRaw))
                             State.VoteRedirectTargets[pid] = candidates[curIndex];
                     }
                 }
@@ -1089,7 +1089,7 @@ namespace PlayersTab {
                         else if (IsInLobby())
                             queue = &State.lobbyRpcQueue;
 
-                        if (!State.activeImpersonation && AnimatedButton(!State.SafeMode ? "Impersonate" : "Copy Outfit")) {
+                        if (!State.activeImpersonation && AnimatedButton(!State.SafeMode ? "模仿" : "复制装扮")) {
                             if (queue != nullptr) {
                                 if (IsHost() || !State.SafeMode)
                                     queue->push(new RpcForceColor(*Game::pLocalPlayer, colorId));
@@ -1527,7 +1527,7 @@ namespace PlayersTab {
                 ImGui::NewLine();
                 CustomListBoxInt(" ", &forcedColor, COLORS, 85.0f * State.dpiScale);
                 ImGui::SameLine();
-                if (AnimatedButton("Force Color"))
+                if (AnimatedButton("强制颜色"))
                 {
                     if (IsInGame()) {
                         if (IsHost())

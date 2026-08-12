@@ -57,26 +57,26 @@ namespace TasksTab {
 	};
 
 	static void RenderTaskEnforcer() {
-		if (ImGui::CollapsingHeader("Task Enforcer", ImGuiTreeNodeFlags_DefaultOpen)) {
+		if (ImGui::CollapsingHeader("任务监视器", ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::Dummy(ImVec2(5, 5) * State.dpiScale);
-			if (ToggleButton("Auto Kick Slackers", &State.AutoKickSlackers))
+			if (ToggleButton("自动提出逃避任务的人", &State.AutoKickSlackers))
 				State.Save();
 			ImGui::SameLine();
-			if (ToggleButton("Ignore Whitelisted Players", &State.AutoKickSlackersIgnoreWhitelist))
+			if (ToggleButton("忽略白名单玩家", &State.AutoKickSlackersIgnoreWhitelist))
 				State.Save();
-			ImGui::Text("Kicks players below task threshold after grace period.");
-			if (SliderIntV2("Task Threshold %", &State.AutoKickSlackersThreshold, 1, 100, "%d%%", ImGuiSliderFlags_NoInput))
+			ImGui::Text("在宽限期限后踢出低于阈值的玩家.");
+			if (SliderIntV2("任务阈值 %", &State.AutoKickSlackersThreshold, 1, 100, "%d%%", ImGuiSliderFlags_NoInput))
 				State.Save();
-			if (SliderIntV2("Grace Period (sec)", &State.AutoKickSlackersGrace, 50, 500, "%ds", ImGuiSliderFlags_NoInput))
+			if (SliderIntV2("宽限期 (sec)", &State.AutoKickSlackersGrace, 50, 500, "%ds", ImGuiSliderFlags_NoInput))
 				State.Save();
 		}
 	}
 
 	static void RenderDisableTasks() {
-		if (ImGui::CollapsingHeader("Disable Tasks", ImGuiTreeNodeFlags_DefaultOpen)) {
-			ImGui::TextDisabled("Disabled tasks won't be assigned next game.");
+		if (ImGui::CollapsingHeader("禁用任务", ImGuiTreeNodeFlags_DefaultOpen)) {
+			ImGui::TextDisabled("禁用任务将不会在下一局分配任务.");
 			ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
-			if (AnimatedButton("Clear All##disabletasks"))
+			if (AnimatedButton("清理所有##disabletasks"))
 				State.DisabledTaskTypes.clear();
 			ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
 
@@ -185,38 +185,38 @@ namespace TasksTab {
 
 			if (State.mapType == Settings::MapType::Ship) {
 				bool clientSide = (!State.BypassVisualTasks && (options.GetGameMode() == GameModes__Enum::Normal && !options.GetBool(app::BoolOptionNames__Enum::VisualTasks)) || options.GetGameMode() == GameModes__Enum::HideNSeek);
-				if (AnimatedButton(clientSide ? "Play Shields Animation (Client-sided)" : "Play Shields Animation")) {
+				if (AnimatedButton(clientSide ? "播放盾牌动画 (仅客户端)" : "播放盾牌动画")) {
 					State.rpcQueue.push(new RpcPlayAnimation(1));
 				}
 			}
 
 			if (State.mapType == Settings::MapType::Ship) {
 				bool clientSide = (!State.BypassVisualTasks && (options.GetGameMode() == GameModes__Enum::Normal && !options.GetBool(app::BoolOptionNames__Enum::VisualTasks)) || options.GetGameMode() == GameModes__Enum::HideNSeek);
-				if (AnimatedButton(clientSide ? "Play Trash Animation (Client-sided)" : "Play Trash Animation")) {
+				if (AnimatedButton(clientSide ? "播放垃圾动画 (仅客户端)" : "播放垃圾动画")) {
 					State.rpcQueue.push(new RpcPlayAnimation(10));
 				}
 			}
 
 			if (State.mapType == Settings::MapType::Ship || State.mapType == Settings::MapType::Pb) {
 				bool clientSide = (!State.BypassVisualTasks && (options.GetGameMode() == GameModes__Enum::Normal && !options.GetBool(app::BoolOptionNames__Enum::VisualTasks)) || options.GetGameMode() == GameModes__Enum::HideNSeek);
-				if (ToggleButton(clientSide ? "Play Weapons Animation (Client-sided)" : "Play Weapons Animation", &State.PlayWeaponsAnimation)) {
+				if (ToggleButton(clientSide ? "播放武器动画 (仅客户端)" : "播放武器动画", &State.PlayWeaponsAnimation)) {
 					State.Save();
 				}
 			}
 
 			bool clientSide = (!State.BypassVisualTasks && (options.GetGameMode() == GameModes__Enum::Normal && !options.GetBool(app::BoolOptionNames__Enum::VisualTasks)) || options.GetGameMode() == GameModes__Enum::HideNSeek);
-			if (ToggleButton(clientSide ? "Play Medbay Scan Animation (Client-sided)" : "Play Medbay Scan Animation", &State.PlayMedbayScan)) {
+			if (ToggleButton(clientSide ? "播放扫描动画 (仅客户端)" : "播放扫描动画", &State.PlayMedbayScan)) {
 				if (State.PlayMedbayScan) State.rpcQueue.push(new RpcSetScanner(true));
 				else State.rpcQueue.push(new RpcSetScanner(false));
 			}
 
-			if (!(State.mapType == Settings::MapType::Hq || State.mapType == Settings::MapType::Fungle) && ToggleButton("Fake Cameras In Use", &State.FakeCameraUsage)) {
+			if (!(State.mapType == Settings::MapType::Hq || State.mapType == Settings::MapType::Fungle) && ToggleButton("播放摄像头占用动画", &State.FakeCameraUsage)) {
 				State.rpcQueue.push(new RpcUpdateSystem(SystemTypes__Enum::Security, (State.FakeCameraUsage ? 1 : 0)));
 			}
 
 			if (IsInMultiplayerGame()) {
 				float taskPercentage = (float)(*Game::pGameData)->fields.CompletedTasks / (float)(*Game::pGameData)->fields.TotalTasks;
-				ImGui::TextColored(ImVec4(1.0f - taskPercentage, 1.0f, 1.0f - taskPercentage, 1.0f), "%.2f%% Total Tasks Completed", taskPercentage * 100);
+				ImGui::TextColored(ImVec4(1.0f - taskPercentage, 1.0f, 1.0f - taskPercentage, 1.0f), "%.2f%% 总任务完成", taskPercentage * 100);
 			}
 		}
 

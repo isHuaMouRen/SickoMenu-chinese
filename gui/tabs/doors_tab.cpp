@@ -128,7 +128,7 @@ namespace DoorsTab {
 					}
 				}
 
-				if ((State.mapType == Settings::MapType::Pb || State.mapType == Settings::MapType::Airship || State.mapType == Settings::MapType::Fungle) && AnimatedButton("Open Door"))
+				if ((State.mapType == Settings::MapType::Pb || State.mapType == Settings::MapType::Airship || State.mapType == Settings::MapType::Fungle) && AnimatedButton("打开门"))
 				{
 					State.rpcQueue.push(new RpcOpenDoorsOfType(State.selectedDoor));
 				}

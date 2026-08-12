@@ -289,7 +289,7 @@ namespace Menu {
 			if ((IsInGame() || IsInLobby()) && ImGui::Selectable("玩家", openPlayers)) {
 				CloseAllOtherTabs(Tabs::Players);
 			}
-			if (((IsInGame() && GetPlayerData(*Game::pLocalPlayer)->fields.Tasks != NULL) || (IsInLobby() && IsHost())) && ImGui::Selectable("Tasks", openTasks)) {
+			if (((IsInGame() && GetPlayerData(*Game::pLocalPlayer)->fields.Tasks != NULL) || (IsInLobby() && IsHost())) && ImGui::Selectable("任务", openTasks)) {
 				CloseAllOtherTabs(Tabs::Tasks);
 			}
 			if (IsInGame() && ShipStatus__TypeInfo->static_fields->Instance != NULL && ImGui::Selectable("破坏", openSabotage)) {

@@ -193,8 +193,8 @@ namespace GameTab {
 
         static int selectedWarnView = 0;
         const char* warnViewModes[WarnView_COUNT] = {
-            "List View",
-            "Manual Warn"
+            "列表视图",
+            "手动警告"
         };
 
         if (openGeneral) {
