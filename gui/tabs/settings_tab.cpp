@@ -66,7 +66,12 @@ namespace SettingsTab {
 			if (ToggleButton("允许在聊天时激活快捷键", &State.KeybindsWhileChatting)) {
 				State.Save();
 			}
-			if (ToggleButton("启动时始终显示菜单", &State.ShowMenuOnStartup)) {
+
+			if (ToggleButton("Allow Clicking Through Menu UIs", &State.ClickThroughMenuUI)) {
+				State.Save();
+			}
+
+			if (ToggleButton("Always Show Menu on Startup", &State.ShowMenuOnStartup)) {
 				State.Save();
 			}
 			ImGui::SameLine();
@@ -284,13 +289,13 @@ namespace SettingsTab {
 			if (Achievements::IsSupported())
 			{
 				ImGui::SameLine();
-				if (AnimatedButton("解锁所有成就"))
-					Achievements::UnlockAll();
+				if (AnimatedButton("Unlock All Achievements"))
+					State.unlockAllAchievements = true;
 			}
 
-			if (ToggleButton("允许其他模组用户看到你正在使用", &State.ModDetection)) State.Save();
-			ImGui::SameLine();
-			if (CustomListBoxInt(" ", &State.BroadcastedMod, MODS, 100.f * State.dpiScale)) State.Save();
+			if (ToggleButton("Allow other mod users to see you're using SickoMenu", &State.ModDetection)) State.Save();
+			/*ImGui::SameLine();
+			if (CustomListBoxInt(" ", &State.BroadcastedMod, MODS, 100.f * State.dpiScale)) State.Save();*/
 		}
 		if (openSpoofing) {
 			/*if (ToggleButton("Spoof Guest Account", &State.SpoofGuestAccount)) {
@@ -380,12 +385,42 @@ namespace SettingsTab {
 				}
 			}
 
-			if (ToggleButton("禁用作弊检测（主机模式）+25种模式", &State.DisableHostAnticheat)) {
+			static bool dhaWarnState = false;
+
+			if (!dhaWarnState && ToggleButton("Reduce Anticheat While Hosting (+25 Mode)", &State.DisableHostAnticheat)) {
+				if (State.DisableHostAnticheat) {
+					dhaWarnState = true;
+					State.DisableHostAnticheat = false;
+				}
+				else State.Save();
+
 				if (!State.DisableHostAnticheat && State.BattleRoyale) {
 					State.BattleRoyale = false;
 					State.GameMode = 0;
 				}
-				State.Save();
+			}
+
+			if (dhaWarnState) {
+				BoldText("Warning", ImVec4(1.f, 0.f, 0.f, 1.f));
+				ImGui::Text("By turning on Reduce Anticheat While Hosting (+25 Mode),");
+				ImGui::Text("your lobby can ONLY be discovered by other users with mods,");
+				ImGui::Text("or users with the lobby code.");
+				ImGui::Text(" ");
+				ImGui::Text("Your lobby will now have a reduced anticheat for everyone,");
+				ImGui::Text("meaning anyone can perform most actions that are usually detected");
+				ImGui::Text("by the anticheat!");
+				ImGui::Text(" ");
+				ImGui::Text("Are you sure that you want to turn it on?");
+
+				if (ColoredButton(ImVec4(0.f, 1.f, 0.f, 1.f), "Yes")) {
+					dhaWarnState = false;
+					State.DisableHostAnticheat = true;
+					State.Save();
+				}
+				ImGui::SameLine();
+				if (ColoredButton(ImVec4(1.f, 0.f, 0.f, 1.f), "No")) {
+					dhaWarnState = false;
+				}
 			}
 			/*if (State.DisableHostAnticheat) {
 				BoldText("Warning (+25 Mode)", ImVec4(1.f, 0.f, 0.f, 1.f));
@@ -405,12 +440,13 @@ namespace SettingsTab {
 		if (openCustomization) {
 			if (ToggleButton("隐藏水印", &State.HideWatermark)) {
 				State.Save();
+				ReloadCurrentSceneIfNeeded();
+			}
+			ImGui::SameLine();
+			if (ToggleButton("Hide Mod Stamp", &State.HideModStamp)) {
+				State.Save();
 			}
 
-			ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
-
-			if (ToggleButton("亮色模式", &State.LightMode)) State.Save();
-			ImGui::SameLine();
 			if (!State.GradientMenuTheme) {
 				if (ImGui::ColorEdit3("菜单主题色", (float*)&State.MenuThemeColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview)) {
 					State.Save();
@@ -439,20 +475,33 @@ namespace SettingsTab {
 			ImGui::SameLine();
 			if (AnimatedButton("重置菜单主题"))
 			{
-				State.MenuThemeColor = ImVec4(1.f, 0.f, 0.424f, 1.f);
+				State.MenuThemeColor = ImVec4(1.f, 0.f, 0.424f, State.MenuThemeColor.w);
+				State.GradientMenuTheme = false;
+				State.RgbMenuTheme = false;
+				State.MatchBackgroundWithTheme = false;
+				State.Save();
 			}
 
 			SteppedSliderFloat("透明度", (float*)&State.MenuThemeColor.w, 0.1f, 1.f, 0.01f, "%.2f", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput);
 
 			ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
 
-			if (ToggleButton("黑暗游戏主题", &State.DarkMode)) State.Save();
+			if (ToggleButton("Dark Game Theme", &State.DarkMode)) {
+				State.Save();
+				State.MIG_ThemeChanged = true;
+				ReloadCurrentSceneIfNeeded();
+			}
 			ImGui::SameLine();
-			if (ToggleButton("自定义游戏主题", &State.CustomGameTheme)) State.Save();
+			if (ToggleButton("Custom Game Theme", &State.CustomGameTheme)) {
+				State.Save();
+				State.MIG_ThemeChanged = true;
+			}
 
 			if (State.CustomGameTheme) {
-				if (ImGui::ColorEdit3("背景色", (float*)&State.GameBgColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview))
+				if (ImGui::ColorEdit3("Background Color", (float*)&State.GameBgColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview)) {
 					State.Save();
+					State.MIG_ThemeChanged = true;
+				}
 				ImGui::SameLine();
 				if (ImGui::ColorEdit3("文本色", (float*)&State.GameTextColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview))
 					State.Save();
@@ -469,7 +518,69 @@ namespace SettingsTab {
 
 			ImGui::Dummy(ImVec2(4, 4)* State.dpiScale);
 
+			ImGui::Text("Show/Hide Next to Ping:");
+			if (ToggleButton("Show FPS", &State.ShowFps)) {
+				State.Save();
+			}
+			ImGui::SameLine();
+			if (ToggleButton("Show Time", &State.ShowTime)) {
+				State.Save();
+			}
+
+			if (State.ShowTime) {
+				static int hours = State.TimeOffsetMinutes / 60, minutes = State.TimeOffsetMinutes % 60;
+				static int timeOffsetChoice = State.NegativeTimeOffset;
+				ImGui::Text("Time Offset (from UTC)");
+				ImGui::SameLine();
+				if (CustomListBoxInt("  ", &timeOffsetChoice, TIME_OFFSETS, 20.f * State.dpiScale)) {
+					State.NegativeTimeOffset = (bool)timeOffsetChoice;
+					State.Save();
+				}
+				ImGui::SameLine();
+				// there can only be 1440 minutes in a day
+				ImGui::SetNextItemWidth(60 * State.dpiScale);
+				if (ImGui::InputInt("  :", &hours)) {
+					hours = std::clamp(hours, 0, 23);
+					State.TimeOffsetMinutes = hours * 60 + minutes;
+					hours = State.TimeOffsetMinutes / 60, minutes = State.TimeOffsetMinutes % 60;
+					State.Save();
+				}
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(60 * State.dpiScale);
+				if (ImGui::InputInt("   ", &minutes)) {
+					minutes = std::clamp(minutes, 0, 59);
+					State.TimeOffsetMinutes = hours * 60 + minutes;
+					hours = State.TimeOffsetMinutes / 60, minutes = State.TimeOffsetMinutes % 60;
+					State.Save();
+				}
+			}
+
+			if (ImGui::CollapsingHeader("Time Format")) {
+				ImGui::Text(("Time Preview: " +
+					GetTimeString(State.UseLeadingZeroForHours, State.ShowSeconds)).c_str());
+
+				if (ToggleButton("Use 12-Hour Format", &State.Use12HourFormat)) State.Save();
+
+				if (ToggleButton("Use Leading Zero for Hours", &State.UseLeadingZeroForHours)) State.Save();
+
+				if (ToggleButton("Show Seconds", &State.ShowSeconds)) State.Save();
+
+				if (State.Use12HourFormat) {
+					ImGui::SetNextItemWidth(100 * State.dpiScale);
+					if (InputString("AM String", &State.AmString)) State.Save();
+					ImGui::SameLine();
+					ImGui::SetNextItemWidth(100 * State.dpiScale);
+					if (InputString("PM String", &State.PmString)) State.Save();
+				}
+			}
+
+			ImGui::Dummy(ImVec2(4, 4)* State.dpiScale);
+
 			if (ImGui::CollapsingHeader("GUI")) {
+				if (ToggleButton("Light Mode", &State.LightMode)) State.Save();
+				ImGui::SameLine();
+				if (ToggleButton("Show UI Borders", &State.ShowUiBorders)) State.Save();
+
 				ImGui::SetNextItemWidth(50 * State.dpiScale);
 				if (ImGui::InputFloat("菜单缩放", &State.dpiScale)) {
 					State.dpiScale = std::clamp(State.dpiScale, 0.5f, 3.f);
@@ -496,21 +607,23 @@ namespace SettingsTab {
 				ImGui::SameLine(150.f * State.dpiScale);
 				ImGui::ColorEdit4("侦查者", (float*)&State.TrackerColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
 				ImGui::SameLine(300.f * State.dpiScale);
-				ImGui::ColorEdit4("侦探", (float*)&State.DetectiveColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
-				
-				ImGui::ColorEdit4("伪装者", (float*)&State.ImpostorColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
-				ImGui::SameLine(150.f * State.dpiScale);
-				ImGui::ColorEdit4("变形者", (float*)&State.ShapeshifterColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
-				ImGui::SameLine(300.f * State.dpiScale);
-				ImGui::ColorEdit4("幻术师", (float*)&State.PhantomColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
-				
-				ImGui::ColorEdit4("毒蛇", (float*)&State.ViperColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
-				ImGui::SameLine(150.f * State.dpiScale);
-				ImGui::ColorEdit4("伪装者幽灵", (float*)&State.ImpostorGhostColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
-				ImGui::SameLine(300.f * State.dpiScale);
-				ImGui::ColorEdit4("守护天使", (float*)&State.GuardianAngelColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				ImGui::ColorEdit4("Detective", (float*)&State.DetectiveColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
 
-				ImGui::ColorEdit4("船员幽灵", (float*)&State.CrewmateGhostColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				ImGui::ColorEdit4("Judge", (float*)&State.JudgeColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				ImGui::SameLine(150.f * State.dpiScale);
+				ImGui::ColorEdit4("Impostor", (float*)&State.ImpostorColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				ImGui::SameLine(300.f * State.dpiScale);
+				ImGui::ColorEdit4("Shapeshifter", (float*)&State.ShapeshifterColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				
+				ImGui::ColorEdit4("Phantom", (float*)&State.PhantomColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				ImGui::SameLine(150.f * State.dpiScale);
+				ImGui::ColorEdit4("Viper", (float*)&State.ViperColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				ImGui::SameLine(300.f * State.dpiScale);
+				ImGui::ColorEdit4("Impostor Ghost", (float*)&State.ImpostorGhostColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				
+				ImGui::ColorEdit4("Guardian Angel", (float*)&State.GuardianAngelColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
+				ImGui::SameLine(150.f * State.dpiScale);
+				ImGui::ColorEdit4("Crewmate Ghost", (float*)&State.CrewmateGhostColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
 
 				if (AnimatedButton("重置身份颜色")) {
 					State.CrewmateGhostColor = ImVec4(1.f, 1.f, 1.f, 0.5f);
@@ -526,6 +639,7 @@ namespace SettingsTab {
 					State.PhantomColor = ImVec4(0.53f, 0.f, 0.f, 1.f);
 					State.DetectiveColor = ImVec4(0.39f, 0.735f, 1.f, 1.f);
 					State.ViperColor = ImVec4(1.f, 1.f, 0.f, 1.f);
+					State.JudgeColor = ImVec4(0.f, 0.6f, 0.345f, 1.f);
 					State.Save();
 				}
 			}
@@ -596,7 +710,7 @@ namespace SettingsTab {
 
 			CheckKeybindEdit(HotKey(State.KeyBinds.Toggle_ChatAlwaysActive));
 			ImGui::SameLine(100 * State.dpiScale);
-			ImGui::Text("显示/隐藏 聊天");
+			ImGui::Text("Toggle Always Show Chat Button");
 
 			ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
 

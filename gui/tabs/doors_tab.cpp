@@ -138,7 +138,7 @@ namespace DoorsTab {
 				ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
 				if (ToggleButton("在交互时自动打开门", &State.AutoOpenDoors)) State.Save();
 
-				if (ToggleButton("混乱开关门", &State.SpamDoors)) State.Save();
+				/*if (ToggleButton("Spam Open/Close Doors", &State.SpamDoors)) State.Save();*/
 			}
 			ImGui::EndChild();
 		}

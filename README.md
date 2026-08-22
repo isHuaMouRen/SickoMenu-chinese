@@ -1,8 +1,8 @@
 <p align="center">
    <img src="SickoBanner.png">
-  </p>
+</p>
 
-<h1 align="center">👺 SickoMenu v4.5.2 - Chinese</h1>
+<h1 align="center">👺 SickoMenu v5.0 - Chinese</h1>
 一款专为《Among Us》设计的强大实用工具，可为您带来丰富的自定义功能体验！
 
 **仅限教育和实验用途。**
