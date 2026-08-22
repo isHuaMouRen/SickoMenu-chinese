@@ -214,7 +214,7 @@ namespace GameTab {
                 State.Save();
             }
             ImGui::SameLine();*/
-            if (ToggleButton("Multiply Speed", &State.MultiplySpeed)) {
+            if (ToggleButton("应用移动速度", &State.MultiplySpeed)) {
                 State.Save();
             }
             ImGui::SameLine();
@@ -362,9 +362,9 @@ namespace GameTab {
                 State.SelectedVentId = std::clamp(State.SelectedVentId, 0, (int)allVents.size() - 1);
 
                 ImGui::SetNextItemWidth(100 * State.dpiScale);
-                CustomListBoxInt("Vent", &State.SelectedVentId, allVents);
+                CustomListBoxInt("管道", &State.SelectedVentId, allVents);
                 ImGui::SameLine();
-                if (AnimatedButton("Teleport All to Vent")) {
+                if (AnimatedButton("传送所有人至管道")) {
                     for (auto p : GetAllPlayerControl()) {
                         if (State.IgnoreVentTpSelf && p == *Game::pLocalPlayer) continue;
                         if (IsHost() || !State.SafeMode)
@@ -373,18 +373,18 @@ namespace GameTab {
                             State.rpcQueue.push(new RpcBootFromVentNonHost(p, (State.mapType == Settings::MapType::Hq) ? State.SelectedVentId + 1 : State.SelectedVentId)); //MiraHQ vents start from 1 instead of 0
                     }
                 }
-                if (ToggleButton("Spam TP All to Vent", &State.SpamVentTpEveryone)) {
+                if (ToggleButton("混乱传送所有人至管道", &State.SpamVentTpEveryone)) {
                     if (State.SpamVentTpEveryone) State.SpamVentTpEveryoneRandom = false;
                 }
                 ImGui::SameLine();
-                if (ToggleButton("Spam TP All to Random Vents", &State.SpamVentTpEveryoneRandom)) {
+                if (ToggleButton("混乱传送所有人至随机管道", &State.SpamVentTpEveryoneRandom)) {
                     if (State.SpamVentTpEveryoneRandom) State.SpamVentTpEveryone = false;
                 }
 
-                if (ToggleButton("Ignore Self", &State.IgnoreVentTpSelf)) {
+                if (ToggleButton("忽略自己", &State.IgnoreVentTpSelf)) {
                     State.Save();
                 }
-                if (IsInMultiplayerGame() && AnimatedButton("Attempt to Ban Everyone")) {
+                if (IsInMultiplayerGame() && AnimatedButton("尝试封禁所有人")) {
                     State.rpcQueue.push(new AttemptToBan(NULL));
                 }
             }
@@ -544,7 +544,7 @@ namespace GameTab {
                 State.Save();
             }
             if ((IsHost() && IsInGame()) || !State.SafeMode) {
-                if (CustomListBoxInt("Chat Spam Mode", &State.ChatSpamMode,
+                if (CustomListBoxInt("消息轰炸模式", &State.ChatSpamMode,
                     { State.SafeMode ? "With Message (Self-Spam ONLY)" : "With Message", "Blank Chat", State.SafeMode ? "Self Message + Blank Chat" : "Message + Blank Chat" })) State.Save();
             }
 
@@ -650,8 +650,8 @@ namespace GameTab {
                         State.WhitelistFriendCodes.erase(State.WhitelistFriendCodes.begin() + selectedWCodeIndex);
                 }
             }
-            ImGui::Text("Detect Actions:");
-            if (ToggleButton("Known Cheat Usage", &State.SMAC_CheckOtherCheats)) State.Save();
+            ImGui::Text("检测操作:");
+            if (ToggleButton("已知作弊使用", &State.SMAC_CheckOtherCheats)) State.Save();
             ImGui::SameLine();
             if (ToggleButton("使用 SickoMenu", &State.SMAC_CheckSicko)) State.Save();
             ImGui::SameLine();
@@ -685,10 +685,10 @@ namespace GameTab {
 
             if (ToggleButton("异常任务完成", &State.SMAC_CheckTaskCompletion)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Abnormal Sabotages", &State.SMAC_CheckSabotage)) State.Save();
-            if (ToggleButton("Abnormal Player Levels (0 to ignore)", &State.SMAC_CheckLevel)) State.Save();
+            if (ToggleButton("异常破坏", &State.SMAC_CheckSabotage)) State.Save();
+            if (ToggleButton("异常玩家等级 (lv0=忽略)", &State.SMAC_CheckLevel)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Abnormal Friendcode", &State.SMAC_CheckFriendcode)) State.Save();
+            if (ToggleButton("异常好友代码", &State.SMAC_CheckFriendcode)) State.Save();
             if (State.SMAC_CheckLevel && ImGui::InputInt("Level >=", &State.SMAC_HighLevel)) {
                 State.Save();
             }
@@ -766,11 +766,11 @@ namespace GameTab {
                 State.Save();
             }
 
-            if (IsInLobby() && ToggleButton("Attempt to Crash Lobby", &State.CrashSpamReport)) {
+            if (IsInLobby() && ToggleButton("尝试崩溃大厅", &State.CrashSpamReport)) {
                 State.Save();
             }
 
-            if (State.CrashSpamReport) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("When the game starts, the lobby is destroyed"));
+            if (State.CrashSpamReport) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("游戏开始时此大厅将被摧毁"));
 
             /*if (!IsInGame() && !IsInLobby()) {
                 if (ToggleButton("Overflow", &State.Overflow)) {

@@ -11,7 +11,7 @@ namespace EspTab {
 		bool changed = false;
 		ImGui::SameLine(100 * State.dpiScale);
 		ImGui::BeginChild("###ESP", ImVec2(500 * State.dpiScale, 0), true, ImGuiWindowFlags_NoBackground);
-		changed |= ToggleButton("Show ESP", &State.ShowEsp);
+		changed |= ToggleButton("总开关", &State.ShowEsp);
 
 		changed |= ToggleButton("显示幽灵", &State.ShowEsp_Ghosts);
 		//dead bodies for v3.1
