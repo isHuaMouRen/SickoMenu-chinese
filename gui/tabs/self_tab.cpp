@@ -252,11 +252,11 @@ namespace SelfTab {
             CloseOtherGroups(Groups::Utils);
         }
         ImGui::SameLine();
-        if (TabGroup("Roles", openRoles)) {
+        if (TabGroup("身份", openRoles)) {
             CloseOtherGroups(Groups::Roles);
         }
         ImGui::SameLine();
-        if (TabGroup("Randomizers", openRandomizers)) {
+        if (TabGroup("随机器", openRandomizers)) {
             CloseOtherGroups(Groups::Randomizers);
         }
         ImGui::SameLine();
@@ -274,7 +274,7 @@ namespace SelfTab {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Disable HUD", &State.DisableHud)) {
+            if (ToggleButton("禁用HUD", &State.DisableHud)) {
                 if (!IsInGame()) State.DisableHud = false;
             }
 
@@ -294,15 +294,15 @@ namespace SelfTab {
             ImGui::SameLine(130.f * State.dpiScale);
             SteppedSliderFloat("缩放", &State.CameraHeight, 0.5f, 10.0f, 0.5f, "%.2fx", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput);
 
-            if (ToggleButton("Scroll to Zoom / Shift + Scroll to Change Freecam Speed", &State.EnableZoom_ScrollZoom)) {
+            if (ToggleButton("滚动切换自由视角缩放 / 按住Shift+滚动切换自由视角速度", &State.EnableZoom_ScrollZoom)) {
                 State.Save();
             }
             
-            if (ToggleButton("Smooth Zoom", &State.EnableZoom_SmoothZoom)) {
+            if (ToggleButton("平滑缩放", &State.EnableZoom_SmoothZoom)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Show Shadows While Zoomed", &State.EnableZoom_ShowShadows)) {
+            if (ToggleButton("缩放时显示阴影", &State.EnableZoom_ShowShadows)) {
                 State.Save();
             }
 
@@ -481,18 +481,18 @@ namespace SelfTab {
                 State.MIG_ThemeChanged = true;
             }
             ImGui::SameLine();
-            if (ToggleButton("Localize Role Names", &State.LocalizeRoleNames))
+            if (ToggleButton("本地化身份名称", &State.LocalizeRoleNames))
             {
                 if (State.LocalizeRoleNames) State.AbbreviatedRoleNames = false;
                 State.Save();
             }
             if (!State.LocalizeRoleNames) ImGui::SameLine();
-            if (!State.LocalizeRoleNames && ToggleButton("Abbreviate Role Names", &State.AbbreviatedRoleNames))
+            if (!State.LocalizeRoleNames && ToggleButton("缩写角色名称", &State.AbbreviatedRoleNames))
             {
                 State.Save();
             }
 
-            if (ToggleButton("Player Colored Dots Next To Names", &State.PlayerColoredDots))
+            if (ToggleButton("名字旁的彩色点状标记", &State.PlayerColoredDots))
             {
                 State.Save();
                 State.MIG_ThemeChanged = true;
@@ -607,12 +607,12 @@ namespace SelfTab {
                 State.Save();
             }
 
-            if (ToggleButton("Kill Immunity", &State.KillImmunity)) {
+            if (ToggleButton("免疫击杀", &State.KillImmunity)) {
                 SendKillImmuneToggle(State.KillImmunity);
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Make Role Abilities Bypass Comms Sabotages", &State.RolesBypassCommsSabotage)) {
+            if (ToggleButton("通讯破坏时仍然可用角色技能", &State.RolesBypassCommsSabotage)) {
                 State.Save();
             }
 
@@ -620,7 +620,7 @@ namespace SelfTab {
                 State.Save();
             }
             ImGui::SameLine();*/
-            if (ToggleButton("Copy Lobby Code on Disconnect", &State.AutoCopyLobbyCode)) {
+            if (ToggleButton("断开连接时复制房间代码", &State.AutoCopyLobbyCode)) {
                 State.Save();
             }
 
@@ -650,19 +650,19 @@ namespace SelfTab {
                 State.Save();
             }
 
-            if (ToggleButton("Auto Rejoin After Game Ending", &State.AutoRejoin)) {
+            if (ToggleButton("游戏结束后自动重连", &State.AutoRejoin)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Disable Shush Animation", &State.DisableShushAnimation)) {
+            if (ToggleButton("关闭闪烁动画", &State.DisableShushAnimation)) {
                 State.Save();
             }
 
-            if (ToggleButton("Autokill", &State.AutoKill)) {
+            if (ToggleButton("自动击杀", &State.AutoKill)) {
                 State.Save();
             }
 
-            if (ToggleButton("Report Body on Murder", &State.ReportOnMurder)) {
+            if (ToggleButton("谋杀时自动报告实体", &State.ReportOnMurder)) {
                 State.Save();
             }
             if (State.ReportOnMurder) {
@@ -854,131 +854,131 @@ namespace SelfTab {
                 if (ToggleButton("隐身时击杀", &State.KillInVanish)) {
                     State.Save();
                 }
-                if (ToggleButton("Bypass Guardian Angel Protections", &State.BypassAngelProt)) {
+                if (ToggleButton("忽略守护天使保护", &State.BypassAngelProt)) {
                     State.Save();
                 }
             }
         }
 
         if (openRoles) {
-            if (ToggleButton("Infinite Emergency Meetings", &State.InfiniteMeetings)) State.Save();
+            if (ToggleButton("无限紧急会议次数", &State.InfiniteMeetings)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("No Ladder/Zipline Cooldown", &State.NoLadderZiplineCooldown)) State.Save();
+            if (ToggleButton("无梯子 / 飞行平台冷却", &State.NoLadderZiplineCooldown)) State.Save();
             ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
 
-            ImGui::TextColored(State.EngineerColor, "Engineer");
-            if (ToggleButton("No Vent Cooldown", &State.Engineer_NoVentCooldown)) State.Save();
+            ImGui::TextColored(State.EngineerColor, "工程师");
+            if (ToggleButton("无管道冷却", &State.Engineer_NoVentCooldown)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Infinite Vent Time", &State.Engineer_InfiniteVentTime)) State.Save();
+            if (ToggleButton("无限管道时间", &State.Engineer_InfiniteVentTime)) State.Save();
             ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
 
-            ImGui::TextColored(State.ScientistColor, "Scientist");
-            if (ToggleButton("No Vitals Cooldown", &State.Scientist_NoVitalsCooldown)) State.Save();
+            ImGui::TextColored(State.ScientistColor, "科学家");
+            if (ToggleButton("无观察冷却", &State.Scientist_NoVitalsCooldown)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Infinite Battery", &State.Scientist_InfiniteBattery)) State.Save();
+            if (ToggleButton("无限电池", &State.Scientist_InfiniteBattery)) State.Save();
             ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
 
-            ImGui::TextColored(State.TrackerColor, "Tracker");
-            if (ToggleButton("No Tracking Cooldown", &State.Tracker_NoTrackingCooldown)) State.Save();
+            ImGui::TextColored(State.TrackerColor, "追踪者");
+            if (ToggleButton("无追踪冷却", &State.Tracker_NoTrackingCooldown)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Infinite Tracking", &State.Tracker_InfiniteTracking)) State.Save();
+            if (ToggleButton("无限追踪", &State.Tracker_InfiniteTracking)) State.Save();
             ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
 
-            ImGui::TextColored(State.DetectiveColor, "Detective");
-            if (ToggleButton("No Interrogate Cooldown", &State.Detective_NoInterrogateCooldown)) State.Save();
+            ImGui::TextColored(State.DetectiveColor, "侦探");
+            if (ToggleButton("无调查冷却", &State.Detective_NoInterrogateCooldown)) State.Save();
             ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
 
-            ImGui::TextColored(State.JudgeColor, "Judge");
-            if (ToggleButton("No Task Requirement", &State.Judge_NoTaskRequirement)) State.Save();
+            ImGui::TextColored(State.JudgeColor, "法官");
+            if (ToggleButton("无任务需求", &State.Judge_NoTaskRequirement)) State.Save();
             if (!State.SafeMode) {
                 ImGui::SameLine();
-                if (ToggleButton("Infinite Overrules", &State.Judge_InfiniteOverrules)) State.Save();
+                if (ToggleButton("无限审批", &State.Judge_InfiniteOverrules)) State.Save();
             }
             ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
 
             if (IsHost() || !State.SafeMode) {
-                ImGui::TextColored(State.GuardianAngelColor, "Guardian Angel");
-                if (ToggleButton("No Protect Cooldown", &State.GuardianAngel_NoProtectCooldown)) State.Save();
+                ImGui::TextColored(State.GuardianAngelColor, "守护天使");
+                if (ToggleButton("无守护冷却", &State.GuardianAngel_NoProtectCooldown)) State.Save();
                 ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
 
-                ImGui::TextColored(State.ImpostorColor, "Impostor");
-                if (ToggleButton("No Kill Cooldown", &State.Impostor_NoKillCooldown)) State.Save();
+                ImGui::TextColored(State.ImpostorColor, "伪装者");
+                if (ToggleButton("无击杀冷却", &State.Impostor_NoKillCooldown)) State.Save();
                 ImGui::SameLine();
-                if (ToggleButton("Kill Other Impostors", &State.KillImpostors)) State.Save();
+                if (ToggleButton("击杀其他伪装者", &State.KillImpostors)) State.Save();
                 ImGui::SameLine();
-                if (ToggleButton("Kill Reach", &State.InfiniteKillRange)) State.Save();
+                if (ToggleButton("范围击杀", &State.InfiniteKillRange)) State.Save();
                 
 
-                if (ToggleButton("Do Tasks as Impostor", &State.DoTasksAsImpostor)) {
+                if (ToggleButton("伪装者可做任务", &State.DoTasksAsImpostor)) {
                     State.Save();
                 }
                 ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
             }
 
-            ImGui::TextColored(State.ShapeshifterColor, "Shapeshifter");
-            if (ToggleButton("No Shapeshift Animation", &State.AnimationlessShapeshift)) State.Save();
+            ImGui::TextColored(State.ShapeshifterColor, "变形者");
+            if (ToggleButton("无变形动画", &State.AnimationlessShapeshift)) State.Save();
             ImGui::SameLine();
-            if (ToggleButton("Infinite Shapeshift Duration", &State.Shapeshifter_InfiniteShapeshiftDuration)) State.Save();
+            if (ToggleButton("无限变形时长", &State.Shapeshifter_InfiniteShapeshiftDuration)) State.Save();
         }
 
         if (openRandomizers) {
             ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
 
-            if (ToggleButton("Cycler", &State.Cycler)) {
+            if (ToggleButton("循环器", &State.Cycler)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton("Cycle in Meeting", &State.CycleInMeeting)) {
+            if (ToggleButton("会议中循环", &State.CycleInMeeting)) {
                 State.Save();
             }
             ImGui::SameLine();
-            if (ToggleButton(State.SafeMode ? "Cycle Between Players' Outfits" : "Cycle Between Players", &State.CycleBetweenPlayers)) {
+            if (ToggleButton(State.SafeMode ? "在玩家装扮中循环" : "在玩家中循环", &State.CycleBetweenPlayers)) {
                 State.Save();
             }
 
-            if (SteppedSliderFloat("Cycle Timer", &State.CycleTimer, 0.2f, 1.f, 0.02f, "%.2fs", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
+            if (SteppedSliderFloat("循环计时器", &State.CycleTimer, 0.2f, 1.f, 0.02f, "%.2fs", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
                 State.PrevCycleTimer = State.CycleTimer;
                 State.CycleDuration = State.CycleTimer * 50;
             }
 
             ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
-            if (ImGui::CollapsingHeader("Cycler Options")) {
+            if (ImGui::CollapsingHeader("循环器选项")) {
                 ImGui::Dummy(ImVec2(4, 2)* State.dpiScale);
                 if (!State.SafeMode) {
-                    if (ToggleButton("Cycle Name", &State.CycleName)) {
+                    if (ToggleButton("循环名称", &State.CycleName)) {
                         State.Save();
                     }
 
                     ImGui::SameLine(120.0f * State.dpiScale);
                 }
-                if (ToggleButton("Cycle Color", &State.RandomColor)) {
+                if (ToggleButton("循环颜色", &State.RandomColor)) {
                     State.Save();
                 }
 
                 ImGui::SameLine(!State.SafeMode ? (240.0f * State.dpiScale) : (120.0f * State.dpiScale));
-                if (ToggleButton("Cycle Hat", &State.RandomHat)) {
+                if (ToggleButton("循环帽子", &State.RandomHat)) {
                     State.Save();
                 }
                 ImGui::SameLine(240.0f * State.dpiScale);
-                if (ToggleButton("Cycle Nameplate", &State.RandomNamePlate)) {
+                if (ToggleButton("循环铭牌", &State.RandomNamePlate)) {
                     State.Save();
                 }
-                if (ToggleButton("Cycle Visor", &State.RandomVisor)) {
+                if (ToggleButton("循环护目镜", &State.RandomVisor)) {
                     State.Save();
                 }
 
                 ImGui::SameLine(120.0f * State.dpiScale);
-                if (ToggleButton("Cycle Skin", &State.RandomSkin)) {
+                if (ToggleButton("循环皮肤", &State.RandomSkin)) {
                     State.Save();
                 }
 
                 ImGui::SameLine(240.0f * State.dpiScale);
-                if (ToggleButton("Cycle Pet", &State.RandomPet)) {
+                if (ToggleButton("循环宠物", &State.RandomPet)) {
                     State.Save();
                 }
 
                 if (IsHost() || !State.SafeMode) {
-                    if (ToggleButton(IsHost() ? "Cycle for Everyone (Color ONLY)" : "Cycle for Everyone", &State.CycleForEveryone)) {
+                    if (ToggleButton(IsHost() ? "循环每个人 (仅颜色)" : "Cycle for Everyone", &State.CycleForEveryone)) {
                         State.Save();
                     }
                 }

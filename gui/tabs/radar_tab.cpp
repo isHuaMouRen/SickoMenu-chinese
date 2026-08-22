@@ -26,7 +26,7 @@ namespace RadarTab {
 		if (ToggleButton("右键传送", &State.ShowRadar_RightClickTP)) {
 			State.Save();
 		}
-		if (ToggleButton("(Shift + Left Click) to Close Room Door", &State.ShowRadar_ShiftLeftClickClosesRoomDoor)) {
+		if (ToggleButton("(Shift + 左键) 来关闭房门", &State.ShowRadar_ShiftLeftClickClosesRoomDoor)) {
 			State.Save();
 		}
 
