@@ -267,7 +267,7 @@ static const ImWchar* GetAllGlyphRanges(ImGuiIO& io) {
 static void RebuildFont() {
     ImGuiIO& io = ImGui::GetIO();
     io.Fonts->Clear();
-    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 14 * State.dpiScale, nullptr,
+    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\msyh.ttc", 14 * State.dpiScale, nullptr,
         GetAllGlyphRanges(io));
 
     io.Fonts->Build();
