@@ -91,7 +91,7 @@ namespace TasksTab {
 			default: break;
 			}
 
-			ImGui::TextDisabled("Map: %s", mapName);
+			ImGui::TextDisabled("地图: %s", mapName);
 			ImGui::Dummy(ImVec2(3, 3) * State.dpiScale);
 			ImVec4 themeCol = State.RgbMenuTheme ? State.RgbColor : (State.GradientMenuTheme ? State.MenuGradientColor : State.MenuThemeColor);
 			ImVec4 themeColDark = ImVec4(themeCol.x * 0.7f, themeCol.y * 0.7f, themeCol.z * 0.7f, themeCol.w);
@@ -186,7 +186,7 @@ namespace TasksTab {
 				(tasks.size() != 0 || (IsHost() && gameFlowHns->fields.currentHideTime > 0.f))) {
 				GameOptions options;
 
-				if (options.GetGameMode() == GameModes__Enum::HideNSeek && AnimatedButton("Drain Hide Timer")) {
+				if (options.GetGameMode() == GameModes__Enum::HideNSeek && AnimatedButton("直接进入终局")) {
 					DrainHideTimer();
 				}
 				ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
@@ -234,25 +234,25 @@ namespace TasksTab {
 			}
 
 			GameOptions options;
-			if (!options.GetBool(app::BoolOptionNames__Enum::VisualTasks, false) && ToggleButton("Bypass Visual Tasks Being Off", &State.BypassVisualTasks))
+			if (!options.GetBool(app::BoolOptionNames__Enum::VisualTasks, false) && ToggleButton("强制开启任务可视", &State.BypassVisualTasks))
 				State.Save();
 
 			if (!State.BypassVisualTasks && options.GetGameMode() == GameModes__Enum::Normal && !options.GetBool(app::BoolOptionNames__Enum::VisualTasks, false)) {
-				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Visual tasks are turned OFF in this lobby.");
-				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Any animations (other than cameras) are client-sided only!");
+				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "此大厅已关闭任务可视.");
+				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "任何动画(摄像头除外)都仅客户端可见!");
 			}
 			else if (!State.BypassVisualTasks && options.GetGameMode() == GameModes__Enum::HideNSeek)
-				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Animations other than cameras are client-sided only in Hide n Seek!");
+				ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "躲猫猫模式内除摄像头动画外其余动画仅客户端可见!");
 
 			if (State.mapType == Settings::MapType::Ship) {
 				if (!State.BypassVisualTasks && !options.GetBool(app::BoolOptionNames__Enum::VisualTasks, false)) {
-					if (AnimatedButton("Play Shields Animation (Client-sided)"))
+					if (AnimatedButton("播放盾牌动画 (仅客户端)"))
 					{
 						State.rpcQueue.push(new RpcPlayAnimation(1));
 					}
 				}
 				else {
-					if (AnimatedButton("Play Shields Animation"))
+					if (AnimatedButton("播放盾牌动画"))
 					{
 						State.rpcQueue.push(new RpcPlayAnimation(1));
 					}
@@ -261,13 +261,13 @@ namespace TasksTab {
 
 			if (State.mapType == Settings::MapType::Ship) {
 				if (!State.BypassVisualTasks && !options.GetBool(app::BoolOptionNames__Enum::VisualTasks, false)) {
-					if (AnimatedButton("Play Trash Animation (Client-sided)"))
+					if (AnimatedButton("播放垃圾动画 (仅客户端)"))
 					{
 						State.rpcQueue.push(new RpcPlayAnimation(10));
 					}
 				}
 				else {
-					if (AnimatedButton("Play Trash Animation"))
+					if (AnimatedButton("播放垃圾动画"))
 					{
 						State.rpcQueue.push(new RpcPlayAnimation(10));
 					}
@@ -277,13 +277,13 @@ namespace TasksTab {
 			if (State.mapType == Settings::MapType::Ship || State.mapType == Settings::MapType::Pb) {
 
 				if (!State.BypassVisualTasks && !options.GetBool(app::BoolOptionNames__Enum::VisualTasks, false)) {
-					if (ToggleButton("Play Weapons Animation (Client-sided)", &State.PlayWeaponsAnimation))
+					if (ToggleButton("播放武器动画 (仅客户端)", &State.PlayWeaponsAnimation))
 					{
 						State.Save();
 					}
 				}
 				else {
-					if (ToggleButton("Play Weapons Animation", &State.PlayWeaponsAnimation))
+					if (ToggleButton("播放武器动画", &State.PlayWeaponsAnimation))
 					{
 						State.Save();
 					}
@@ -291,7 +291,7 @@ namespace TasksTab {
 			}
 
 			if (!State.BypassVisualTasks && !options.GetBool(app::BoolOptionNames__Enum::VisualTasks, false)) {
-				if (ToggleButton("Play Medbay Scan Animation (Client-sided)", &State.PlayMedbayScan))
+				if (ToggleButton("播放扫描动画 (仅客户端)", &State.PlayMedbayScan))
 				{
 					if (State.PlayMedbayScan)
 					{
@@ -304,7 +304,7 @@ namespace TasksTab {
 				}
 			}
 			else {
-				if (ToggleButton("Play Medbay Scan Animation", &State.PlayMedbayScan))
+				if (ToggleButton("播放扫描动画", &State.PlayMedbayScan))
 				{
 					if (State.PlayMedbayScan)
 					{
