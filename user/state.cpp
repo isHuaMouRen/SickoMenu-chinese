@@ -264,6 +264,7 @@ void Settings::Load() {
         JSON_TRYGET("ReplayShowOnlyLastSeconds", this->Replay_ShowOnlyLastSeconds);
         JSON_TRYGET("ReplayLastSecondsValue", this->Replay_LastSecondsValue);
         JSON_TRYGET("ReplayClearAfterMeeting", this->Replay_ClearAfterMeeting);
+        JSON_TRYGET("ReplayDrawIcons", this->Replay_DrawIcons);
 
         JSON_TRYGET("ShowEsp", this->ShowEsp);
         JSON_TRYGET("ShowEsp_Ghosts", this->ShowEsp_Ghosts);
@@ -840,6 +841,7 @@ void Settings::Save() {
                 { "ReplayShowOnlyLastSeconds", this->Replay_ShowOnlyLastSeconds },
                 { "ReplayLastSecondsValue", this->Replay_LastSecondsValue },
                 { "ReplayClearAfterMeeting", this->Replay_ClearAfterMeeting },
+                { "Replay_DrawIcons", this->Replay_DrawIcons },
 
                 { "AutoApplyHostPreset", this->AutoApplyHostPreset },
                 { "HostPresets", [&]() {
