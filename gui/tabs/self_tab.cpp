@@ -252,7 +252,7 @@ namespace SelfTab {
             CloseOtherGroups(Groups::Utils);
         }
         ImGui::SameLine();
-        if (TabGroup("身份", openRoles)) {
+        if (TabGroup("职业", openRoles)) {
             CloseOtherGroups(Groups::Roles);
         }
         ImGui::SameLine();
@@ -286,7 +286,7 @@ namespace SelfTab {
             ImGui::SameLine(130.f * State.dpiScale);
             SteppedSliderFloat("速度", &State.FreeCamSpeed, 0.f, 10.f, 0.1f, "%.2fx", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput);
 
-            if (ToggleButton("Zoom", &State.EnableZoom)) {
+            if (ToggleButton("缩放", &State.EnableZoom)) {
                 // State.Save();
                 if (!State.EnableZoom && Game::HudManager.IsInstanceExists()) {
                     auto hud = Game::HudManager.GetInstance();
@@ -958,7 +958,7 @@ namespace SelfTab {
                 State.Save();
             }
 
-            if (SteppedSliderFloat("循环计时器", &State.CycleTimer, 0.2f, 1.f, 0.02f, "%.2fs", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
+            if (SteppedSliderFloat("循环间隔", &State.CycleTimer, 0.2f, 1.f, 0.02f, "%.2fs", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoInput)) {
                 State.PrevCycleTimer = State.CycleTimer;
                 State.CycleDuration = State.CycleTimer * 50;
             }
@@ -1041,14 +1041,14 @@ namespace SelfTab {
                 }
             }
 
-            if (ImGui::CollapsingHeader("Confuser", ImGuiTreeNodeFlags_DefaultOpen)) {
+            if (ImGui::CollapsingHeader("换装器", ImGuiTreeNodeFlags_DefaultOpen)) {
                 ImGui::Dummy(ImVec2(4, 2) * State.dpiScale);
-                if (ToggleButton("Confuser (Randomize Appearance at Will)", &State.confuser)) {
+                if (ToggleButton("启用", &State.confuser)) {
                     State.Save();
                 }
 
                 ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
-                if ((IsInGame() || IsInLobby()) && AnimatedButton("Confuse Now")) {
+                if ((IsInGame() || IsInLobby()) && AnimatedButton("立即换装")) {
                     ControlAppearance(true);
                 }
                 if (IsInGame() || IsInLobby()) {
@@ -1144,21 +1144,21 @@ namespace SelfTab {
             }
             ImGui::Dummy(ImVec2(4, 2)* State.dpiScale);
             bool isPresetDeleted = false;
-            if (ImGui::CollapsingHeader("Cosmetic Presets", ImGuiTreeNodeFlags_DefaultOpen)) {
+            if (ImGui::CollapsingHeader("装扮预设", ImGuiTreeNodeFlags_DefaultOpen)) {
                 ImGui::Dummy(ImVec2(4, 2) * State.dpiScale);
-                if (ToggleButton("Auto Apply on Join", &State.AutoApplyCosmeticPreset))
+                if (ToggleButton("自动在加入时应用", &State.AutoApplyCosmeticPreset))
                     State.Save();
                 ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
                 if (!State.CosmeticPresets.empty()) {
                     std::vector<const char*> names;
                     for (auto& p : State.CosmeticPresets) names.push_back(p.Name.c_str());
-                    CustomListBoxInt("##cosmeticpresetselect", &State.SelectedCosmeticPreset, names, 200.0f * State.dpiScale, ImVec4(0, 0, 0, 0), 0, "Preset");
+                    CustomListBoxInt("##cosmeticpresetselect", &State.SelectedCosmeticPreset, names, 200.0f * State.dpiScale, ImVec4(0, 0, 0, 0), 0, "预设");
                     ImGui::SameLine();
-                    if (AnimatedButton("Apply##cosmeticpreset")) {
+                    if (AnimatedButton("应用##cosmeticpreset")) {
                         ApplyCosmeticPreset(State.CosmeticPresets[std::clamp(State.SelectedCosmeticPreset, 0, (int)State.CosmeticPresets.size() - 1)]);
                     }
                     ImGui::SameLine();
-                    if (AnimatedButton("Update##cosmeticpreset")) {
+                    if (AnimatedButton("更新##cosmeticpreset")) {
                         auto outfit = GetPlayerOutfit(GetPlayerData(*Game::pLocalPlayer));
                         if (outfit != nullptr) {
                             int idx = std::clamp(State.SelectedCosmeticPreset, 0, (int)State.CosmeticPresets.size() - 1);
@@ -1173,7 +1173,7 @@ namespace SelfTab {
                         }
                     }
                     ImGui::SameLine();
-                    if (AnimatedButton("Delete##cosmeticpreset")) {
+                    if (AnimatedButton("删除##cosmeticpreset")) {
                         int idx = std::clamp(State.SelectedCosmeticPreset, 0, (int)State.CosmeticPresets.size() - 1);
                         State.CosmeticPresets.erase(State.CosmeticPresets.begin() + idx);
                         if (State.CosmeticPresets.size() != 0)
@@ -1183,20 +1183,20 @@ namespace SelfTab {
                     }
                 }
                 else {
-                    ImGui::TextDisabled("No cosmetic presets saved.");
+                    ImGui::TextDisabled("没有装扮预设.");
                 }
 
                 if (!isPresetDeleted) {
                     ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
-                    static std::string newCosmeticName = "My Outfit";
+                    static std::string newCosmeticName = "新预设";
                     ImGui::SetNextItemWidth(160 * State.dpiScale);
-                    InputString("Preset Name##cosmetic", &newCosmeticName);
+                    InputString("预设名称##cosmetic", &newCosmeticName);
                     ImGui::SameLine();
-                    if (AnimatedButton("Save Current##cosmeticpreset")) {
+                    if (AnimatedButton("保存当前的装扮##cosmeticpreset")) {
                         auto outfit = GetPlayerOutfit(GetPlayerData(*Game::pLocalPlayer));
                         if (outfit != nullptr) {
                             Settings::CosmeticPreset p;
-                            p.Name = newCosmeticName.empty() ? "Preset" : newCosmeticName;
+                            p.Name = newCosmeticName.empty() ? "预设" : newCosmeticName;
                             p.ColorId = outfit->fields.ColorId;
                             p.HatId = outfit->fields.HatId ? convert_from_string(outfit->fields.HatId) : "";
                             p.SkinId = outfit->fields.SkinId ? convert_from_string(outfit->fields.SkinId) : "";

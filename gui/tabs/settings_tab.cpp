@@ -46,7 +46,7 @@ namespace SettingsTab {
 			CloseOtherGroups(Groups::General);
 		}
 		ImGui::SameLine();
-		if (TabGroup("欺骗", openSpoofing)) {
+		if (TabGroup("伪装", openSpoofing)) {
 			CloseOtherGroups(Groups::Spoofing);
 		}
 		ImGui::SameLine();
@@ -209,13 +209,13 @@ namespace SettingsTab {
 				if (InputString("Username", &State.userName)) State.Save();
 				ImGui::PopStyleColor();
 			}
-			else */InputString("Username", &State.userName);
+			else */InputString("用户名", &State.userName);
 
 			if (!IsNameValid(State.userName) && !IsHost() && State.SafeMode) {
 				if (State.userName == "")
-					ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Empty username gets detected by anticheat. This name will be ignored.");
+					ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "空用户名会被反作弊系统检测到，该名称将被忽略.");
 				if (State.userName.length() > (size_t)10)
-					ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Username is too long, gets detected by anticheat. This name will be ignored.");
+					ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "用户名过长，会被反作弊系统检测到。该名称将被忽略.");
 				else if (!IsNameValid(State.userName))
 					ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "用户名包含被反作弊系统屏蔽的字符。该名称将被忽略.");
 				else
@@ -246,9 +246,9 @@ namespace SettingsTab {
 				}
 			}
 
-			InputString("Custom Code", &State.customCode);
+			InputString("自定义代码", &State.customCode);
 
-			if (ToggleButton("Replace Streamer Mode Lobby Code", &State.HideCode)) {
+			if (ToggleButton("替换主播模式房间代码", &State.HideCode)) {
 				State.Save();
 			}
 			ImGui::SameLine();
@@ -338,7 +338,7 @@ namespace SettingsTab {
 				else
 					ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), friendCodeValidText);
 			}
-			if (ToggleButton("欺骗等级", &State.SpoofLevel)) {
+			if (ToggleButton("伪装等级", &State.SpoofLevel)) {
 				State.Save();
 			}
 			if (State.SpoofLevel) {
@@ -351,7 +351,7 @@ namespace SettingsTab {
 					ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "等级将被防作弊系统检测，您的等级将在0到100001之间.");
 			}
 
-			if (ToggleButton("欺骗平台", &State.SpoofPlatform)) {
+			if (ToggleButton("伪装平台", &State.SpoofPlatform)) {
 				State.Save();
 			}
 			if (State.SpoofPlatform) {
@@ -634,7 +634,7 @@ namespace SettingsTab {
 				ImGui::SameLine(150.f * State.dpiScale);
 				ImGui::ColorEdit4("船员幽灵", (float*)&State.CrewmateGhostColor, ImGuiColorEditFlags__OptionsDefault | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
 
-				if (AnimatedButton("Reset Role Colors")) {
+				if (AnimatedButton("重置职业颜色")) {
 					State.CrewmateGhostColor = ImVec4(0.482f, 0.741f, 0.580f, 0.5f);
 					State.CrewmateColor = ImVec4(0.071f, 0.984f, 0.996f, 1.f);
 					State.EngineerColor = ImVec4(0.043f, 0.506f, 0.780f, 1.f);

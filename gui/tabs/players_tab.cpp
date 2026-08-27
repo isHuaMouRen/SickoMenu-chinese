@@ -428,7 +428,7 @@ namespace PlayersTab {
 
                     if (!selectedPlayer.get_PlayerControl()->fields.notRealPlayer && selectedPlayer.get_PlayerData() != NULL) {
                         bool isUsingMod = (selectedPlayer.is_LocalPlayer() && State.ModDetection) || State.modUsers.count(selectedPid);
-                        ImGui::Text("Is using Modified Client: %s", isUsingMod ? "Yes" : "No");
+                        ImGui::Text("使用Mod客户端: %s", isUsingMod ? "是" : "否");
                         if (isUsingMod) ImGui::Text("Mod Name: %s", selectedPlayer.is_LocalPlayer() ? "SickoMenu" : RemoveHtmlTags(State.modUsers.at(selectedPid)[0]).c_str());
                         if (isUsingMod && ((selectedPlayer.is_LocalPlayer() && State.ModDetection) || !State.modUsers.at(selectedPid)[1].empty()))
                             ImGui::Text("Mod Version: %s", selectedPlayer.is_LocalPlayer() ? State.SickoVersion.c_str() : RemoveHtmlTags(State.modUsers.at(selectedPid)[1]).c_str());
@@ -671,7 +671,7 @@ namespace PlayersTab {
                         }
                     }
                     else if (IsInGame() && (!selectedPlayer.is_Host() || selectedPlayers.size() != 1)) {
-                        if (AnimatedButton("Attempt to Ban")) {
+                        if (AnimatedButton("尝试踢出")) {
                             for (auto p : selectedPlayers) {
                                 if (p.has_value() && p.validate().is_LocalPlayer()) continue;
                                 if (p.has_value() &&
@@ -759,7 +759,7 @@ namespace PlayersTab {
 
                 if ((IsHost() && IsInGame()) || !State.SafeMode)
                 {
-                    if (selectedPlayers.size() == 1 && AnimatedButton("Shift"))
+                    if (selectedPlayers.size() == 1 && AnimatedButton("变形"))
                     {
                         std::queue<RPCInterface*>* queue = nullptr;
                         if (IsInGame())
@@ -809,7 +809,7 @@ namespace PlayersTab {
                 if (IsHost() && selectedPlayers.size() == 1) {
                     auto pid = selectedPlayer.get_PlayerData()->fields.PlayerId;
                     bool isVoteImmune = std::find(State.VoteImmunePlayers.begin(), State.VoteImmunePlayers.end(), pid) != State.VoteImmunePlayers.end();
-                    if (AnimatedButton(isVoteImmune ? "Remove Vote Immunity" : "Give Vote Immunity")) {
+                    if (AnimatedButton(isVoteImmune ? "移除投票免疫" : "给予投票免疫")) {
                         if (isVoteImmune) {
                             State.VoteImmunePlayers.erase(std::remove(State.VoteImmunePlayers.begin(), State.VoteImmunePlayers.end(), pid), State.VoteImmunePlayers.end());
                             State.VoteRedirectTargets.erase(pid);
@@ -934,20 +934,20 @@ namespace PlayersTab {
                             bool isRandomTpSpammed = it != State.spamRandomVentTpPlayers.end();
                             bool isTpSpammed = State.spamVentTpPlayers.find(playerId) != State.spamVentTpPlayers.end();
 
-                            if (!isRandomTpSpammed && (!State.IgnoreVentTpSelf || !p.validate().is_LocalPlayer()) && AnimatedButton("Spam Teleport to Random Vents")) {
+                            if (!isRandomTpSpammed && (!State.IgnoreVentTpSelf || !p.validate().is_LocalPlayer()) && AnimatedButton("混乱传送至随机管道")) {
                                 State.spamRandomVentTpPlayers.push_back(p.get_PlayerId());
                                 if (isTpSpammed) State.spamVentTpPlayers.erase(playerId);
                             }
-                            else if (isRandomTpSpammed && AnimatedButton("Stop Spam Teleport to Random Vents")) {
+                            else if (isRandomTpSpammed && AnimatedButton("停止")) {
                                 State.spamRandomVentTpPlayers.erase(it);
                             }
 
-                            if (!isTpSpammed && (!State.IgnoreVentTpSelf || !p.validate().is_LocalPlayer()) && AnimatedButton("Spam Teleport to Vent")) {
+                            if (!isTpSpammed && (!State.IgnoreVentTpSelf || !p.validate().is_LocalPlayer()) && AnimatedButton("混乱传送至管道")) {
                                 State.spamVentTpPlayers[p.get_PlayerId()] = ventId;
                                 if (isRandomTpSpammed) State.spamRandomVentTpPlayers.erase(it);
 
                             }
-                            else if (isTpSpammed && AnimatedButton("Stop Spam Teleport to Vent")) {
+                            else if (isTpSpammed && AnimatedButton("停止")) {
                                 State.spamVentTpPlayers.erase(playerId);
                             }
                             break;
@@ -1402,7 +1402,7 @@ namespace PlayersTab {
 
                 if ((IsHost() && IsInGame()) || !State.SafeMode)
                 {
-                    if (selectedPlayers.size() == 1 && AnimatedButton("Shift Everyone To"))
+                    if (selectedPlayers.size() == 1 && AnimatedButton("变形所有人为"))
                     {
                         std::queue<RPCInterface*>* queue = nullptr;
                         if (IsInGame())
@@ -1420,7 +1420,7 @@ namespace PlayersTab {
                         }
                     }
                     ImGui::SameLine();
-                    if (AnimatedButton("停止转移所有人"))
+                    if (AnimatedButton("还原所有人"))
                     {
                         std::queue<RPCInterface*>* queue = nullptr;
                         if (IsInGame())

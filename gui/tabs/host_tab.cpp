@@ -405,10 +405,10 @@ namespace HostTab {
                     State.CancelingStartGame = true;
                 }
 
-                if (ToggleButton("Enable Moderation System", &State.Mod_EnableModeration))
+                if (ToggleButton("启用 Moderation 系统", &State.Mod_EnableModeration))
                     State.Save();
 
-                if (ToggleButton("Always Allow Start Button", &State.AlwaysAllowStart))
+                if (ToggleButton("强制启用开始按钮", &State.AlwaysAllowStart))
                     State.Save();
 
                 if (ToggleButton("修改开始倒计时", &State.ModifyStartCountdown))
@@ -562,7 +562,7 @@ namespace HostTab {
                     State.Save();
                 }*/
 
-                if (ToggleButton("Bypass Guardian Angel Protections", &State.BypassAngelProt)) {
+                if (ToggleButton("屏蔽守护天使保护", &State.BypassAngelProt)) {
                     State.Save();
                 }
 

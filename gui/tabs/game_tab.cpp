@@ -1477,7 +1477,7 @@ namespace GameTab {
                         if (AnimatedButton(("复制##" + lobby.Code).c_str()))
                             ImGui::SetClipboardText(lobby.Code.c_str());
                         ImGui::SameLine();
-                        if (AnimatedButton(("Join##" + lobby.Code).c_str())) {
+                        if (AnimatedButton(("加入##" + lobby.Code).c_str())) {
                             State.JoinLobbyCode = lobby.Code;
                             State.JoinLobby = true;
                         }

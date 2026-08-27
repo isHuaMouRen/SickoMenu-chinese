@@ -216,7 +216,7 @@ namespace SabotageTab {
             }
         }
         if (State.mapType == Settings::MapType::Ship || State.mapType == Settings::MapType::Hq) {
-            if (AnimatedButton("破坏阳气")) {
+            if (AnimatedButton("破坏氧气")) {
                 State.rpcQueue.push(new RpcUpdateSystem(SystemTypes__Enum::LifeSupp, 128));
             }
         }
