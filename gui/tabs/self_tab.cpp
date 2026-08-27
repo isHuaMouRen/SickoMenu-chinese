@@ -288,6 +288,13 @@ namespace SelfTab {
 
             if (ToggleButton("Zoom", &State.EnableZoom)) {
                 // State.Save();
+                if (!State.EnableZoom && Game::HudManager.IsInstanceExists()) {
+                    auto hud = Game::HudManager.GetInstance();
+                    bool isKillOverlayActive = hud->fields.KillOverlay != NULL &&
+                        KillOverlay_get_IsOpen((KillOverlay*)hud->fields.KillOverlay, NULL);
+                    if (isKillOverlayActive) State.EnableZoom = true;
+                    // the ProgressTracker disappears if you disable zoom during the kill animation
+                }
                 State.HasRefreshedUI = false;
             }
 
@@ -397,10 +404,10 @@ namespace SelfTab {
                 if (ToggleButton("启用前缀和后缀", &State.UsePrefixAndSuffix)) State.Save();
                 if (ToggleButton("为前缀或后缀新起一行", &State.PrefixAndSuffixNewLines)) State.Save();
 
-                if (InputString("名称前缀", &State.NamePrefix)) State.Save();
-                if (InputString("名称后缀", &State.NameSuffix)) State.Save();
-                if (State.UsePrefixAndSuffix) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("注意：如果名称包含前缀和/或后缀，这些部分将从名称的两端移除。"));
-                if (State.UsePrefixAndSuffix) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("这是为了防止名称溢出。"));
+                InputString("Name Prefix", &State.NamePrefix);
+                InputString("Name Suffix", &State.NameSuffix);
+                if (State.UsePrefixAndSuffix) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("Note: Prefix and/or suffix will be cleared from the ends of the name if it contains them."));
+                if (State.UsePrefixAndSuffix) ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ("This is done to prevent name overflowing."));
 
                 if (ToggleButton("字体", &State.Font)) {
                     State.Save();
@@ -582,11 +589,10 @@ namespace SelfTab {
                     State.Save();
             }*/
 
-            if (State.InMeeting && AnimatedButton("会议中移动"))
+            if (State.InMeeting && AnimatedButton("Exit Meeting"))
             {
                 if (IsHost()) State.rpcQueue.push(new RpcEndMeeting());
                 else State.rpcQueue.push(new EndMeeting());
-                State.InMeeting = false;
             }
         }
 
@@ -751,13 +757,32 @@ namespace SelfTab {
                 }
             }
 
-            if (CustomListBoxInt("选择身份", &State.FakeRole, FAKEROLES, 100.0f * State.dpiScale)) {
+            ColorMapping FAKEROLE_NAMES_COLOR[] = {
+                {"Crewmate",		State.CrewmateColor},
+                {"Impostor",		State.ImpostorColor},
+                {"Scientist",		State.ScientistColor},
+                {"Engineer",		State.EngineerColor},
+                {"Guardian Angel",	State.GuardianAngelColor},
+                {"Shapeshifter",	State.ShapeshifterColor},
+                {"Crewmate Ghost",  State.CrewmateGhostColor},
+                {"Impostor Ghost",	State.ImpostorGhostColor},
+                {"Noisemaker",		State.NoisemakerColor},
+                {"Phantom",			State.PhantomColor},
+                {"Tracker",			State.TrackerColor},
+                {"Detective",		State.DetectiveColor},
+                {"Viper",			State.ViperColor},
+                {"Judge",           State.JudgeColor},
+            }; // needs to be updated every render
+
+            if (CustomListBoxIntColored("Select Role", &State.FakeRole, FAKEROLES, 100.0f * State.dpiScale, ImVec4(1.f, 1.f, 1.f, 0.f), 0, " ", FAKEROLE_NAMES_COLOR, IM_ARRAYSIZE(FAKEROLE_NAMES_COLOR))) {
                 // for some reason, detective is 12 (0x0c) instead of 11, and viper is 18 (0x12) instead of 12
                 if (State.FakeRole >= 12) State.FakeRoleId = State.FakeRole + 6;
                 else if (State.FakeRole == 11) State.FakeRoleId = State.FakeRole + 1;
                 else State.FakeRoleId = State.FakeRole;
                 State.Save();
             }
+            ImGui::SameLine(0.0f, 0.0f);
+            ImGui::Text("Select Role");
             ImGui::SameLine();
             if ((IsHost() || !State.SafeMode) && (IsInGame() || IsInLobby()) && AnimatedButton("设置身份")) {
                 // State.FakeRole = std::clamp(State.FakeRole, 0, 10);
@@ -900,20 +925,17 @@ namespace SelfTab {
                 ImGui::TextColored(State.GuardianAngelColor, "守护天使");
                 if (ToggleButton("无守护冷却", &State.GuardianAngel_NoProtectCooldown)) State.Save();
                 ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
-
-                ImGui::TextColored(State.ImpostorColor, "伪装者");
-                if (ToggleButton("无击杀冷却", &State.Impostor_NoKillCooldown)) State.Save();
-                ImGui::SameLine();
-                if (ToggleButton("击杀其他伪装者", &State.KillImpostors)) State.Save();
-                ImGui::SameLine();
-                if (ToggleButton("范围击杀", &State.InfiniteKillRange)) State.Save();
-                
-
-                if (ToggleButton("伪装者可做任务", &State.DoTasksAsImpostor)) {
-                    State.Save();
-                }
-                ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
             }
+
+            ImGui::TextColored(State.ImpostorColor, "Impostor");
+            if (ToggleButton("Kill Other Impostors", &State.KillImpostors)) State.Save();
+            ImGui::SameLine();
+            if (ToggleButton("Kill Reach", &State.InfiniteKillRange)) State.Save();
+            ImGui::SameLine();
+            if (ToggleButton("Do Tasks as Impostor", &State.DoTasksAsImpostor)) State.Save();
+
+            if (IsHost() && ToggleButton("No Kill Cooldown", &State.Impostor_NoKillCooldown)) State.Save();
+            ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
 
             ImGui::TextColored(State.ShapeshifterColor, "变形者");
             if (ToggleButton("无变形动画", &State.AnimationlessShapeshift)) State.Save();

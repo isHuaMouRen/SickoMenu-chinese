@@ -34,8 +34,8 @@ namespace HostTab {
     void OpenSubGroup(const std::string& name) {
         if (name == "Utils") CloseOtherGroups(Groups::Utils);
         else if (name == "Settings") CloseOtherGroups(Groups::Settings);
-        else if (name == "Tournaments") CloseOtherGroups(Groups::Tournaments);
-        else if (name == "Moderation") CloseOtherGroups(Groups::Moderation);
+        else if (name == "Tournaments" && State.TournamentMode) CloseOtherGroups(Groups::Tournaments);
+        else if (name == "Moderation" && State.Mod_EnableModeration) CloseOtherGroups(Groups::Moderation);
     }
 
     /*std::string GetPlayerNameFromFriendCode(std::string friendCode) {
@@ -130,8 +130,39 @@ namespace HostTab {
 
     void Render() {
         if (IsHost()) {
+            ColorMapping ROLE_NAMES_COLOR[] = {
+                {"Random",			ImVec4(1.f, 1.f, 1.f, 1.f)},
+                {"Crewmate",		State.CrewmateColor},
+                {"Scientist",		State.ScientistColor},
+                {"Engineer",		State.EngineerColor},
+                {"Noisemaker",		State.NoisemakerColor},
+                {"Tracker",			State.TrackerColor},
+                {"Detective",		State.DetectiveColor},
+                {"Judge",           State.JudgeColor},
+                {"Impostor",		State.ImpostorColor},
+                {"Shapeshifter",	State.ShapeshifterColor},
+                {"Phantom",			State.PhantomColor},
+                {"Viper",			State.ViperColor},
+            }; // needs to be updated every render
+            ColorMapping GAMEENDREASONCOLORS[] = {
+                {"Crewmates (Votes)", State.CrewmateColor},
+                {"Crewmates (Tasks)", State.CrewmateColor},
+                {"Impostors (Votes)", State.ImpostorColor},
+                {"Impostors (Kill)", State.ImpostorColor},
+                {"Impostors (Sabotage)", State.ImpostorColor},
+                {"D/C (Imp)", State.ImpostorColor},
+                {"D/C (Crew)", State.CrewmateColor},
+                {"Timer (HNS)", State.CrewmateColor},
+                {"Kill (HNS)", State.ImpostorColor},
+            }; // same here
+
             ImGui::SameLine(100 * State.dpiScale);
-            ImGui::BeginChild("###Host", ImVec2(500 * State.dpiScale, 0), true, ImGuiWindowFlags_NoBackground);
+
+            if (openUtils)
+                ImGui::BeginChild("###Host", ImVec2(500 * State.dpiScale, 0), true, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+            else
+                ImGui::BeginChild("###Host", ImVec2(500 * State.dpiScale, 0), true, ImGuiWindowFlags_NoBackground);
+
             ImGui::Dummy(ImVec2(4, 4) * State.dpiScale);
             if (TabGroup("工具", openUtils)) {
                 CloseOtherGroups(Groups::Utils);
@@ -148,15 +179,17 @@ namespace HostTab {
                     CloseOtherGroups(Groups::Tournaments);
                 }
             }
-            ImGui::SameLine();
-            if (TabGroup("Moderation", openModeration)) {
-                CloseOtherGroups(Groups::Moderation);
+            if (State.Mod_EnableModeration) {
+                ImGui::SameLine();
+                if (TabGroup("Moderation", openModeration)) {
+                    CloseOtherGroups(Groups::Moderation);
+                }
             }
             GameOptions options;
             if (openUtils) {
                 if (IsInLobby()) {
                     ImGui::Dummy(ImVec2(0, 2) * State.dpiScale);
-                    ImGui::BeginChild("host#list", ImVec2(200, 0) * State.dpiScale, true, ImGuiWindowFlags_NoBackground);
+                    ImGui::BeginChild("host#list", ImVec2(200, 0) * State.dpiScale, true, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
                     if (!State.DisableRoleManager && (!hideRolesList || !State.TournamentMode)) {
                         bool shouldEndListBox = ImGui::ListBoxHeader("选择身份", ImVec2(200, 290) * State.dpiScale);
                         auto allPlayers = GetAllPlayerData();
@@ -174,23 +207,19 @@ namespace HostTab {
 
                             auto outfit = GetPlayerOutfit(playerData);
                             if (outfit == NULL) continue;
+                            //ImVec4 the_info = AmongUsColorToImVec4(GetPlayerColor(outfit->fields.ColorId));
+                            //char hex_buf[10];
+                            //// Format as #AABBGGRR (standard alpha-first hex)
+                            //std::snprintf(hex_buf, sizeof(hex_buf), "#%02X%02X%02X%02X",
+                            //    (int)(the_info.w * 255.0f), // Alpha
+                            //    (int)(the_info.z * 255.0f)  // Blue
+                            //    (int)(the_info.y * 255.0f), // Green
+                            //    (int)(the_info.x * 255.0f), // Red
+                            //);
+                            //const std::string playerName = hex_buf;
                             const std::string& playerName = convert_from_string(outfit->fields.PlayerName);
                             //player colors in host tab by gdjkhp (https://github.com/GDjkhp/AmongUsMenu/commit/53b017183bac503c546f198e2bc03539a338462c)
 							//now with role colors in role selection
-                            RoleColor ROLE_NAMES_COLOR[] = {
-                                {"Random",			ImVec4(1.f, 1.f, 1.f, 1.f)},
-                                {"Crewmate",		State.CrewmateColor},
-                                {"Scientist",		State.ScientistColor},
-                                {"Engineer",		State.EngineerColor},
-                                {"Noisemaker",		State.NoisemakerColor},
-                                {"Tracker",			State.TrackerColor},
-                                {"Detective",		State.DetectiveColor},
-                                {"Judge",		    State.JudgeColor},
-                                {"Impostor",		State.ImpostorColor},
-                                {"Shapeshifter",	State.ShapeshifterColor},
-                                {"Phantom",			State.PhantomColor},
-                                {"Viper",			State.ViperColor},
-                            };
                             if (CustomListBoxIntColored((playerName + "###" + ToString(playerData)).c_str(), reinterpret_cast<int*>(&State.assignedRoles[index]), ROLE_NAMES, 80 * State.dpiScale, AmongUsColorToImVec4(GetPlayerColor(outfit->fields.ColorId)), 0, RemoveHtmlTags(playerName).c_str(), ROLE_NAMES_COLOR, IM_ARRAYSIZE(ROLE_NAMES_COLOR)))
                             {
                                 State.engineers_amount = (int)GetRoleCount(RoleType::Engineer);
@@ -203,6 +232,7 @@ namespace HostTab {
                                 State.phantoms_amount = (int)GetRoleCount(RoleType::Phantom);
                                 State.vipers_amount = (int)GetRoleCount(RoleType::Viper);
                                 State.impostors_amount = (int)GetRoleCount(RoleType::Impostor);
+                                State.crewmates_amount = (int)GetRoleCount(RoleType::Crewmate);
                                 if (State.impostors_amount + State.shapeshifters_amount + State.phantoms_amount + State.vipers_amount > maxImpostorAmount)
                                 {
                                     if (State.assignedRoles[index] == RoleType::Impostor)
@@ -273,12 +303,11 @@ namespace HostTab {
                         if (shouldEndListBox)
                             ImGui::ListBoxFooter();
                     }
-                    if (!State.DisableRoleManager) ImGui::NewLine();
-                    ToggleButton("禁用身份选择", &State.DisableRoleManager);
+                    if (!State.DisableRoleManager) ImGui::Dummy(ImVec2(2, 2) * State.dpiScale);
+                    ToggleButton("禁用身份选择器", &State.DisableRoleManager);
 
                     if (State.TournamentMode) {
-                        if (!State.DisableRoleManager || !hideRolesList) ImGui::NewLine();
-                        if (AnimatedButton("随机分配身份")) {
+                        if (AnimatedButton("随机身份")) {
                             std::vector<Game::PlayerId> playerIds = {};
                             std::vector<Game::PlayerId> impostorIds = {};
                             for (auto p : GetAllPlayerControl()) {
@@ -295,7 +324,50 @@ namespace HostTab {
                             for (auto i : playerIds)
                                 State.assignedRoles[i] = RoleType::Crewmate;
                         }
-                        ToggleButton("隐藏身份列表", &hideRolesList);
+                        ToggleButton("Hide Roles List", &hideRolesList);
+                    }
+
+                    if (!State.DisableRoleManager) {
+                        if (ToggleButton("Always", &State.AutoHostRole)) {
+                            State.Save();
+
+                            if (!State.AutoHostRole) {
+                                auto allPlayers = GetAllPlayerData();
+                                for (size_t listIndex = 0; listIndex < allPlayers.size(); listIndex++) {
+                                    auto playerData = allPlayers[listIndex];
+                                    if (playerData == nullptr) continue;
+                                    PlayerControl* playerCtrl = GetPlayerControlById(playerData->fields.PlayerId);
+                                    if (playerCtrl == nullptr) continue;
+
+                                    if (*Game::pLocalPlayer == playerCtrl) {
+                                        State.assignedRoles[playerData->fields.PlayerId] = RoleType::Random;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        ImGui::SameLine();
+                        int hostRoleInt = (int)State.HostRoleToSet;
+                        if (CustomListBoxIntColored("###RoleSelector", &hostRoleInt, ROLE_NAMES, 80 * State.dpiScale, ImVec4(1.f, 1.f, 1.f, 0.f), 0, "", ROLE_NAMES_COLOR, IM_ARRAYSIZE(ROLE_NAMES_COLOR))) {
+                            if (State.HostRoleToSet == RoleType::Impostor || State.HostRoleToSet == RoleType::Shapeshifter || State.HostRoleToSet == RoleType::Phantom || State.HostRoleToSet == RoleType::Viper) {
+                                if (State.impostors_amount + State.shapeshifters_amount + State.phantoms_amount + State.vipers_amount + 1 > GetMaxImpostorAmount((int)GetAllPlayerData().size())) {
+                                    State.AutoHostRole = false;
+                                }
+                                else {
+                                    if (options.GetGameMode() == GameModes__Enum::HideNSeek) State.HostRoleToSet = RoleType::Impostor;
+                                }
+                            }
+                            else {
+                                if (State.engineers_amount + State.scientists_amount + State.trackers_amount + State.noisemakers_amount + State.detectives_amount + State.judges_amount + State.crewmates_amount + 1 >= (int)GetAllPlayerData().size()) {
+                                    State.AutoHostRole = false;
+                                }
+                                else {
+                                    if (options.GetGameMode() == GameModes__Enum::HideNSeek) State.HostRoleToSet = RoleType::Engineer;
+                                }
+                            }
+                            State.HostRoleToSet = (RoleType)hostRoleInt;
+                            State.Save();
+                        }
                     }
                     ImGui::EndChild();
                 }
@@ -303,52 +375,11 @@ namespace HostTab {
                 ImGui::BeginChild("host#actions", ImVec2(300, 0) * State.dpiScale, true, ImGuiWindowFlags_NoBackground);
 
                 if (!State.DisableRoleManager && IsInLobby()) {
-                    if (ToggleButton("自定义伪装者数量", &State.CustomImpostorAmount))
+                    if (ToggleButton("Custom Impostor Amount", &State.CustomImpostorAmount))
                         State.Save();
                     State.ImpostorCount = std::clamp(State.ImpostorCount, 0, int(Game::MAX_PLAYERS));
-                    if (State.CustomImpostorAmount && ImGui::InputInt("伪装者数量", &State.ImpostorCount))
+                    if (State.CustomImpostorAmount && ImGui::InputInt("Impostor Count", &State.ImpostorCount))
                         State.Save();
-
-                    if (ToggleButton("总是", &State.AutoHostRole)) {
-                        State.Save();
-
-                        if (!State.AutoHostRole) {
-                            auto allPlayers = GetAllPlayerData();
-                            for (size_t listIndex = 0; listIndex < allPlayers.size(); listIndex++) {
-                                auto playerData = allPlayers[listIndex];
-                                if (playerData == nullptr) continue;
-                                PlayerControl* playerCtrl = GetPlayerControlById(playerData->fields.PlayerId);
-                                if (playerCtrl == nullptr) continue;
-
-                                if (*Game::pLocalPlayer == playerCtrl) {
-                                    State.assignedRoles[playerData->fields.PlayerId] = RoleType::Random;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    ImGui::SameLine();
-                    int hostRoleInt = (int)State.HostRoleToSet;
-                    if (CustomListBoxInt("###RoleSelector", &hostRoleInt, ROLE_NAMES, 80 * State.dpiScale, ImVec4(1.f, 1.f, 1.f, 0.f), 0, " ")) {
-                        if (State.HostRoleToSet == RoleType::Impostor || State.HostRoleToSet == RoleType::Shapeshifter || State.HostRoleToSet == RoleType::Phantom || State.HostRoleToSet == RoleType::Viper) {
-                            if (State.impostors_amount + State.shapeshifters_amount + State.phantoms_amount + State.vipers_amount + 1 > GetMaxImpostorAmount((int)GetAllPlayerData().size())) {
-                                State.AutoHostRole = false;
-                            }
-                            else {
-                                if (options.GetGameMode() == GameModes__Enum::HideNSeek) State.HostRoleToSet = RoleType::Impostor;
-                            }
-                        }
-                        else {
-                            if (State.engineers_amount + State.scientists_amount + State.trackers_amount + State.noisemakers_amount + State.detectives_amount + State.judges_amount + State.crewmates_amount + 1 >= (int)GetAllPlayerData().size()) {
-                                State.AutoHostRole = false;
-                            }
-                            else {
-                                if (options.GetGameMode() == GameModes__Enum::HideNSeek) State.HostRoleToSet = RoleType::Engineer;
-                            }
-                        }
-                        State.HostRoleToSet = (RoleType)hostRoleInt;
-                        State.Save();
-                    }
                 }
 
                 const int32_t currentMaxPlayers = options.GetMaxPlayers();
@@ -374,7 +405,10 @@ namespace HostTab {
                     State.CancelingStartGame = true;
                 }
 
-                if (ToggleButton("强制启用开始按钮", &State.AlwaysAllowStart))
+                if (ToggleButton("Enable Moderation System", &State.Mod_EnableModeration))
+                    State.Save();
+
+                if (ToggleButton("Always Allow Start Button", &State.AlwaysAllowStart))
                     State.Save();
 
                 if (ToggleButton("修改开始倒计时", &State.ModifyStartCountdown))
@@ -481,7 +515,7 @@ namespace HostTab {
                     }
 
                     if (IsInGame()) {
-                        CustomListBoxInt("原因", &State.SelectedGameEndReasonId, GAMEENDREASON, 120.0f * State.dpiScale);
+                        CustomListBoxIntColored("Reason", &State.SelectedGameEndReasonId, GAMEENDREASON, 120.0f * State.dpiScale, ImVec4(1.f, 1.f, 1.f, 0.f), 0, "", GAMEENDREASONCOLORS, IM_ARRAYSIZE(GAMEENDREASONCOLORS));
 
                         ImGui::SameLine();
 
@@ -491,7 +525,7 @@ namespace HostTab {
                     }
                 }
 
-                CustomListBoxInt(" ­", &State.HostSelectedColorId, HOSTCOLORS, 85.0f * State.dpiScale);
+                CustomListBoxIntColored(" ­", &State.HostSelectedColorId, HOSTCOLORS, 85.0f * State.dpiScale, ImVec4(1.f, 1.f, 1.f, 0.f), 0, "", COLOR_NAMES_COLOR, IM_ARRAYSIZE(COLOR_NAMES_COLOR));
 
                 if (ToggleButton("强制给所有人上色", &State.ForceColorForEveryone)) {
                     State.Save();
@@ -501,9 +535,7 @@ namespace HostTab {
                     if (ToggleButton("强制给所有人设置名称", &State.ForceNameForEveryone)) {
                         State.Save();
                     }
-                    if (InputString("用户名", &State.hostUserName)) {
-                        State.Save();
-                    }
+                    InputString("Username", &State.hostUserName);
                 }
 
                 /*if (IsHost() && IsInGame() && GetPlayerData(*Game::pLocalPlayer)->fields.IsDead && AnimatedButton("Revive Yourself"))
@@ -620,7 +652,7 @@ namespace HostTab {
                 /*if (State.mapHostChoice > 3)
                     State.mapHostChoice--;*/
                 State.mapHostChoice = std::clamp(State.mapHostChoice, 0, (int)MAP_NAMES.size() - 1);
-                if (IsInLobby() && CustomListBoxInt("Map", &State.mapHostChoice, MAP_NAMES, 75 * State.dpiScale)) {
+                if (IsInLobby() && CustomListBoxIntColored("Map", &State.mapHostChoice, MAP_NAMES, 75 * State.dpiScale, ImVec4(1.f, 1.f, 1.f, 0.f), 0, "", MAP_NAMES_COLOR, IM_ARRAYSIZE(MAP_NAMES_COLOR))) {
                     //if (!IsInGame()) {
                         // disable flip
                     if (State.mapHostChoice == 3) {

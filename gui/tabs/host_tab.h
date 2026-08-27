@@ -8,8 +8,36 @@ namespace HostTab {
 	//set it to the maximum player count if you ever want to play a 100 player mod or something like that
 	const std::vector<const char*> ROLE_NAMES = { "Random", "Crewmate", "Scientist", "Engineer", "Noisemaker", "Tracker", "Detective", "Judge", "Impostor", "Shapeshifter", "Phantom", "Viper" };
 	//const std::vector<const char*> ROLE_NAMES_NORANDOM = { "Random", "Crewmate", "Scientist", "Engineer", "Noisemaker", "Tracker", "Detective", "Impostor", "Shapeshifter", "Phantom", "Viper" };
-	const std::vector<const char*> GAMEENDREASON = { "船员 (投票)", "船员 (任务)", "伪装者 (投票)", "伪装者 (击杀)", "伪装者 (破坏)", "离线 (伪装者)", "离线 (船员)", "倒计时 (捉迷藏)", "击杀 (捉迷藏)" };
-	const std::vector<const char*> HOSTCOLORS = { "红色", "蓝色", "绿色", "粉色", "橘色", "黄色", "黑色", "白色", "紫色", "棕色", "青色", "黄绿色", "红褐色", "玫红色", "焦黄色", "灰色", "茶色", "珊瑚红", "深绿色" };
+	const std::vector<const char*> GAMEENDREASON = { "Crewmates (Votes)", "Crewmates (Tasks)", "Impostors (Votes)", "Impostors (Kill)", "Impostors (Sabotage)", "D/C (Imp)", "D/C (Crew)", "Timer (HNS)", "Kill (HNS)" };
+	const std::vector<const char*> HOSTCOLORS = { "Red", "Blue", "Green", "Pink", "Orange", "Yellow", "Black", "White", "Purple", "Brown", "Cyan", "Lime", "Maroon", "Rose", "Banana", "Gray", "Tan", "Coral", "Fortegreen" };
+	const ColorMapping COLOR_NAMES_COLOR[] = {
+		{"Red",			    ImColor::ImColor(0xFF1111C6)}, // 0xAABBGGRR
+		{"Blue",			ImColor::ImColor(0xFFD22E13)},
+		{"Green",			ImColor::ImColor(0xFF2D8011)},
+		{"Pink",			ImColor::ImColor(0xFFBB54EE)},
+		{"Orange",			ImColor::ImColor(0xFF0D7DF0)},
+		{"Yellow",			ImColor::ImColor(0xFF57F6F6)},
+		{"Black",			ImColor::ImColor(0xFF4E473F)},
+		{"White",			ImColor::ImColor(0xFFF1E1D7)},
+		{"Purple",			ImColor::ImColor(0xFFBC2F6B)},
+		{"Brown",			ImColor::ImColor(0xFF1E4971)},
+		{"Cyan",			ImColor::ImColor(0xFFDDFF38)},
+		{"Lime",			ImColor::ImColor(0xFF39F050)},
+		{"Maroon",			ImColor::ImColor(0xFF2E1D5F)},
+		{"Rose",			ImColor::ImColor(0xFFD3C0EC)},
+		{"Banana",			ImColor::ImColor(0xFFA8E7F0)},
+		{"Gray",			ImColor::ImColor(0xFF938575)},
+		{"Tan",			    ImColor::ImColor(0xFF778891)},
+		{"Coral",			ImColor::ImColor(0xFF6464D7)},
+		{"Fortegreen",      ImColor::ImColor(0xFF62A626)},
+	};
+	const ColorMapping MAP_NAMES_COLOR[] = {
+		{"The Skeld",		ImColor::ImColor(0xFF99A800)}, // 0xAABBGGRR
+		{"Mira HQ",			ImColor::ImColor(0xFFFEDAF3)},
+		{"Polus",			ImColor::ImColor(0xFFFE47F5)},
+		{"The Airship",		ImColor::ImColor(0xFF0B64FF)},
+		{"The Fungle",		ImColor::ImColor(0xFF08FD8E)},
+	};
 	void Render();
 	const ptrdiff_t GetRoleCount(RoleType role);
 	void OpenSubGroup(const std::string& name);
